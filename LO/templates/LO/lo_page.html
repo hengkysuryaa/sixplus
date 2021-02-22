@@ -1,0 +1,35 @@
+<h1> Tabel Bobot LO Tiap Mata Kuliah </h1>
+<table border="1" width='100%' style="text-align: center;">
+    <thead>
+        <tr>
+            <th> Kode Kuliah </th> 
+            <th> Mata Kuliah </th>
+            <th> SKS </th>
+            <th> LO A </th>
+            <th> LO B </th>
+            <th> LO C </th>
+            <th> LO D </th>
+            <th> LO E </th>
+            <th> LO F </th>
+            <th> LO G </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in lo %}
+            <tr>
+                <td> {{item.course_id}} </td>
+                <td> {{item.course_id.title}} </td>
+                <td> {{item.course_id.credits}} </td>
+                <td> {{item.lo_a}} </td>
+                <td> {{item.lo_b}} </td>
+                <td> {{item.lo_c}} </td>
+                <td> {{item.lo_d}} </td>
+                <td> {{item.lo_e}} </td>
+                <td> {{item.lo_f}} </td>
+                <td> {{item.lo_g}} </td>
+            <tr>
+        {% endfor %}
+    </tbody>
+
+
+</table>
