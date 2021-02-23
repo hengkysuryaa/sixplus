@@ -25,7 +25,7 @@ class LO(models.Model):
 
 class Section(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
-    sec_id = models.IntegerField()
+    sec_id = models.IntegerField(primary_key=True)
     semester = models.IntegerField()
     year = models.IntegerField()
 
