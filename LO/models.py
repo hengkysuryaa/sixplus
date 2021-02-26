@@ -1,4 +1,6 @@
 from django.db import models
+from Mahasiswa.models import Student
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class Course(models.Model):
@@ -8,7 +10,7 @@ class Course(models.Model):
     credits = models.IntegerField()
 
     def __str__(self):
-        return f"{self.course_id}"
+        return f"{self.course_id} {self.title}"
 
 class LO(models.Model):
     course_id = models.OneToOneField("Course", on_delete=models.CASCADE)
@@ -31,3 +33,20 @@ class Section(models.Model):
 
     def __str__(self):
         return f"{self.course_id}, K{self.sec_id}, {self.semester}-{self.year}"
+
+class Score(models.Model):
+    nim = models.OneToOneField(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    uts1 = models.IntegerField()
+    uts2 = models.IntegerField()
+    uas = models.IntegerField()
+    kuis = models.IntegerField()
+    tutorial = models.IntegerField()
+
+class BobotKomponenScore(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    uts1 = ArrayField(models.IntegerField())
+    uts2 = ArrayField(models.IntegerField())
+    uas = ArrayField(models.IntegerField())
+    kuis = ArrayField(models.IntegerField())
+    tutorial = ArrayField(models.IntegerField())
