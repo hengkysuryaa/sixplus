@@ -22,7 +22,7 @@ def registerPage(request):
             form.save()
             user = form.cleaned_data.get('username')
             messages.success(request, f'Akun {user} berhasil dibuat')
-            redirect('login')
+            return redirect('login')
     
     context = {'form' : form}
     return render(request, "User/register.html", context)
