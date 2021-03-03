@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import LO, Course, Section, BobotKomponenScore, Score
+from .models import LO, Course, Section, BobotKomponenScore, Score, Takes
 
 # Register your models here.
 admin.site.register(LO)
