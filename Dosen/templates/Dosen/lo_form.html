@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Pembobotan Komponen Penilaian
+        </title>
+    </head>
+    <body>
+        <h1> Formulir Persentase Komponen Penilaian terhadap LO </h1>
+        <h2> {{course}} </h2>
+        <form action="{% url 'dosen:Submit' course.course_id %}" method="POST">
+            {% csrf_token %}
+            <h3> UTS 1</h3>
+            {% for item in list %}
+                <label> {{item}} </label>
+                <input type="number" name="uts1" min="0" max="100" required/>
+            {% endfor %}
+            <h3> UTS 2</h3>
+            {% for item in list %}
+                <label> {{item}} </label>
+                <input type="number" name="uts2" min="0" max="100" required/>
+            {% endfor %}
+            <h3> UAS </h3>
+            {% for item in list %}
+                <label> {{item}} </label>
+                <input type="number" name="uas" min="0" max="100" required/>
+            {% endfor %}
+            <h3> Kuis </h3>
+            {% for item in list %}
+                <label> {{item}} </label>
+                <input type="number" name="kuis" min="0" max="100" required/>
+            {% endfor %}
+            <h3> Tutorial </h3>
+            {% for item in list %}
+                <label> {{item}} </label>
+                <input type="number" name="tutorial" min="0" max="100" required/>
+            {% endfor %}
+            <button type="submit"> Submit </button>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,12 @@
+<html>
+    <head>
+        <title>
+            Pembobotan Komponen Penilaian
+        </title>
+    </head>
+    <body>
+        {% csrf_token %}
+        <h1> Berhasil Tersimpan </h1>
+        <a href="{% url 'dosen:KomponenNilai'%}">Klik disini untuk mengisi lagi</a>
+    </body>
+</html>

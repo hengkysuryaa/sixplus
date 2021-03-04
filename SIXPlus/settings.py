@@ -81,8 +81,12 @@ WSGI_APPLICATION = 'SIXPlus.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd25pa8bg4f4rv8',
+        'USER': 'iwudspoxgdbgkj',
+        'PASSWORD': 'f1697630b7a5b5c3a112f0386447282652c7e8474707fc0f8b7aca39e9b7d181',
+        'HOST': 'ec2-54-89-49-242.compute-1.amazonaws.com',
+        'POST': '',
     }
 }
 

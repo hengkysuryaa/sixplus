@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Pembobotan Komponen Penilaian
+        </title>
+    </head>
+    <body>
+        <h1> Pilih Mata Kuliah </h1>
+        {% csrf_token %}
+        <ul>
+        {% for item in course_list %}
+            <li><a href="{% url 'dosen:FormKomponen' item.course_id %}">{{item}}</a></li> <br>
+        {% endfor %}
+        </ul>
+    </body>
+</html>

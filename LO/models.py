@@ -25,6 +25,26 @@ class LO(models.Model):
     def __str__(self):
         return f"LO {self.course_id}"
 
+    def getCourseLO(self, c_id):
+        course = Course.objects.filter(course_id = c_id)
+        item = LO.objects.filter(course_id = course[0])[0]
+        lo_dict = {}
+        if (item.lo_a != '-'):
+            lo_dict['lo_a'] = item.lo_a
+        if (item.lo_b != '-'):
+            lo_dict['lo_b'] = item.lo_b
+        if (item.lo_c != '-'):
+            lo_dict['lo_c'] = item.lo_c
+        if (item.lo_d != '-'):
+            lo_dict['lo_d'] = item.lo_d
+        if (item.lo_e != '-'):
+            lo_dict['lo_e'] = item.lo_e
+        if (item.lo_f != '-'):
+            lo_dict['lo_f'] = item.lo_f
+        if (item.lo_g != '-'):
+            lo_dict['lo_g'] = item.lo_g
+        return lo_dict, course[0]
+
 class Section(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
     sec_id = models.IntegerField(primary_key=True)
@@ -78,3 +98,6 @@ class BobotKomponenScore(models.Model):
     uas = ArrayField(models.IntegerField())
     kuis = ArrayField(models.IntegerField())
     tutorial = ArrayField(models.IntegerField())
+
+    def __str__(self):
+        return f"{self.course}, UTS1:{self.uts1}, UTS2:{self.uts2}, UAS:{self.uas}, Kuis:{self.kuis}, Tutorial:{self.tutorial}"
