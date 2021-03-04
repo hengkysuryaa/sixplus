@@ -21,4 +21,5 @@ urlpatterns = [
     path('LO', include('LO.urls')),
     url(r'^Dosen/', include(('Dosen.urls', 'Dosen'), namespace="dosen")),
     path('admin/', admin.site.urls),
+    path('', include('User.urls')),
 ]
