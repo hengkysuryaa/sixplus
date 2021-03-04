@@ -3,3 +3,4 @@ gunicorn
 django-heroku
 pandas
 openpyxl
+psycopg2
