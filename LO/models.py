@@ -65,10 +65,12 @@ class Takes(models.Model):
     
     def get_student_takes(self, Section):
         t = Takes.objects.filter(section = Section)
-        student_list = []
+        student_nim_list = []
+        student_name_list = []
         for obj in t:
-            student_list.append(obj.student)
-        return student_list
+            student_nim_list.append(obj.student.nim)
+            student_name_list.append(obj.student.name)
+        return student_nim_list, student_name_list
 
 class Score(models.Model):
     nim = models.ForeignKey(Student, on_delete=models.CASCADE)

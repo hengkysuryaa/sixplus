@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views import generic
-from LO.models import LO, Course, BobotKomponenScore
+from LO.models import LO, Course, BobotKomponenScore, Takes, Section
+from Utils.xlsxutil import export_pandas_to_sheet, convert_normal_array_to_pandas
+from openpyxl import *
 
 # Create your views here.
 class DistribusiKomponenNilaiView(generic.ListView):
@@ -11,7 +13,6 @@ class DistribusiKomponenNilaiView(generic.ListView):
         bobot_list = BobotKomponenScore.objects.all()
         course_list = Course.objects.all()
         for items in bobot_list:
-            print(items.course.course_id)
             course_list = course_list.exclude(course_id=items.course.course_id)
         
         return course_list
@@ -31,3 +32,10 @@ def SubmitView(request, course_id):
     b = BobotKomponenScore(course=course[0], uts1=uts1, uts2=uts2, uas=uas, kuis=kuis, tutorial=tutorial)
     b.save()
     return render(request, 'Dosen/berhasil.html')
+
+def downloadListMhs(section):
+    list_nim, list_nama = Takes.get_student_takes(Takes, section)
+    data = {'NIM':list_nim, 'Nama':list_nama, 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
+    df = convert_normal_array_to_pandas(data)
+    name = section.course_id.course_id + " K" + str(section.sec_id)
+    export_pandas_to_sheet(df, "Lembar Penilaian " + name + ".xlsx", name)
