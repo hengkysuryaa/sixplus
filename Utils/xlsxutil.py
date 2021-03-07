@@ -1,13 +1,17 @@
 import pandas as pd
-import numpy as np 
+import numpy as np
 
 # Usage : convert_normal_array_to_pandas({'columnName' : array})
 def convert_normal_array_to_pandas(arrDict):
 	df = pd.DataFrame(columns = [*arrDict])
 	for key in arrDict:
-		df[key] = arrDict[key]
+		if(arrDict[key] == []):
+			df[key] = df[key].fillna('')
+		else:
+			df[key] = arrDict[key]
 	return df
 
+# Usage : convert_normal_array_to_pandas({'columnName' : array})
 def convert_pandas_to_normal_array(df):	
 	columns = list(df) 
 
@@ -18,6 +22,7 @@ def convert_pandas_to_normal_array(df):
 
 	return arrDict
 
+
 def export_pandas_to_sheet(dataframe, file_name = "New Excel.xlsx", sheet_name = "New Sheet"):
 	dataframe.to_excel(file_name, sheet_name = sheet_name, index = False)
 
@@ -25,9 +30,10 @@ def export_pandas_to_workbook(sheets_reference, file_name = "New Excel.xlsx"):
 	xlsxWriter = pd.ExcelWriter(file_name, engine='xlsxwriter')
 	
 	for sheet_name in sheets_reference.keys():
-		sheets_reference[sheet_name].to_excel(xlsxWriter, sheet_name = sheet_name, index = False)
+		sheets_reference[sheet_name].to_excel(xlsxWriter, sheet_name = sheet_name, index = False, na_filter = False)
 
 	xlsxWriter.save()
+
 
 def import_workbook_as_pandasDict(file_name):
 	# sheet_name = None means to read every sheet
@@ -36,4 +42,4 @@ def import_workbook_as_pandasDict(file_name):
 def import_sheet_as_pandas(file_name, sheet_name, index_col = None):
 	# sheet_name = None means to read every sheet
 	# index_col is the col used as index (default to integers)
-	return pd.read_excel(file_name, sheet_name=sheet_name, index_col = index_col)
+	return pd.read_excel(file_name, sheet_name=sheet_name, index_col = index_col, na_filter = False)
