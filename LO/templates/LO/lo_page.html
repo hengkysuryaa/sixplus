@@ -3,6 +3,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <title> Objective Matrix Model </title>
     </head>
     <body>
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -13,15 +14,16 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Aplikasi</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Kurikulum</a>
-                        <a class="dropdown-item" href="#">Status Mahasiswa</a>
+                        <a class="dropdown-item" href="{% url 'dosen:OMM'%}">Objective Matrix Model</a>
+                        <a class="dropdown-item" href="{% url 'dosen:KomponenNilai'%}">Komponen Nilai</a>
+                        <!--
                         <a class="dropdown-item" href="#">Keuangan & Beasiswa</a>
                         <a class="dropdown-item" href="#">Kelas</a>
                         <a class="dropdown-item" href="#">Rencana Studi & Perwalian</a>
                         <a class="dropdown-item" href="#">Penjurusan TPB</a>
                         <a class="dropdown-item" href="#">Evaluasi Perkuliahan & Portofolio</a>
                         <a class="dropdown-item" href="#">Wisuda</a>
-                        <a class="dropdown-item" href="#">Control Panel</a>
+                        <a class="dropdown-item" href="#">Control Panel</a> -->
                     </div>
                 </li>
             </ul>
@@ -64,7 +66,7 @@
                 <tbody>
                     {% for item in lo %}
                         <tr>
-                            <td> {{item.course_id}} </td>
+                            <td> {{item.course_id.course_id}} </td>
                             <td> {{item.course_id.title}} </td>
                             <td> {{item.course_id.credits}} </td>
                             <td> {{item.lo_a}} </td>
