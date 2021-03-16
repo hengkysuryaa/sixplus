@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Submit Excel
+        </title>
+    </head>
+    <body>
+        <form action="{% url 'dosen:Import' course.course_id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            Select File to upload:
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="submit" value="Upload Image">
+        </form>
+    </body>
+</html>
