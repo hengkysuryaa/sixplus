@@ -44,7 +44,6 @@ def loginPage(request):
     context = {}
     return render(request, "User/login.html", context)
 
-@allowed_users(allowed_roles=['admin', 'mahasiswa'])
 def logoutUser(request):
     logout(request)
     return redirect('login')
