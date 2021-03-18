@@ -13,7 +13,7 @@ class DistribusiKomponenNilaiView(generic.ListView):
 
     def get_queryset(self):
         bobot_list = BobotKomponenScore.objects.all()
-        course_list = Course.objects.all()
+        course_list = Course.objects.all().order_by('course_id')
         for items in bobot_list:
             course_list = course_list.exclude(course_id=items.course.course_id)
         

@@ -12,4 +12,4 @@ class LOView(generic.ListView):
     context_object_name = 'lo'
 
     def get_queryset(self):
-        return LO.objects.all().order_by('course_id')
+        return LO.objects.all().order_by('course_id__course_id')
