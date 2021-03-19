@@ -103,3 +103,25 @@ class BobotKomponenScore(models.Model):
 
     def __str__(self):
         return f"{self.course}, UTS1:{self.uts1}, UTS2:{self.uts2}, UAS:{self.uas}, Kuis:{self.kuis}, Tutorial:{self.tutorial}"
+
+class ResponseKerjasama(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    Kontribusi = models.IntegerField()
+    PemecahanMasalah = models.IntegerField()
+    Sikap = models.IntegerField()
+    FokusTerhadapTugas = models.IntegerField()
+    BekerjaDenganOrangLain = models.IntegerField()
+
+# class ResponseKerjasama(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+#     kelompok = models.CharField(max_length=10)
+#     NIMPeers = ArrayField(models.CharField(max_length=10))
+#     Kontribusi = ArrayField(models.IntegerField())
+#     PemecahanMasalah = ArrayField(models.IntegerField())
+#     Sikap = ArrayField(models.IntegerField())
+#     FokusTerhadapTugas = ArrayField(models.IntegerField())
+#     BekerjaDenganOrangLain = ArrayField(models.IntegerField())
+
+#     def __str__(self):
+#         return f"Penilai: {self.student} Kel: {self.kelompok} NIMPeers: {self.NIMPeers} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"

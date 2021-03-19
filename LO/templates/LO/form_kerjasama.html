@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        ul {list-style: none;}
+        div {font-size: large;}
+    </style>
+    <head>
+        <title> Form Kerjasama</title>
+    </head>
+    <body>
+        <h1> Form Kerjasama {{course_id}}</h1>
+        <form action="{% url 'lo:SubmitFormKerjasama' course_id %}"" method="POST">
+            {% csrf_token %}
+            <h3> Isi Identitas Anda</h3>
+            {{identitas}}
+            <h3> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok, bukan Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) Anda maupun anggota kelompok.</h3>
+                <h3> Identitas anggota yang dinilai </h3>
+                    <label> Nama: </label>
+                    {{penilaian.NamePeer}}
+                    <label> NIM: </label>
+                    {{penilaian.NIMPeer}}
+                <div> 
+                    <h4> Kontribusi </h4>
+                    {{penilaian.Kontribusi}}
+                    <h4> Pemecahan Masalah </h4>
+                    {{penilaian.PemecahanMasalah}}
+                    <h4> Sikap </h4>
+                    {{penilaian.Sikap}}
+                    <h4> Fokus Terhadap Tugas </h4>
+                    {{penilaian.FokusTerhadapTugas}}
+                    <h4> Bekerja Dengan Orang Lain </h4>
+                    {{penilaian.BekerjaDenganOrangLain}}
+                </div>
+            <input type="submit" value="Submit"> <br>
+        </form>
+    </body>
+</html>
