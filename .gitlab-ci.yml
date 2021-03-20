@@ -11,6 +11,7 @@ services:
 
 variables:
   POSTGRES_DB: database_name
+  PATH: "C:\\Users\\Gunawan\\AppData\\Local\\Programs\\Python\\Python39\\"
 
 # This folder is cached between builds
 # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
