@@ -9,3 +9,12 @@ before_script:
   # Uncomment next line if your Django app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
   - pip install -r requirements.txt
+
+
+stages:
+ - test
+
+
+test:
+ script:
+  - python manage.py test
