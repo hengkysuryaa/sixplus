@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views import generic
 from LO.models import *
 from Dosen.models import Lecturer
+from User.views import *
+from django.contrib.auth.models import User
 
 # Create your views here.
 class DistribusiKomponenNilaiView(generic.ListView):
@@ -34,5 +36,11 @@ def SubmitView(request, course_id):
     return render(request, 'Dosen/berhasil.html')
 
 def penilaianPage(request):
-    context = {'dosen' : Lecturer, 'section': Section}
+    
+    username = User.objects.filter(username = request.user.username)
+    lecturer = Lecturer.objects.get(user = username[0])
+
+    sections = Section.objects.all()
+    scores = Score.objects.all()
+    context = {'dosen' : lecturer, 'section': sections, 'scores': scores}
     return render(request, 'Dosen/penilaian.html', context)
