@@ -47,7 +47,7 @@ class LO(models.Model):
 
 class Section(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
-    sec_id = models.IntegerField(primary_key=True)
+    sec_id = models.IntegerField()
     semester = models.IntegerField()
     year = models.IntegerField()
 
@@ -57,7 +57,7 @@ class Section(models.Model):
 
 class Takes(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, default=0)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
     grade = models.CharField(default='-', max_length=2)
 
     def __str__(self):
