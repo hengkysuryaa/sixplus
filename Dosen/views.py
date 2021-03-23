@@ -37,7 +37,6 @@ def SubmitView(request, course_id):
     b.save()
     return render(request, 'Dosen/berhasil.html')
 
-<<<<<<< Dosen/views.py
 def penilaianPage(request):
     
     username = User.objects.filter(username = request.user.username)
@@ -47,7 +46,6 @@ def penilaianPage(request):
     scores = Score.objects.all()
     context = {'dosen' : lecturer, 'section': sections, 'scores': scores}
     return render(request, 'Dosen/penilaian.html', context)
-=======
 def downloadListMhs(section):
     list_nim, list_nama = Takes.get_student_takes(Takes, section)
     data = {'NIM':list_nim, 'Nama':list_nama, 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
@@ -99,4 +97,3 @@ def importListMhs(request, course_id):
             print(Score.getStudentScore(Score, row.NIM, course_id).uts1)
 
     return render(request, 'Dosen/berhasil.html')
->>>>>>> Dosen/views.py
