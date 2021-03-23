@@ -8,7 +8,7 @@ before_script:
   - python3.9 --version  # Print out python version for debugging
   # Uncomment next line if your Django app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
-  - pip install -r requirements.txt
+  - pip3 install -r requirements.txt
 
 
 stages:
