@@ -9,9 +9,6 @@ before_script:
   # Uncomment next line if your Django app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
   - pip3 install -r requirements.txt
-  - virtualenv --python=python3 venv/
-  - source venv/bin/activate
-  - pip3 install django
 
 
 stages:
