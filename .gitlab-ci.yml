@@ -23,5 +23,6 @@ test:
   - source venv/bin/activate
   - pip3 install django
   - pip3 install -r requirements.txt
+  - pip3 install psycopg2
   - python3.9 ./manage.py test
   - source venv/bin/activate
