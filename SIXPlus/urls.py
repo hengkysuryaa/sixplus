@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import url
+from django.conf.urls import url, re_path
 
 urlpatterns = [
     path('LO', include('LO.urls')),
-    path('Dosen/', include(('Dosen.urls', 'Dosen'), namespace="dosen")),
+    re_path(r'^Dosen:(?P<nip>[0-9]+)/', include(('Dosen.urls', 'Dosen'), namespace="dosen")),
     path('admin/', admin.site.urls),
     path('', include('User.urls')),
 ]
