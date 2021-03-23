@@ -17,6 +17,8 @@ stages:
 
 test:
  script:
+  - apt update -qy
+  - apt install python3 python3-pip virtualenvwrapper -qy
   - virtualenv --python=python3 venv/
   - source venv/bin/activate
   - pip3 install -r requirements.txt
