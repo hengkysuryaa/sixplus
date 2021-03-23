@@ -17,4 +17,8 @@ stages:
 
 test:
  script:
+  - virtualenv --python=python3 venv/
+  - source venv/bin/activate
+  - pip3 install django
   - python3.9 ./manage.py test
+  - source venv/bin/activate
