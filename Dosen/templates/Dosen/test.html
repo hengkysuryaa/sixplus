@@ -88,34 +88,15 @@
                     <form action="">
                         <label for="section">Choose a section</label>
                         <select id="section" name="section">
-                            {% for kelas in section %}
-                            <option value="{{kelas}}">{{kelas}}</option>
-                            {% endfor %}
                         </select>
                         <input type="submit">
                     </form>
                 </div>
             </div>
-            {% for score in scores %}
-            <div class="row">
-               
-                <h6>{{score}}</h6> 
-                
-            </div>
-            {% endfor %}
-
 
             
-            <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
-              <button class="button button2" type='submit'> Downlaod Excel</button>
-            </form>
-
-            <form action="{% url 'dosen:ExcelUpload' nip year semester course_id section_id %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                Select File to upload:
-                <input type="file" name="excelUpload" id="excelUpload">
-                <input type="submit" value="Upload Penilaian Kelas">
-            </form>
+            <button class="button button1">Download</button>
+            <button class="button button2">Upload</button>
         </div>
     </body>
 </html>
