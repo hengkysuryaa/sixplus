@@ -12,6 +12,9 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.course_id} {self.title}"
 
+    def getCourse(self, c_id):
+        return Course.objects.get(course_id = c_id)
+
 class LO(models.Model):
     course_id = models.OneToOneField("Course", on_delete=models.CASCADE)
     lo_a = models.CharField(max_length=1)
@@ -112,6 +115,9 @@ class ResponseKerjasama(models.Model):
     Sikap = models.IntegerField()
     FokusTerhadapTugas = models.IntegerField()
     BekerjaDenganOrangLain = models.IntegerField()
+
+    def __str__(self):
+        return f"Mahasiswa: {self.student} Matkul: {self.course} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
 
 # class ResponseKerjasama(models.Model):
 #     student = models.ForeignKey(Student, on_delete=models.CASCADE)

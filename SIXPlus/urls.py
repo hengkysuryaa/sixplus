@@ -18,8 +18,9 @@ from django.urls import path, include
 from django.conf.urls import url
 
 urlpatterns = [
-    path('LO/', include(('LO.urls', 'LO'), namespace="lo")),
-    path('Dosen/', include(('Dosen.urls', 'Dosen'), namespace="dosen")),
+    url(r'^LO/', include(('LO.urls', 'LO'), namespace="lo")),
+    url(r'^Dosen/', include(('Dosen.urls', 'Dosen'), namespace="dosen")),
+    url(r'^Mahasiswa/', include(('Mahasiswa.urls', 'Mahasiswa'), namespace="mhs")),
     path('admin/', admin.site.urls),
     path('', include('User.urls')),
 ]
