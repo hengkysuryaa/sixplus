@@ -5,8 +5,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
-from .forms import CreateUserForm
-from .decorators import *
+from User.forms import CreateUserForm
+from User.decorators import *
 
 def dashboard(request):
     context = {}
