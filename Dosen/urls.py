@@ -8,6 +8,7 @@ from LO.views import LOView
 urlpatterns = [url(r'^OMM/$', LOView.as_view(), name='OMM'),
 			url(r'^Test/$', views.TestClassView.as_view(), name='test'),
 			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', views.DosenSectionListView.as_view(), name='SectionList'),
+			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/GetSection$', views.SectionPage, name='GetSection'),
 			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/(?P<course_id>[A-Z0-9]+)/(?P<section_id>[0-9]+)/$', penilaianPage, name='SectionPage'),
 			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/(?P<course_id>[A-Z0-9]+)/(?P<section_id>[0-9]+)/Upload/$', views.importListMhs, name='ExcelUpload'),
 			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/(?P<course_id>[A-Z0-9]+)/(?P<section_id>[0-9]+)/Download/$', views.exportListMhs, name='ExcelDownload'),

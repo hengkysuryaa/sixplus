@@ -93,6 +93,9 @@ class Score(models.Model):
     def setStudentScore(self, nim, course_id, nilai_uts1, nilai_uts2, nilai_uas, nilai_kuis, nilai_tutorial):
         course = Course.objects.filter(course_id=course_id)[0]
         student = Student.objects.filter(nim=nim)[0]
+        score = self.getStudentScore(self, nim = nim, course_id = course_id)
+        if(len(score) != 0):
+            score[0].delete()
         new_score = Score.objects.create(nim=student, course=course, uts1=nilai_uts1, uts2=nilai_uts2, uas=nilai_uas, kuis=nilai_kuis, tutorial=nilai_tutorial)
         return new_score
 

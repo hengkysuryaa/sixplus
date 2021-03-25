@@ -79,74 +79,26 @@
             </ul>
         </nav>
         <div class="container">
-            <h1>Penilaian {{header}} </h1>
+            <h1>Daftar Kelas </h1>
         </div>
         
         <div class="container">
             <h3>Nama : {{dosen.name}} </h3>
             <h3>NIP  : {{dosen.nip}}</h3>
-            <!-- <div class="row">
+            <div class="row">
                 <div class="col-md-8">
-                    <form action="">
+                    <form action="{% url 'dosen:GetSection' nip year semester %}" method = "POST">
+                        {% csrf_token %}
                         <label for="section">Choose a section</label>
                         <select id="section" name="section">
-                            {% for kelas in section %}
-                            <option value="{{kelas}}">{{kelas}}</option>
+                            {% for kelas in section_list %}
+                            <option value="{{kelas.course_id}}, {{kelas.sec_id}}">{{kelas}}</option>
                             {% endfor %}
                         </select>
                         <input type="submit">
                     </form>
                 </div>
-            </div> -->
-            <!-- {% for score in scores %}
-            <div class="row">
-               
-                <h6>{{score}}</h6> 
-                
-            </div>
-            {% endfor %} -->
-            <div class="container">
-            <table border="1" width='100%' style="text-align: center;" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th> NIM </th> 
-                        <th> Nama </th>
-                        <th> UTS1 </th>
-                        <th> UTS2 </th>
-                        <th> UAS </th>
-                        <th> Kuis </th>
-                        <th> Tutorial </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for score in scores %}
-                        <tr>
-                            <td> {{score.nim.nim}} </td>
-                            <td> {{score.nim.name}} </td>
-                            <td> {{score.uts1}} </td>
-                            <td> {{score.uts2}} </td>
-                            <td> {{score.uas}} </td>
-                            <td> {{score.kuis}} </td>
-                            <td> {{score.tutorial}} </td>
-                        <tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-
-            
-            
-
-            <form action="{% url 'dosen:ExcelUpload' nip year semester course_id section_id %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                Select File to upload:
-                <input class = "button button2" type="file" name="excelUpload" id="excelUpload">
-                <input class = "button button2" type="submit" value="Upload Penilaian Kelas">
-            </form>
-            <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
-              <button class="button button2" type='submit'> Download Excel Template</button>
-            </form>
+            </div> 
         </div>
     </body>
 </html>
