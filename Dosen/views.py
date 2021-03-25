@@ -9,6 +9,35 @@ from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
 
 # Create your views here.
+######################
+### HOMEPAGE DOSEN ###
+######################
+def HomepageDosenView(request, nip):
+    # TO DO : Make Dosen's Homepage
+    return render(request, 'Dosen/test.html', {'nip' : nip}) # Placeholder code
+
+##########################
+### SECTION NAVIGATION ###
+##########################
+class DosenSectionListView(generic.ListView):
+    # TO DO : RENDER SECTIONS FOR SEMESTER AND YEAR
+    template_name = 'Dosen/test.html' # Placeholder
+    
+
+    def get_queryset(self):
+        # Get the sections you want to show here
+        # nip = self.kwargs['nip']
+        # year = self.kwargs['year']
+        # semester = self.kwargs['semester']
+        pass
+
+def SectionPage(request, nip, year, semester, course_id, section_id):
+    #TO DO : Implementasi halaman untuk setiap kelas, ini termasuk upload dan download xlsx nilai
+    return render(request, 'Dosen/test.html', {'nip' : nip}) # Placeholder code
+
+######################
+### KOMPONEN NILAI ###
+######################
 class DistribusiKomponenNilaiView(generic.ListView):
     template_name = 'Dosen/page.html'
     context_object_name = 'course_list'
@@ -38,13 +67,14 @@ def SubmitView(request, course_id):
     return render(request, 'Dosen/berhasil.html')
 
 
-def penilaianPage(request):
+def penilaianPage(request, nip, year, semester, course_id, section_id):
     username = User.objects.filter(username = request.user.username)
     lecturer = Lecturer.objects.get(user = username[0])
 
-    sections = Section.objects.all()
-    scores = Score.objects.all()
-    context = {'dosen' : lecturer, 'section': sections, 'scores': scores}
+    #sections = Section.objects.all()
+    #scores = Score.objects.all()
+    #context = {'dosen' : lecturer}, 'section': sections, 'scores': scores}
+    context = {'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id}
     return render(request, 'Dosen/penilaian.html', context)
 
 def downloadListMhs(section):
@@ -55,7 +85,7 @@ def downloadListMhs(section):
 
     export_pandas_to_sheet(df, "Lembar Penilaian " + name + ".xlsx", name)
 
-def exportListMhs(request, course_id):
+def exportListMhs(request, nip, year, semester, course_id, section_id):
     #list_nim, list_nama = Takes.get_student_takes(Takes, section)
     list_nim = ['13518103', '13518114']
     list_nama = ['Gunawan', 'Kamaruddin']
@@ -79,25 +109,26 @@ def FormsImportNilai(request, course_id):
     lo_list, course = LO.getCourseLO(LO, course_id)
     return render(request, 'Dosen/import.html', {'course' : course})
 
-def importListMhs(request, course_id):
+def importListMhs(request, nip, year, semester, course_id, section_id):
     lo_list, course = LO.getCourseLO(LO, course_id)
     try:
-        excel_file = request.FILES['fileToUpload']
+        excel_file = request.FILES['excelUpload']
     except MultiValueDictKeyError:
-        return render(request, 'Dosen/import.html', {'course' : course})
+        return redirect('penilaianPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
 
     filename = str(excel_file).split('.')
     if(filename[-1] == "xlsx"):
         dc = import_sheet_as_pandas(excel_file, ' '.join((filename[0].split(' ')[2], filename[0].split(' ')[3])))
         print(dc)
-        for row in dc.itertuples():
-            Score.setStudentScore(Score, row.NIM, course_id, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
-            print(row.NIM, row.Nama, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
+        # for row in dc.itertuples():
+        #     Score.setStudentScore(Score, row.NIM, course_id, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
+        #     print(row.NIM, row.Nama, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
 
-        for row in dc.itertuples():
-            print(Score.getStudentScore(Score, row.NIM, course_id).uts1)
+        # for row in dc.itertuples():
+        #     print(Score.getStudentScore(Score, row.NIM, course_id).uts1)
 
-    return render(request, 'Dosen/berhasil.html')
+    return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
+    
 
 def TestView(request, nip):
     print(nip)
