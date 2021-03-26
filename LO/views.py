@@ -18,6 +18,12 @@ class LOView(generic.ListView):
     def get_queryset(self):
         return LO.objects.all().order_by('course_id__course_id')
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['nip'] = self.kwargs['nip']
+        return context
+
 def NextKerjasamaView(request, course_id):
     namaPengisi = request.POST['name']
     NIMPengisi = request.POST['NIM']
