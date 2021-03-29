@@ -121,16 +121,17 @@ class ResponseKerjasama(models.Model):
 
     def __str__(self):
         return f"Mahasiswa: {self.student} Matkul: {self.course} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
-
-# class ResponseKerjasama(models.Model):
-#     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-#     kelompok = models.CharField(max_length=10)
-#     NIMPeers = ArrayField(models.CharField(max_length=10))
-#     Kontribusi = ArrayField(models.IntegerField())
-#     PemecahanMasalah = ArrayField(models.IntegerField())
-#     Sikap = ArrayField(models.IntegerField())
-#     FokusTerhadapTugas = ArrayField(models.IntegerField())
-#     BekerjaDenganOrangLain = ArrayField(models.IntegerField())
-
-#     def __str__(self):
-#         return f"Penilai: {self.student} Kel: {self.kelompok} NIMPeers: {self.NIMPeers} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
+        
+class ResponseKomunikasi(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    Penyampaian1 = models.IntegerField()
+    Penyampaian2 = models.IntegerField()
+    Penyampaian3 = models.IntegerField()
+    Penyampaian4 = models.IntegerField()
+    Konten = models.IntegerField()
+    Bahasa = models.IntegerField()
+    Penguasaan = models.IntegerField()
+    Menjawab = models.IntegerField()
+    Media = models.IntegerField()
+    Waktu = models.IntegerField()
