@@ -8,7 +8,7 @@
     <body>
         <h1> Formulir Persentase Komponen Penilaian terhadap LO </h1>
         <h2> {{course}} </h2>
-        <form action="{% url 'dosen:Submit' course.course_id %}" method="POST">
+        <form action="{% url 'dosen:Submit' nip course.course_id %}" method="POST">
             {% csrf_token %}
             <h3> UTS 1</h3>
             {% for item in list %}

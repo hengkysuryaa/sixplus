@@ -12,6 +12,9 @@ class Course(models.Model):
     def __str__(self):
         return f"{self.course_id} {self.title}"
 
+    def getCourse(self, c_id):
+        return Course.objects.get(course_id = c_id)
+
 class LO(models.Model):
     course_id = models.OneToOneField("Course", on_delete=models.CASCADE)
     lo_a = models.CharField(max_length=1)
@@ -47,7 +50,7 @@ class LO(models.Model):
 
 class Section(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
-    sec_id = models.IntegerField(primary_key=True)
+    sec_id = models.IntegerField()
     semester = models.IntegerField()
     year = models.IntegerField()
 
@@ -57,7 +60,7 @@ class Section(models.Model):
 
 class Takes(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, default=0)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
     grade = models.CharField(default='-', max_length=2)
 
     def __str__(self):
@@ -90,6 +93,9 @@ class Score(models.Model):
     def setStudentScore(self, nim, course_id, nilai_uts1, nilai_uts2, nilai_uas, nilai_kuis, nilai_tutorial):
         course = Course.objects.filter(course_id=course_id)[0]
         student = Student.objects.filter(nim=nim)[0]
+        score = self.getStudentScore(self, nim = nim, course_id = course_id)
+        if(len(score) != 0):
+            score[0].delete()
         new_score = Score.objects.create(nim=student, course=course, uts1=nilai_uts1, uts2=nilai_uts2, uas=nilai_uas, kuis=nilai_kuis, tutorial=nilai_tutorial)
         return new_score
 
@@ -103,3 +109,33 @@ class BobotKomponenScore(models.Model):
 
     def __str__(self):
         return f"{self.course}, UTS1:{self.uts1}, UTS2:{self.uts2}, UAS:{self.uas}, Kuis:{self.kuis}, Tutorial:{self.tutorial}"
+
+class ResponseKerjasama(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    Kontribusi = models.IntegerField()
+    PemecahanMasalah = models.IntegerField()
+    Sikap = models.IntegerField()
+    FokusTerhadapTugas = models.IntegerField()
+    BekerjaDenganOrangLain = models.IntegerField()
+
+    def __str__(self):
+        return f"Mahasiswa: {self.student} Matkul: {self.course} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
+        
+class ResponseKomunikasi(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    kelompok = models.IntegerField(default=1)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    Penyampaian1 = models.IntegerField()
+    Penyampaian2 = models.IntegerField()
+    Penyampaian3 = models.IntegerField()
+    Penyampaian4 = models.IntegerField()
+    Konten = models.IntegerField()
+    Bahasa = models.IntegerField()
+    Penguasaan = models.IntegerField()
+    Menjawab = models.IntegerField()
+    Media = models.IntegerField()
+    Waktu = models.IntegerField()
+
+    def __str__(self):
+        return f"Mahasiswa: {self.student} Kelompok: {self.kelompok} Matkul: {self.course} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
