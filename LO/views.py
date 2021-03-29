@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from django.views import generic
-from .models import LO, Course, ResponseKerjasama
-from .forms import IdentitasForm, PenilaianKerjasamaForm
+from .models import LO, Course, ResponseKerjasama, ResponseKomunikasi
+from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiForm, PenilaianKomunikasiForm
 
 from Mahasiswa.models import Student
 
@@ -53,3 +53,32 @@ def SubmitKerjasamaView(request, course_id):
 
     return render(request, 'LO/form_kerjasama_submit.html', {'nama':namaPengisi, 'nim':NIMPengisi, 'kel':kel, 'course_id': course_id})    
 
+def KomunikasiView(request, course_id):
+    #Checking course_id nya valid gak
+    course = get_object_or_404(Course, course_id=course_id)
+    #TODO: Checking apakah dia takes matkul itu pada semester dan tahun itu(?)
+
+    identitas = IdentitasKomunikasiForm()
+    penilaian = PenilaianKomunikasiForm()
+
+    return render(request, 'LO/form_komunikasi.html', {'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
+
+def SubmitKomunikasiView(request, course_id):
+    kel = request.POST['kelompok']
+    
+    student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
+    kelompok = request.POST['KelompokPeer']
+    course = get_object_or_404(Course, course_id=course_id)
+    res = ResponseKomunikasi(student=student, kelompok = kelompok, course=course, 
+        Penyampaian1=int(request.POST['Penyampaian1']), Penyampaian2=int(request.POST['Penyampaian2']), Penyampaian3=int(request.POST['Penyampaian3']), Penyampaian4=int(request.POST['Penyampaian4']), 
+        Konten=int(request.POST['Konten']), Bahasa=int(request.POST['Bahasa']), Penguasaan=int(request.POST['Penguasaan']), 
+        Menjawab=int(request.POST['Menjawab']), Media=int(request.POST['Media']), Waktu=int(request.POST['Waktu'])     
+        )
+    res.save()
+
+    return render(request, 'LO/form_komunikasi_submit.html', {'kel':kel, 'course_id': course_id})  
+
+def NextKomunikasiView(request, course_id):
+    kel = request.POST['kelompok']
+    penilaian = PenilaianKomunikasiForm()
+    return render(request, 'LO/next_form_komunikasi.html', {'kel':kel, 'penilaian':penilaian, 'course_id':course_id})

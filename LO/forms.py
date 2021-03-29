@@ -44,6 +44,9 @@ class PenilaianKerjasamaForm(forms.Form):
     FokusTerhadapTugas = forms.ChoiceField(widget=forms.RadioSelect, choices=FokusTerhadapTugasChoice, label='Fokus terhadap tugas')
     BekerjaDenganOrangLain = forms.ChoiceField(widget=forms.RadioSelect, choices=BekerjaDenganOrangLainChoice, label='Bekerja dengan orang lain')
 
+class IdentitasKomunikasiForm(forms.Form):
+    kelompok = forms.CharField(label="Kelompok ", max_length=10)
+
 class PenilaianKomunikasiForm(forms.Form):
     Penyampaian1Choice = [
         (1,'Menyampaikan informasi tidak jelas, tidak lugas, dan tidak terstruktur'),
@@ -105,8 +108,9 @@ class PenilaianKomunikasiForm(forms.Form):
         (3,'Waktu digunakan sesuai dengan yang ditentukan untuk menyampaikan materi'),
         (4,'Waktu digunakan dengan efektif dan efisien untuk menyampaiakn materi dengan singkat, jelas, mudah dipahami, dan disertai  pendukung-pendukung yag memudahkan audiens memahami masalah yang dibahas')
     ]
-    Name = forms.CharField(label="Nama ", max_length=50)
-    NIM = forms.CharField(label="NIM ", max_length=10) 
+    KelompokPeer = forms.IntegerField(label="Kelompok ", min_value=1)
+    NamePeer = forms.CharField(label="Nama ", max_length=50)
+    NIMPeer = forms.CharField(label="NIM ", max_length=10) 
     Penyampaian1 = forms.ChoiceField(widget=forms.RadioSelect, choices=Penyampaian1Choice, label='Penyampaian1')
     Penyampaian2 = forms.ChoiceField(widget=forms.RadioSelect, choices=Penyampaian2Choice, label='Penyampaian2')
     Penyampaian3 = forms.ChoiceField(widget=forms.RadioSelect, choices=Penyampaian3Choice, label='Penyampaian3')

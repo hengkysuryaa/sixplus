@@ -10,7 +10,7 @@
         {% csrf_token %}
         <ul>
         {% for item in course_list %}
-            <li><a href="{% url 'dosen:FormKomponen' item.course_id %}">{{item}}</a></li> <br>
+            <li><a href="{% url 'dosen:FormKomponen' nip item.course_id %}">{{item}}</a></li> <br>
         {% endfor %}
         </ul>
     </body>
