@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>
+            Form Komunikasi
+        </title>
+    </head>
+    <style>
+        .list-name {
+            background-color: rgba(0, 0, 0, 1);
+            color: black;
+            border: none;
+        }
+    </style>
+    <body>  
+        <h1> Berhasil Tersimpan </h1>
+        <form action="{% url 'mhs:NextFormKomunikasi' course_id %}" method="POST"> 
+            {% csrf_token %}
+            <h3> Identitas Anda</h3>
+            <label> Kelompok: </label>
+            <input name="kelompok" type="text" readonly value="{{kel}}">
+            <h3> Apakah ada anggota lain yang ingin dinilai?</h3>
+            <button type="submit"> Ya </button>
+        </form>
+        <button> <a href="/"> Tidak </a> </button>
+    </body>
+</html>

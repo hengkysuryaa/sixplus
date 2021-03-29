@@ -73,11 +73,18 @@ class DistribusiKomponenNilaiView(generic.ListView):
         
         return course_list
 
-def FormsDistribusiNilai(request, course_id):
-    lo_list, course = LO.getCourseLO(LO, course_id)
-    return render(request, 'Dosen/lo_form.html', {'list' : lo_list, 'course' : course})
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
 
-def SubmitView(request, course_id):
+        context['nip'] = self.kwargs['nip']
+        return context
+
+def FormsDistribusiNilai(request, nip, course_id):
+    lo_list, course = LO.getCourseLO(LO, course_id)
+    return render(request, 'Dosen/lo_form.html', {'list' : lo_list, 'nip' : nip, 'course' : course})
+
+def SubmitView(request, nip, course_id):
     # get all input values & convert to array of integer 
     uts1 = [int(numeric_str) for numeric_str in request.POST.getlist('uts1')]
     uts2 = [int(numeric_str) for numeric_str in request.POST.getlist('uts2')]

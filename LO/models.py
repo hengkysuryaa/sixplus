@@ -124,6 +124,7 @@ class ResponseKerjasama(models.Model):
         
 class ResponseKomunikasi(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    kelompok = models.IntegerField(default=1)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     Penyampaian1 = models.IntegerField()
     Penyampaian2 = models.IntegerField()
@@ -135,3 +136,6 @@ class ResponseKomunikasi(models.Model):
     Menjawab = models.IntegerField()
     Media = models.IntegerField()
     Waktu = models.IntegerField()
+
+    def __str__(self):
+        return f"Mahasiswa: {self.student} Kelompok: {self.kelompok} Matkul: {self.course} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
