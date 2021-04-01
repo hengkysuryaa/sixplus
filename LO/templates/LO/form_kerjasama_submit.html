@@ -17,9 +17,9 @@
             {% csrf_token %}
             <h3> Identitas Anda</h3>
             <label> Nama: </label>
-            <input name="name" type="text" readonly value="{{nama}}">
+            <input name="name" type="text" readonly value="{{identitas.last_name}}">
             <label> NIM: </label>
-            <input name="NIM" type="text" readonly value="{{nim}}">
+            <input name="NIM" type="text" readonly value="{{identitas.first_name}}">
             <label> Kelompok: </label>
             <input name="kelompok" type="text" readonly value="{{kel}}">
             <h3> Apakah ada anggota lain yang ingin dinilai?</h3>
