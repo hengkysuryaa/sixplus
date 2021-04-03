@@ -1,12 +1,15 @@
 from django.urls import path, re_path
 from django.conf.urls import url
-from Dosen.views import penilaianPage
+from Dosen.views import penilaianPage, showPenilaianPage
 
 from . import views
 from LO.views import LOView
 
-urlpatterns = [url(r'^OMM/$', LOView.as_view(), name='OMM'),
+urlpatterns = [
+			url(r'^OMM/$', LOView.as_view(), name='OMM'),
 			url(r'^Test/$', views.TestClassView.as_view(), name='test'),
+			re_path(r'^Nilai/$', showPenilaianPage, name='SectionWithTeaches'),
+			re_path(r'^Nilai/GetSection2$', views.SectionPage2, name='GetSection2'),
 			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', views.DosenSectionListView.as_view(), name='SectionList'),
 			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/GetSection$', views.SectionPage, name='GetSection'),
 			re_path(r'^Nilai/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/(?P<course_id>[A-Z0-9]+)/(?P<section_id>[0-9]+)/$', penilaianPage, name='SectionPage'),
