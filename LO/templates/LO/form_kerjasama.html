@@ -12,7 +12,12 @@
         <form action="{% url 'mhs:SubmitFormKerjasama' course_id %}"" method="POST">
             {% csrf_token %}
             <h3> Isi Identitas Anda</h3>
-            {{identitas}}
+            <label> Nama: </label>
+            <input name="NIM" type="text" readonly value="{{identitas.last_name}}">
+            <label> NIM: </label>
+            <input name="name" type="text" readonly value="{{identitas.first_name}}">
+            <label> Kelompok: </label>
+            <input name="kelompok" type="number" min="1" max="100" required>
             <h3> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok, bukan Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) Anda maupun anggota kelompok.</h3>
                 <h3> Identitas anggota yang dinilai </h3>
                     <label> Nama: </label>
