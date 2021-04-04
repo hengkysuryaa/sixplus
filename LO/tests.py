@@ -16,8 +16,8 @@ class ResponseKerjasama(TestCase):
         self.assertTrue(student)
 
         # #Create response instance
-        # ResponseKerjasama.objects.create(student=student, course=course, Kontribusi=1, PemecahanMasalah=2, Sikap=3, FokusTerhadapTugas=4, BekerjaDenganOrangLain=3)
+        # res = ResponseKerjasama(student=student, course=course, Kontribusi=1, PemecahanMasalah=2, Sikap=3, FokusTerhadapTugas=4, BekerjaDenganOrangLain=3)
+        # res.save()
         # #Checking
         # response = ResponseKerjasama.objects.filter(student=student, course=course)[0]
         # self.assertTrue(response)
-
