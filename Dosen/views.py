@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import generic
 from LO.models import *
-from Dosen.models import Lecturer
+from Dosen.models import Lecturer, Teaches
 from User.views import *
 from django.contrib.auth.models import User
 from Utils.xlsxutil import export_pandas_to_sheet, convert_normal_array_to_pandas, import_workbook_as_pandasDict, import_sheet_as_pandas
@@ -58,6 +58,16 @@ def SectionPage(request, nip, year, semester):
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
 
+def SectionPage2(request, nip):
+    if(request.method == 'POST'):
+        section = request.POST.get('section')
+        section_info = section.split(', ')
+        year = section_info[0]
+        semester = section_info[1]
+        course_id = section_info[2][0:6]
+        section_id = section_info[-1]
+
+    return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
 ######################
 ### KOMPONEN NILAI ###
 ######################
@@ -114,24 +124,26 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     context = {'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id, 'scores' : score_list, 'header' : header}
     return render(request, 'Dosen/penilaian.html', context)
 
-def showPenilaianPage(request, nip, year, semester):
-    print(request.POST.get('section'))
+def showPenilaianPage(request, nip):
+    # print(request.POST.get('section'))
     username = User.objects.filter(username = request.user.username)
     lecturer = Lecturer.objects.get(user = username[0])
-
-    course = Course.objects.filter(course_id = course_id)[0]
-    section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
+    lecturerForTeaches = Lecturer.objects.filter(user = username[0])
+    teaches = Teaches.objects.filter(dosen = lecturerForTeaches[0])
     
-    student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
-    score_list = Score.objects.filter(nim__in = student_list, course = course)
+    # # course = Course.objects.filter(course_id = course_id)[0]
+    # section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
+    
+    # student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
-    header = str(course_id) + " " + course.title +  " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
+    # score_list = Score.objects.filter(nim__in = student_list, course = course)
+
+    # header = str(course_id) + " " + course.title +  " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
 
     #context = {'dosen' : lecturer}, 'section': sections, 'scores': scores}
-    context = {'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id, 'scores' : score_list, 'header' : header}
-    return render(request, 'Dosen/penilaian.html', context)
-
+    context = {'dosen' : lecturer , 'nip' : nip, 'teaches' : teaches}
+    return render(request, 'Dosen/penilaian_teaches.html', context)
 
 def exportListMhs(request, nip, year, semester, course_id, section_id):
     course = Course.objects.filter(course_id = course_id)[0]
