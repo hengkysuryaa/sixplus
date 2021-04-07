@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from Utils.xlsxutil import export_pandas_to_sheet, convert_normal_array_to_pandas, import_workbook_as_pandasDict, import_sheet_as_pandas
 from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib import messages
 
 # Create your views here.
 ######################
@@ -174,6 +175,7 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
     try:
         excel_file = request.FILES['excelUpload']
     except MultiValueDictKeyError:
+        messages.error(request, 'NO DOCUMENT UPLOADED')
         return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
 
     filename = str(excel_file).split('.')
