@@ -33,7 +33,7 @@ class DosenSectionListView(generic.ListView):
         # semester = self.kwargs['semester']
 
         section_list = Section.objects.filter(semester = self.kwargs['semester'], year = self.kwargs['year'])
-        
+        print(section_list)
         return section_list
 
     def get_context_data(self, **kwargs):
@@ -54,8 +54,9 @@ def SectionPage(request, nip, year, semester):
     #TO DO : Implementasi halaman untuk setiap kelas, ini termasuk upload dan download xlsx nilai
     if(request.method == 'POST'):
         section = request.POST.get('section')
-        course_id = section[0:6]
-        section_id = section[-1]
+        section_info = section.split(', ')
+        course_id = section_info[0][0:6]
+        section_id = section_info[-1]
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
 

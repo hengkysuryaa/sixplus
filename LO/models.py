@@ -149,7 +149,7 @@ class ResponseKerjasama(models.Model):
     BekerjaDenganOrangLain = models.IntegerField()
 
     def __str__(self):
-        return f"Mahasiswa: {self.takes__student} Matkul: {self.takes__section__course_id} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
+        return f"Mahasiswa: {self.takes.student} Matkul: {self.takes.section.course_id} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
         
 class ResponseKomunikasi(models.Model):
     takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
@@ -166,4 +166,4 @@ class ResponseKomunikasi(models.Model):
     Waktu = models.IntegerField()
 
     def __str__(self):
-        return f"Mahasiswa: {self.takes__student} Kelompok: {self.kelompok} Matkul: {self.takes__section__course_id} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
+        return f"Mahasiswa: {self.takes.student} Kelompok: {self.kelompok} Matkul: {self.takes.section.course_id} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
