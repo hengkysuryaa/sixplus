@@ -105,7 +105,7 @@ def SubmitView(request, nip, course_id):
     course = Course.objects.filter(course_id = course_id)
     b = BobotKomponenScore(course=course[0], uts1=uts1, uts2=uts2, uas=uas, kuis=kuis, tutorial=tutorial)
     b.save()
-    return render(request, 'Dosen/berhasil.html')
+    return render(request, 'Dosen/berhasil.html', {'nip' : nip})
 
 
 def penilaianPage(request, nip, year, semester, course_id, section_id):
