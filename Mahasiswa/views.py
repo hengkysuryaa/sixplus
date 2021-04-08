@@ -12,17 +12,15 @@ def TestView(request):
 def scaleScore(_nim, _course_id):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
-    std_score = Score.objects.filter(nim=std[0], course=course[0])
-    #TODO jangan hardcode
-    score_dict = {
-        "uts1" : std_score[0].uts1 / 100 * 4,
-        "uts2" : std_score[0].uts2 / 100 * 4,
-        "uas" : std_score[0].uas / 100 * 4,
-        "kuis" : std_score[0].kuis / 100 * 4,
-        "tutorial" : std_score[0].tutorial / 100 * 4
-    }
-    # print(BobotKomponenScore.objects.filter(course=course[0])[0].uts1)
-    #print(list(LO.getCourseLO(LO, "MS1210")[0].keys()))
+    std_score = list(Score.objects.filter(nim=std[0], course=course[0]).values())[0]
+    
+    #TODO apabila ada perubahan jumlah komponen dapat diganti disini
+    komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
+
+    score_dict = {}
+    for i in range(len(komponen_nilai_list)):
+        score_dict[komponen_nilai_list[i]] = std_score[komponen_nilai_list[i]] / 100 * 4
+
     return score_dict
 
 def createLOAndBobotDict(_course_id):
