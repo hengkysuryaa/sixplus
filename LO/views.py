@@ -8,6 +8,11 @@ from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiFor
 
 from Mahasiswa.models import Student
 
+# KONSTANTA
+SEMESTER = 2
+YEAR = 2020
+SEC_ID = 1
+
 # Create your views here.
 # def index(request):
 #     return HttpResponse("You're at the LO index")
@@ -53,7 +58,7 @@ def SubmitKerjasamaView(request, course_id):
     
     student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
     course = get_object_or_404(Course, course_id=course_id)
-    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = 1, section__year = 2020, section__sec_id = 1)[0]
+    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = SEMESTER, section__year = YEAR, section__sec_id = SEC_ID)[0]
     res = ResponseKerjasama(takes = takes, Kontribusi=int(request.POST['Kontribusi']), PemecahanMasalah=int(request.POST['PemecahanMasalah']), Sikap=int(request.POST['Sikap']), FokusTerhadapTugas=int(request.POST['FokusTerhadapTugas']), BekerjaDenganOrangLain=int(request.POST['BekerjaDenganOrangLain']))
     res.save()
 
@@ -75,7 +80,7 @@ def SubmitKomunikasiView(request, course_id):
     student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
     kelompok = request.POST['KelompokPeer']
     course = get_object_or_404(Course, course_id=course_id)
-    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = 1, section__year = 2020, section__sec_id = 1)[0]
+    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = SEMESTER, section__year = YEAR, section__sec_id = SEC_ID)[0]
     res = ResponseKomunikasi(takes = takes, kelompok = kelompok,  
         Penyampaian1=int(request.POST['Penyampaian1']), Penyampaian2=int(request.POST['Penyampaian2']), Penyampaian3=int(request.POST['Penyampaian3']), Penyampaian4=int(request.POST['Penyampaian4']), 
         Konten=int(request.POST['Konten']), Bahasa=int(request.POST['Bahasa']), Penguasaan=int(request.POST['Penguasaan']), 
