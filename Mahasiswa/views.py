@@ -1,12 +1,19 @@
 from django.shortcuts import render
 
 # Create your views here.
-from LO.models import Score, Course, BobotKomponenScore, LO
+from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi
 from Mahasiswa.models import Student
+
+# Konstanta
+BOBOT_FORM_KOMUNIKASI = 100 # dalam persen
+BOBOT_FORM_KERJASAMA = 100 # dalam persen
+#TODO apabila ada perubahan jumlah komponen dapat diganti disini
+komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 
 def TestView(request):
     
     score = calculateLO("13120002", "MS1210")
+    summarizeResponseKomunikasi("13120002", "MS1210")
     return render(request, 'Mahasiswa/test.html', {'score' : score})
 
 def scaleScore(_nim, _course_id):
@@ -14,8 +21,8 @@ def scaleScore(_nim, _course_id):
     course = Course.objects.filter(course_id=_course_id)
     std_score = list(Score.objects.filter(nim=std[0], course=course[0]).values())[0]
     
-    #TODO apabila ada perubahan jumlah komponen dapat diganti disini
-    komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
+    # #TODO apabila ada perubahan jumlah komponen dapat diganti disini
+    # komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 
     score_dict = {}
     for i in range(len(komponen_nilai_list)):
@@ -34,8 +41,8 @@ def createLOAndBobotDict(_course_id):
     course = Course.objects.filter(course_id=_course_id)
     bobot_list = list(BobotKomponenScore.objects.filter(course=course[0]).values())[0]
 
-    #TODO apabila ada perubahan jumlah komponen dapat diganti disini
-    komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
+    # #TODO apabila ada perubahan jumlah komponen dapat diganti disini
+    # komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 
     for i in range(n):
         komponen_dict = {}
@@ -76,7 +83,71 @@ def calculateLO(_nim, _course_id):
         for j in range(len(komponen_keys)):
             sum = sum + map_score_dict.get(lo_keys[i]).get(komponen_keys[j])
             sum_divisor = sum_divisor + (lo_bobot_dict.get(lo_keys[i]).get(komponen_keys[j])/100)
+        
+        #TODO jika ada tambahan penilaian dari rubrik / form lain tambahkan disini
+        if (lo_keys[i] == 'lo_c' and summarizeResponseKomunikasi(_nim, _course_id) != -999):
+            sum = sum + summarizeResponseKomunikasi(_nim, _course_id)
+            sum_divisor = sum_divisor + (BOBOT_FORM_KOMUNIKASI / 100)
+        elif (lo_keys[i] == 'lo_e' and summarizeResponseKerjasama(_nim, _course_id) != -999):
+            sum = sum + summarizeResponseKerjasama(_nim, _course_id)
+            sum_divisor = sum_divisor + (BOBOT_FORM_KERJASAMA / 100)
+
         final_lo_score_dict[lo_keys[i]] = round(sum/sum_divisor, 2)
     
     final_lo_score_dict["course"] = str(Course.objects.filter(course_id=_course_id)[0])
     return final_lo_score_dict
+
+def summarizeResponseKerjasama(_nim, _course_id):
+    std = Student.objects.filter(nim=_nim)
+    course = Course.objects.filter(course_id=_course_id)
+    responses = list(ResponseKerjasama.objects.filter(student=std[0], course=course[0]).values())
+    
+    if (len(responses) == 0):
+        return -999
+
+    total_sum = float(0)
+    
+    for i in range(len(responses)):
+        #TODO jika ada atribut yang ingin dihilangkan pop disini
+        responses[i].pop('id')
+        responses[i].pop('student_id')
+        responses[i].pop('course_id')
+
+        keys = list(responses[i].keys())
+        sum = float(0)
+        
+        for j in range(len(keys)):
+            sum = sum + float(responses[i].get(keys[i]))
+        total_sum = total_sum + (sum / len(keys))
+    
+    total_sum = total_sum / len(responses)
+    
+    return total_sum
+
+def summarizeResponseKomunikasi(_nim, _course_id):
+    std = Student.objects.filter(nim=_nim)
+    course = Course.objects.filter(course_id=_course_id)
+    responses = list(ResponseKomunikasi.objects.filter(student=std[0], course=course[0]).values())
+    
+    if (len(responses) == 0):
+        return -999
+    
+    total_sum = float(0)
+    
+    for i in range(len(responses)):
+        #TODO jika ada atribut yang ingin dihilangkan pop disini
+        responses[i].pop('id')
+        responses[i].pop('student_id')
+        responses[i].pop('kelompok')
+        responses[i].pop('course_id')
+
+        keys = list(responses[i].keys())
+        sum = float(0)
+        
+        for j in range(len(keys)):
+            sum = sum + float(responses[i].get(keys[i]))
+        total_sum = total_sum + (sum / len(keys))
+    
+    total_sum = total_sum / len(responses)
+    
+    return total_sum
