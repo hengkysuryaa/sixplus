@@ -167,3 +167,27 @@ class ResponseKomunikasi(models.Model):
 
     def __str__(self):
         return f"Mahasiswa: {self.takes.student} Kelompok: {self.kelompok} Matkul: {self.takes.section.course_id} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
+
+class LOSuplemenSemester(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    semester = models.IntegerField()
+    year = models.IntegerField()
+    lo_a = models.FloatField()
+    lo_b = models.FloatField()
+    lo_c = models.FloatField()
+    lo_d = models.FloatField()
+    lo_e = models.FloatField()
+    lo_f = models.FloatField()
+    lo_g = models.FloatField()
+
+class LOSuplemenCourse(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    lo_a = models.FloatField()
+    lo_b = models.FloatField()
+    lo_c = models.FloatField()
+    lo_d = models.FloatField()
+    lo_e = models.FloatField()
+    lo_f = models.FloatField()
+    lo_g = models.FloatField()
+>>>>>>> LO/models.py
