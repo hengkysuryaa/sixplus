@@ -10,6 +10,12 @@ BOBOT_FORM_KERJASAMA = 100 # dalam persen
 #TODO apabila ada perubahan jumlah komponen dapat diganti disini
 komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 
+##########################
+### HOMEPAGE MAHASISWA ###
+##########################
+def HomepageMahasiswaView(request):
+    return render(request, 'Mahasiswa/mahasiswa.html')
+
 def TestView(request):
     
     score = calculateLO("13120002", "MS1210")

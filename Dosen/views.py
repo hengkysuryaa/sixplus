@@ -14,8 +14,7 @@ from django.contrib import messages
 ### HOMEPAGE DOSEN ###
 ######################
 def HomepageDosenView(request, nip):
-    # TO DO : Make Dosen's Homepage
-    return render(request, 'Dosen/dosen.html', {'nip' : nip}) # Placeholder code
+    return render(request, 'Dosen/dosen.html', {'nip' : nip})
 
 ##########################
 ### SECTION NAVIGATION ###

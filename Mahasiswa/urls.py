@@ -1,5 +1,6 @@
 from django.urls import path, re_path
 from django.conf.urls import url
+from . import views
 
 from LO.views import KerjasamaView, NextKerjasamaView, SubmitKerjasamaView, KomunikasiView, NextKomunikasiView, SubmitKomunikasiView
 from .views import TestView
@@ -12,4 +13,5 @@ urlpatterns = [
     url(r'^FormKomunikasi/(?P<course_id>[A-Z0-9]+)/$', KomunikasiView, name='FormKomunikasi'),
     url(r'^FormKomunikasi/(?P<course_id>[A-Z0-9]+)/Result/', SubmitKomunikasiView, name='SubmitFormKomunikasi'),
     url(r'^FormKomunikasi/(?P<course_id>[A-Z0-9]+)/more/$', NextKomunikasiView, name='NextFormKomunikasi'),
+    url(r'', views.HomepageMahasiswaView, name='Home'),
 ]
