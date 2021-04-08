@@ -190,4 +190,3 @@ class LOSuplemenCourse(models.Model):
     lo_e = models.FloatField()
     lo_f = models.FloatField()
     lo_g = models.FloatField()
->>>>>>> LO/models.py
