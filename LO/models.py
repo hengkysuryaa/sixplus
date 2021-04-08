@@ -49,13 +49,13 @@ class LO(models.Model):
         return lo_dict, course[0]
 
 class Section(models.Model):
-    course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     sec_id = models.IntegerField()
     semester = models.IntegerField()
     year = models.IntegerField()
 
     def __str__(self):
-        return f"{self.course_id}, K{self.sec_id}, {self.semester}-{self.year}"
+        return f"{self.course}, K{self.sec_id}, {self.semester}-{self.year}"
 
 
 class Takes(models.Model):
@@ -75,9 +75,11 @@ class Takes(models.Model):
             student_name_list.append(obj.student.name)
         return student_nim_list, student_name_list
 
+    def get_individual_student_takes(self, nim, section):
+        return Takes.objects.filter(student__nim = nim, section = section)
+
 class Score(models.Model):
-    nim = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
     uts1 = models.IntegerField()
     uts2 = models.IntegerField()
     uas = models.IntegerField()
@@ -85,19 +87,47 @@ class Score(models.Model):
     tutorial = models.IntegerField()
 
     def __str__(self):
-        return f"{self.nim}, {self.course}, UTS1:{self.uts1}, UTS2:{self.uts2}, UAS:{self.uas}, Kuis:{self.kuis}, Tutorial:{self.tutorial}"
+        return f"{self.takes}, UTS1:{self.uts1}, UTS2:{self.uts2}, UAS:{self.uas}, Kuis:{self.kuis}, Tutorial:{self.tutorial}"
 
-    def getStudentScore(self, nim, course_id):
-        return Score.objects.filter(nim__nim=nim, course__course_id=course_id)
+    def getStudentTakesScores(self, course_id, year, semester, section_id):
+        scores = Score.objects.filter( 
+            takes__section__course__course_id = course_id, 
+            takes__section__year = year, 
+            takes__section__semester = semester,
+            takes__section__sec_id = section_id)
+        score_list = []
 
-    def setStudentScore(self, nim, course_id, nilai_uts1, nilai_uts2, nilai_uas, nilai_kuis, nilai_tutorial):
-        course = Course.objects.filter(course_id=course_id)[0]
-        student = Student.objects.filter(nim=nim)[0]
-        score = self.getStudentScore(self, nim = nim, course_id = course_id)
-        if(len(score) != 0):
-            score[0].delete()
-        new_score = Score.objects.create(nim=student, course=course, uts1=nilai_uts1, uts2=nilai_uts2, uas=nilai_uas, kuis=nilai_kuis, tutorial=nilai_tutorial)
-        return new_score
+        for obj in scores:
+            score_list.append(obj)
+        return scores
+
+    def getStudentScore(self, nim, course_id, year, semester, section_id):
+        return Score.objects.filter(takes__student__nim=nim, 
+            takes__section__course__course_id = course_id, 
+            takes__section__year = year, 
+            takes__section__semester = semester,
+            takes__section__sec_id = section_id)
+
+    def setStudentScore(self, nim, course_id, year, semester, section_id, nilai_uts1, nilai_uts2, nilai_uas, nilai_kuis, nilai_tutorial):
+        course_filter = Course.objects.filter(course_id=course_id)
+        if(len(course_filter) == 0):
+            return False
+        course = course_filter[0]
+
+        student_filter = Student.objects.filter(nim=nim)
+        if(len(student_filter) == 0):
+            return False
+        student = student_filter[0]
+
+        section = Section.objects.get(course__course_id = course_id, sec_id = section_id, year = year, semester = semester)
+        takes = Takes.get_individual_student_takes(Takes, nim, section)
+        if(len(takes) != 0):
+            score = self.getStudentScore(self, nim = nim, course_id = course_id, year = year, semester = semester, section_id = section_id)
+            if(len(score) != 0):
+                score[0].delete()
+            new_score = Score.objects.create(takes = takes[0], uts1=nilai_uts1, uts2=nilai_uts2, uas=nilai_uas, kuis=nilai_kuis, tutorial=nilai_tutorial)
+            return True
+        return False
 
 class BobotKomponenScore(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -111,8 +141,7 @@ class BobotKomponenScore(models.Model):
         return f"{self.course}, UTS1:{self.uts1}, UTS2:{self.uts2}, UAS:{self.uas}, Kuis:{self.kuis}, Tutorial:{self.tutorial}"
 
 class ResponseKerjasama(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
     Kontribusi = models.IntegerField()
     PemecahanMasalah = models.IntegerField()
     Sikap = models.IntegerField()
@@ -120,12 +149,11 @@ class ResponseKerjasama(models.Model):
     BekerjaDenganOrangLain = models.IntegerField()
 
     def __str__(self):
-        return f"Mahasiswa: {self.student} Matkul: {self.course} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
+        return f"Mahasiswa: {self.takes.student} Matkul: {self.takes.section.course_id} Kontribusi: {self.Kontribusi} PemecahanMasalah: {self.PemecahanMasalah} Sikap: {self.Sikap} FokusTerhadapTugas: {self.FokusTerhadapTugas} BekerjaDenganOrangLain: {self.BekerjaDenganOrangLain}"
         
 class ResponseKomunikasi(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
     kelompok = models.IntegerField(default=1)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     Penyampaian1 = models.IntegerField()
     Penyampaian2 = models.IntegerField()
     Penyampaian3 = models.IntegerField()
@@ -138,7 +166,7 @@ class ResponseKomunikasi(models.Model):
     Waktu = models.IntegerField()
 
     def __str__(self):
-        return f"Mahasiswa: {self.student} Kelompok: {self.kelompok} Matkul: {self.course} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
+        return f"Mahasiswa: {self.takes.student} Kelompok: {self.kelompok} Matkul: {self.takes.section.course_id} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
 
 class LOSuplemenSemester(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)

@@ -90,24 +90,24 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
 
-        'NAME': 'd4f4rtte1neig3',
+        'NAME': 'ftmd25',
 
-        'USER': 'csrrlipkulaebl',
+        'USER': 'postgres',
 
-        'PASSWORD': '0a77945efbd920d981bd3f44f25d752e2eb48324a83ca13d113ccee94734a9b3',
+        'PASSWORD': 'teknikmesin',
 
-        'HOST': 'ec2-54-211-176-156.compute-1.amazonaws.com',
+        'HOST': '34.101.244.29',
 
         'PORT': '5432',
     }
 }
 
-import sys
-if 'test' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase'
-    }
+# import sys
+# if 'test' in sys.argv:
+#     DATABASES['default'] = {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': 'mydatabase'
+#     }
 
 
 # Password validation
