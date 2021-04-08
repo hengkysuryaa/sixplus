@@ -117,7 +117,9 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     
     student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
-    score_list = Score.objects.filter(nim__in = student_list, course = course)
+    score_list = Score.getStudentTakesScores(Score, course_id = course_id, year = year, semester = semester, section_id = section_id)
+
+    ##score_list = Score.objects.filter(nim__in = student_list, course = course)
 
     header = str(course_id) + " " + course.title +  " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
 
@@ -150,7 +152,29 @@ def exportListMhs(request, nip, year, semester, course_id, section_id):
     course = Course.objects.filter(course_id = course_id)[0]
     section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
     list_nim, list_nama = Takes.get_student_takes(Takes, section)
+    
+    score_list = Score.getStudentTakesScores(Score, course_id = course_id, year = year, semester = semester, section_id = section_id)
+
     data = {'NIM':list_nim, 'Nama':list_nama, 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
+    #data = {'NIM':[], 'Nama':[], 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
+
+    for nim in list_nim:
+        score = score_list.filter(takes__student__nim = nim)
+        if(len(score) != 0):      
+            data['UTS1'].append(score[0].uts1)
+            data['UTS2'].append(score[0].uts2)
+            data['UAS'].append(score[0].uas)
+            data['Kuis'].append(score[0].kuis)
+            data['Tutorial'].append(score[0].tutorial)
+        else:
+            data['UTS1'].append('')
+            data['UTS2'].append('')
+            data['UAS'].append('')
+            data['Kuis'].append('')
+            data['Tutorial'].append('')
+
+
+    #data = {'NIM':list_nim, 'Nama':list_nama, 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
     df = convert_normal_array_to_pandas(data)
     #name = section.course_id.course_id + " K" + str(section.sec_id)
     name = str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
@@ -170,8 +194,13 @@ def FormsImportNilai(request, course_id):
     lo_list, course = LO.getCourseLO(LO, course_id)
     return render(request, 'Dosen/import.html', {'course' : course})
 
+def checkScores(scores):
+    for score in scores:
+        if(score < 0 or score > 100):
+            return False
+    return True
+
 def importListMhs(request, nip, year, semester, course_id, section_id):
-    lo_list, course = LO.getCourseLO(LO, course_id)
     try:
         excel_file = request.FILES['excelUpload']
     except MultiValueDictKeyError:
@@ -183,12 +212,19 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
         if(filename[0] == "Lembar Penilaian " + str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)):    
             dc = import_sheet_as_pandas(excel_file, str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1))
             print(dc)
-        for row in dc.itertuples():
-             Score.setStudentScore(Score, row.NIM, course_id, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
-             print(row.NIM, row.Nama, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
+            for row in dc.itertuples():
+                if(checkScores([row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial])):
+                    Score.setStudentScore(Score, row.NIM, course_id, year, semester, section_id, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
+                    print(row.NIM, row.Nama, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
+        else:
+            messages.error(request, 'FILENAME IS WRONG, PLEASE CHECK THE NAME ONCE AGAIN')
+    else:
+        messages.error(request, 'FILE FORMAT NOT SUPPORTED')
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
     
+
+
 
 def TestView(request, nip):
     print(nip)
