@@ -165,10 +165,11 @@ def calculateLOSuplemen(_nim, _year, _semester):
     section = Section.objects.filter(year=_year, semester=_semester)
     
     for item in section:
-        takes = Takes.objects.filter(student=std[0], section=item)[0]
-        if (takes.grade in INDEKS_LULUS):
-            _course_id = takes.section.course.course_id
-            takes_list.append(calculateLO(_nim, _course_id, _year, _semester))
+        if (len(Takes.objects.filter(student=std[0], section=item)) != 0):
+            takes = Takes.objects.filter(student=std[0], section=item)[0]
+            if (takes.grade in INDEKS_LULUS):
+                _course_id = takes.section.course.course_id
+                takes_list.append(calculateLO(_nim, _course_id, _year, _semester))
 
     lo_suplemen_dict = {}
     for i in range(len(lo_list)):
