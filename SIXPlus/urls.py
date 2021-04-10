@@ -20,7 +20,7 @@ from django.conf.urls import url, re_path
 urlpatterns = [
     path('LO', include('LO.urls')),
     re_path(r'^Dosen:(?P<nip>[0-9]+)/', include(('Dosen.urls', 'Dosen'), namespace="dosen")),
-    url(r'^Mahasiswa/', include(('Mahasiswa.urls', 'Mahasiswa'), namespace="mhs")),
+    url(r'^Mahasiswa:(?P<nim>[0-9]+)/', include(('Mahasiswa.urls', 'Mahasiswa'), namespace="mhs")),
     path('admin/', admin.site.urls),
     path('', include('User.urls')),
 ]

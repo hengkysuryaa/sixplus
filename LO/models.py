@@ -62,6 +62,7 @@ class Takes(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     grade = models.CharField(default='-', max_length=2)
+    isKuesionerFilled = models.BooleanField(default = False)
 
     def __str__(self):
         return f"{self.student}, {self.section}, {self.grade}"
@@ -167,6 +168,38 @@ class ResponseKomunikasi(models.Model):
 
     def __str__(self):
         return f"Mahasiswa: {self.takes.student} Kelompok: {self.kelompok} Matkul: {self.takes.section.course_id} CaraPenyampaianInformasi1: {self.Penyampaian1} CaraPenyampaianInformasi2: {self.Penyampaian2} CaraPenyampaianInformasi3: {self.Penyampaian3} CaraPenyampaianInformasi4: {self.Penyampaian4} KontenInformasiYangDisampaikan: {self.Konten} BahasaYangDigunakanDalamPenyampaianInformasi: {self.Bahasa} PenguasaanMateri: {self.Penguasaan} MenjawabPertanyaan: {self.Menjawab} PenggunaanMediaPendukung: {self.Media} MenggunakanWaktuDenganEfektifDanEfisien: {self.Waktu}"
+
+class ResponseKuesioner(models.Model):
+    takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
+    Kuesioner1 = models.IntegerField()
+    Kuesioner2 = models.IntegerField()
+    Kuesioner3 = models.IntegerField()
+    Kuesioner4 = models.IntegerField()
+    Kuesioner5 = models.IntegerField()
+    Kuesioner6 = models.IntegerField()
+    Kuesioner7 = models.IntegerField()
+    Kuesioner8 = models.IntegerField()
+    Kuesioner9 = models.IntegerField()
+    Kuesioner10 = models.IntegerField()
+    Kuesioner11 = models.IntegerField()
+    Kuesioner12 = models.IntegerField()
+
+    def __str__(self):
+        return f"Mahasiswa: {self.takes.student} Matkul: {self.takes.section.course_id} \
+        Informasi Yang Cukup: {self.Kuesioner1} \
+        Pelaksanaan: {self.Kuesioner2} \
+        Menguasai: {self.Kuesioner3} \
+        Perkuliahan Terorganisir: {self.Kuesioner4} \
+        Komunikasi Dosen: {self.Kuesioner5} \
+        Kepedulian Dosen: {self.Kuesioner6} \
+        Keadilan Dosen: {self.Kuesioner7} \
+        Beban Kerja Sesuai: {self.Kuesioner8} \
+        Sarana Prasarana: {self.Kuesioner9} \
+        Fasilitas Pendukung: {self.Kuesioner10} \
+        Usaha: {self.Kuesioner11} \
+        PengalamanBelajar: {self.Kuesioner12} \
+        "
+
 
 class LOSuplemenSemester(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
