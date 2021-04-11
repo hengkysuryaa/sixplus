@@ -287,22 +287,19 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
         score = list(Score.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section).values())
         sum = 0
         for j in range(len(komponen_nilai_list)):
-            sum = sum + (score[i].get(komponen_nilai_list[j]) * bobotindeks[j]) / 100
+            sum = sum + (score[0].get(komponen_nilai_list[j]) * bobotindeks[j]) / 100
         
         indeks = '-'
         # Mapping sum ke indeks
         for k in range(len(indeks_list)):
-            if (sum >= batas_indeks_list[k] and sum <= 100):
+            if (sum >= float(batas_indeks_list[k]) and sum <= float(100)):
                 indeks = indeks_list[k]
                 break
-            elif (sum >= batas_indeks_list[k] and sum < batas_indeks_list[k-1]):
-                indeks = indeks_list[k]
-                break
-            elif (sum >= batas_indeks_list[k] and sum <= 0):
+            elif (sum >= float(batas_indeks_list[k]) and sum < float(batas_indeks_list[k-1])):
                 indeks = indeks_list[k]
                 break
         
-        Takes.objects.filter(section=section[0]).update(grade=indeks)
+        Takes.objects.filter(student=takes[i].student, section=section[0]).update(grade=indeks)
 
 def TestView(request, nip):
     print(nip)
