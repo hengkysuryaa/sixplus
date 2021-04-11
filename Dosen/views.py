@@ -122,6 +122,9 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
     score_list = Score.getStudentTakesScores(Score, course_id = course_id, year = year, semester = semester, section_id = section_id)
+    bobotindeks = BobotIndeks.objects.filter(section=section)
+    if (len(score_list) != 0 and len(bobotindeks) !=0):
+        calculateNilaiAkhir(year, semester, course_id, section_id)
 
     ##score_list = Score.objects.filter(nim__in = student_list, course = course)
 
