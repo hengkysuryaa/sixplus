@@ -1,13 +1,17 @@
 from django.shortcuts import render
 from django.views import generic
 from LO.models import *
-from Dosen.models import Lecturer, Teaches
+from Dosen.models import Lecturer, Teaches, BobotIndeks
 from User.views import *
 from django.contrib.auth.models import User
 from Utils.xlsxutil import export_pandas_to_sheet, convert_normal_array_to_pandas, import_workbook_as_pandasDict, import_sheet_as_pandas
 from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib import messages
+
+# Konstanta
+komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
+indeks_list = ["A", "AB", "B", "BC", "C", "D", "E"]
 
 # Create your views here.
 ######################
@@ -223,8 +227,44 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
     
+def BobotIndeksView(request, nip, year, semester, course_id, section_id):
+    
+    #Ambil data
+    section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
+    bobotindeks = BobotIndeks.objects.filter(section=section[0])
 
+    komponen_dict = {}
+    for i in range(len(komponen_nilai_list)):
+        komponen_dict[komponen_nilai_list[i]] = bobotindeks[0].listbobot[i]
 
+    batas_indeks_dict = {}
+    for i in range(len(indeks_list)):
+        batas_indeks_dict[indeks_list[i]] = bobotindeks[0].batasindeks[i]
+
+    return render(request, 'Dosen/bobot_indeks.html', {'nip':nip, 'year':year, 'semester':semester, 'course_id':course_id, 'section_id':section_id, 'section':section[0], 'batas_dict':batas_indeks_dict, 'komponen_dict':komponen_dict})
+
+def BobotIndeksSubmitView(request, nip, year, semester, course_id, section_id):
+    
+    #Ambil data
+    section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
+    bobotindeks = BobotIndeks.objects.filter(section=section[0])[0]
+
+    listbobot = []
+    sum = 0
+    for i in range(len(komponen_nilai_list)):
+        listbobot.append(int(request.POST[komponen_nilai_list[i]]))
+        sum = sum + int(request.POST[komponen_nilai_list[i]])
+    
+    batasindeks = []
+    for i in range(len(indeks_list)):
+        batasindeks.append(int(request.POST[indeks_list[i]]))
+
+    if (sum > 100):
+        messages.error(request, 'Lebih Dari 100%. Silakan isi kembali')
+    else:
+        bobotindeks = BobotIndeks.objects.filter(section=section[0]).update(listbobot=listbobot, batasindeks=batasindeks)
+
+    return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)    
 
 def TestView(request, nip):
     print(nip)
