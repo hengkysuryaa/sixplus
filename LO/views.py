@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 
 from django.views import generic
-from .models import LO, Course, ResponseKerjasama, ResponseKomunikasi, Takes, ResponseKuesioner
+from .models import LO, Course, Section, ResponseKerjasama, ResponseKomunikasi, Takes, ResponseKuesioner, CourseAssessmentScore
 from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiForm, PenilaianKomunikasiForm, IdentitasKuesionerForm, PenilaianKuesionerForm
 
 from Mahasiswa.models import Student
@@ -152,3 +152,83 @@ class ListKuesionerView(generic.ListView):
         context['year'] = self.kwargs['year']
         context['semester'] = self.kwargs['semester']
         return context
+
+
+def courseAssessmentPage(request, nip, year, semester):
+    courseAssesment_list = CourseAssessmentScore.objects.filter(year = year, semester = semester)
+
+    ##score_list = Score.objects.filter(nim__in = student_list, course = course)
+
+    header = "Semester " + str(semester) + " Tahun " + str(year) + "/" + str(int(year)+1)
+
+    #context = {'dosen' : lecturer}, 'section': sections, 'scores': scores}
+    context = {'nip' : nip, 'year' : year, 'semester': semester, 'scores' : courseAssesment_list, 'header' : header}
+    return render(request, 'Dosen/course_assessment.html', context)
+
+
+def refreshCourseAssesmentPage(request, nip, year, semester):
+    section_list = Section.objects.filter(semester = semester, year = year).order_by('course_id', 'sec_id')
+    course_list = section_list.values_list('course__course_id', flat = True).distinct()
+
+    for course in course_list:
+        course_section_list = section_list.filter(course__course_id = course)
+        count = len(course_section_list)
+        student_count = 0
+        totalKuesioner = 0.0
+        totalCourseOutcome = 0.0
+
+        for section in course_section_list:
+            takes_list = Takes.objects.filter(section = section)
+            section_student = len(takes_list)
+
+            section_courseOutcome = 0.0
+
+            for takes in takes_list:
+                if(takes.grade == "A"):
+                    section_courseOutcome += 4.0
+                elif(takes.grade == "AB"):
+                    section_courseOutcome += 3.5
+                elif(takes.grade == "B"):
+                    section_courseOutcome += 3.0
+                elif(takes.grade == "BC"):
+                    section_courseOutcome += 2.5
+                elif(takes.grade == "C"):
+                    section_courseOutcome += 2.0
+                elif(takes.grade == "D"):
+                    section_courseOutcome += 1.0                
+                elif(takes.grade == "T"):
+                    section_student -= 1
+
+            section_courseOutcome = section_courseOutcome
+
+            responseKuesioner_list = ResponseKuesioner.objects.filter(takes__in = takes_list)
+            section_kuesioner = 0.0
+
+            for response in responseKuesioner_list:
+                total = response.Kuesioner1 + response.Kuesioner2 + response.Kuesioner3 + response.Kuesioner4 + response.Kuesioner5 + response.Kuesioner6 + response.Kuesioner7 + response.Kuesioner8 + response.Kuesioner9 + response.Kuesioner10 + response.Kuesioner11 + response.Kuesioner12
+
+                total = total / 12
+
+                print(total)
+
+                section_kuesioner += total
+
+            section_kuesioner = section_kuesioner / len(responseKuesioner_list)
+            print("Section Outcome", section_courseOutcome)
+            student_count += section_student
+            totalKuesioner += section_kuesioner
+            totalCourseOutcome += section_courseOutcome
+
+        totalKuesioner = totalKuesioner/count 
+        print("Total kuesioner ", totalKuesioner, "count ", count)
+        totalCourseOutcome = totalCourseOutcome/student_count
+        finalScore = (0.5 * totalCourseOutcome) + (0.4 * totalKuesioner) + 0.4
+
+        res = CourseAssessmentScore.setCourseAssessment(CourseAssessmentScore, semester = semester, year = year, 
+            course_id = course, section_count = count,
+            courseOutcomeScore = totalCourseOutcome, kuesionerScore = totalKuesioner, finalScore = finalScore)
+        
+        print(res)
+
+    # TODO prepare rendering
+    return redirect('dosen:CourseAssessment', nip = nip, year = year, semester = semester)

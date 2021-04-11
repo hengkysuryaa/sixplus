@@ -223,3 +223,42 @@ class LOSuplemenCourse(models.Model):
     lo_e = models.FloatField()
     lo_f = models.FloatField()
     lo_g = models.FloatField()
+
+class CourseAssessmentScore(models.Model):
+    semester = models.IntegerField()
+    year = models.IntegerField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    section_count = models.IntegerField(default = 1)
+    section_count_str = models.CharField(max_length = 9)
+
+    courseOutcomeScore = models.FloatField()
+    kuesionerScore = models.FloatField()
+    portfolioScore = models.FloatField(default = 4.0)
+
+    finalScore = models.FloatField()
+
+    def setCourseAssessment(self, semester, year, course_id, section_count, courseOutcomeScore, kuesionerScore, finalScore):
+        courseAssessment = CourseAssessmentScore.objects.filter(semester = semester, year = year, course__course_id = course_id)
+
+        if(len(courseAssessment) != 0):
+            courseAssessment[0].courseOutcomeScore = courseOutcomeScore
+            courseAssessment[0].kuesionerScore = kuesionerScore
+            courseAssessment[0].finalScore = finalScore
+            courseAssessment[0].section_count = section_count
+            courseAssessment[0].section_count_str = self.sectionCountView(self, section_count)
+            
+            courseAssessment[0].save()
+            return courseAssessment[0]
+        else:
+            course = Course.objects.get(course_id = course_id)
+            courseAssessmentScore = CourseAssessmentScore.objects.create(semester = semester, year = year, 
+                course = course, section_count = section_count, section_count_str = self.sectionCountView(self, section_count),
+                courseOutcomeScore = courseOutcomeScore, kuesionerScore = kuesionerScore, finalScore = finalScore)
+            return courseAssessmentScore
+
+    def sectionCountView(self, count):
+        if(count == 1):
+            return "K1"
+        else:
+            return "K1 - K" + str(count)
