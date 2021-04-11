@@ -253,7 +253,7 @@ def BobotIndeksSubmitView(request, nip, year, semester, course_id, section_id):
     
     #Ambil data
     section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
-    bobotindeks = BobotIndeks.objects.filter(section=section[0])[0]
+    bobotindeks = BobotIndeks.objects.filter(section=section[0])
 
     listbobot = []
     sum = 0
@@ -268,7 +268,11 @@ def BobotIndeksSubmitView(request, nip, year, semester, course_id, section_id):
     if (sum > 100):
         messages.error(request, 'Lebih Dari 100%. Silakan isi kembali')
     else:
-        bobotindeks = BobotIndeks.objects.filter(section=section[0]).update(listbobot=listbobot, batasindeks=batasindeks)
+        if (len(bobotindeks) != 0):
+            BobotIndeks.objects.filter(section=section[0]).update(listbobot=listbobot, batasindeks=batasindeks)
+        else:
+            bi = BobotIndeks(section=section[0], listbobot=listbobot, batasindeks=batasindeks)
+            bi.save()  
         calculateNilaiAkhir(year, semester, course_id, section_id)
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)    
