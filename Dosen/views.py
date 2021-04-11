@@ -235,11 +235,17 @@ def BobotIndeksView(request, nip, year, semester, course_id, section_id):
 
     komponen_dict = {}
     for i in range(len(komponen_nilai_list)):
-        komponen_dict[komponen_nilai_list[i]] = bobotindeks[0].listbobot[i]
+        if (len(bobotindeks) != 0):
+            komponen_dict[komponen_nilai_list[i]] = bobotindeks[0].listbobot[i]
+        else:
+            komponen_dict[komponen_nilai_list[i]] = ''
 
     batas_indeks_dict = {}
     for i in range(len(indeks_list)):
-        batas_indeks_dict[indeks_list[i]] = bobotindeks[0].batasindeks[i]
+        if (len(bobotindeks) != 0):
+            batas_indeks_dict[indeks_list[i]] = bobotindeks[0].batasindeks[i]
+        else:
+           batas_indeks_dict[indeks_list[i]] = '' 
 
     return render(request, 'Dosen/bobot_indeks.html', {'nip':nip, 'year':year, 'semester':semester, 'course_id':course_id, 'section_id':section_id, 'section':section[0], 'batas_dict':batas_indeks_dict, 'komponen_dict':komponen_dict})
 
@@ -263,8 +269,36 @@ def BobotIndeksSubmitView(request, nip, year, semester, course_id, section_id):
         messages.error(request, 'Lebih Dari 100%. Silakan isi kembali')
     else:
         bobotindeks = BobotIndeks.objects.filter(section=section[0]).update(listbobot=listbobot, batasindeks=batasindeks)
+        calculateNilaiAkhir(year, semester, course_id, section_id)
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)    
+
+def calculateNilaiAkhir(year, semester, course_id, section_id):
+    section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
+    takes = list(Takes.objects.filter(section=section[0]))
+    bobotindeks = list(BobotIndeks.objects.filter(section=section[0]).values())[0].get('listbobot')
+    batas_indeks_list = list(BobotIndeks.objects.filter(section=section[0]).values())[0].get('batasindeks')
+
+    for i in range(len(takes)):
+        score = list(Score.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section).values())
+        sum = 0
+        for j in range(len(komponen_nilai_list)):
+            sum = sum + (score[i].get(komponen_nilai_list[j]) * bobotindeks[j]) / 100
+        
+        indeks = '-'
+        # Mapping sum ke indeks
+        for k in range(len(indeks_list)):
+            if (sum >= batas_indeks_list[k] and sum <= 100):
+                indeks = indeks_list[k]
+                break
+            elif (sum >= batas_indeks_list[k] and sum < batas_indeks_list[k-1]):
+                indeks = indeks_list[k]
+                break
+            elif (sum >= batas_indeks_list[k] and sum <= 0):
+                indeks = indeks_list[k]
+                break
+        
+        Takes.objects.filter(section=section[0]).update(grade=indeks)
 
 def TestView(request, nip):
     print(nip)
