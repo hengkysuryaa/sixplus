@@ -187,6 +187,7 @@ def refreshCourseAssesmentPage(nip, year, semester):
         course_section_list = section_list.filter(course__course_id = course)
         count = len(course_section_list)
         student_count = 0
+        kuesioner_count = 0
         totalKuesioner = 0.0
         totalCourseOutcome = 0.0
 
@@ -212,7 +213,6 @@ def refreshCourseAssesmentPage(nip, year, semester):
                 elif(takes.grade == "T"):
                     section_student -= 1
 
-            section_courseOutcome = section_courseOutcome
 
             responseKuesioner_list = ResponseKuesioner.objects.filter(takes__in = takes_list)
             section_kuesioner = 0.0
@@ -222,19 +222,26 @@ def refreshCourseAssesmentPage(nip, year, semester):
 
                 total = total / 12
 
-                print(total)
-
                 section_kuesioner += total
 
-            section_kuesioner = section_kuesioner / len(responseKuesioner_list)
             print("Section Outcome", section_courseOutcome)
             student_count += section_student
+            kuesioner_count += len(responseKuesioner_list)
             totalKuesioner += section_kuesioner
             totalCourseOutcome += section_courseOutcome
 
-        totalKuesioner = round(totalKuesioner/count, 2) 
+        if(kuesioner_count== 0):
+            totalKuesioner = 0
+        else:
+            totalKuesioner = round(totalKuesioner/kuesioner_count, 2) 
+
+        if(student_count== 0):
+            totalCourseOutcome = 0
+        else:
+            totalCourseOutcome = round(totalCourseOutcome/student_count, 2)
+    
         print("Total kuesioner ", totalKuesioner, "count ", count)
-        totalCourseOutcome = round(totalCourseOutcome/student_count, 2)
+        print("Total course outcome ", totalCourseOutcome, "student count ", student_count)
         finalScore = round(((0.5 * totalCourseOutcome) + (0.4 * totalKuesioner) + 0.4) , 2)
 
         res = CourseAssessmentScore.setCourseAssessment(CourseAssessmentScore, semester = semester, year = year, 
