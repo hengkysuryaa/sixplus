@@ -13,11 +13,5 @@
     </style>
     <body>  
         <h1> Berhasil Tersimpan </h1>
-        <form action="{% url 'mhs:ListKuesioner' identitas.first_name year semester %}" method="GET"> 
-            {% csrf_token %}
-            <h3> Apakah ada anggota lain yang ingin dinilai?</h3>
-            <button type="submit"> Ya </button>
-        </form>
-        <button> <a href="/"> Tidak </a> </button>
     </body>
 </html>
