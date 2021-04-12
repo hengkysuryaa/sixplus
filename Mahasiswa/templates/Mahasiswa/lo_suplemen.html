@@ -106,6 +106,7 @@
                 
             </div>
             {% endfor %} -->
+                {{score}}
             <table border="1" width='100%' style="text-align: center;" class="table table-hover">
                 <thead>
                     <tr>
@@ -120,16 +121,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for lo in LO %}
+                    {% for item in list %}
                         <tr>
                             <td> {{forloop.counter}} </td>
-                            <td> {{lo.lo_a}} </td>
-                            <td> {{lo.lo_b}} </td>
-                            <td> {{lo.lo_c}} </td>
-                            <td> {{lo.lo_d}} </td>
-                            <td> {{lo.lo_e}} </td>
-                            <td> {{lo.lo_f}} </td>
-                            <td> {{lo.lo_g}} </td>
+                            <td> {{item.lo_a}} </td>
+                            <td> {{item.lo_b}} </td>
+                            <td> {{item.lo_c}} </td>
+                            <td> {{item.lo_d}} </td>
+                            <td> {{item.lo_e}} </td>
+                            <td> {{item.lo_f}} </td>
+                            <td> {{item.lo_g}} </td>
                         <tr>
                     {% endfor %}
                 </tbody>

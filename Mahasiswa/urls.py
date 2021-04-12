@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 from LO.views import *
-from .views import TestView
+from .views import TestView, LOSuplemenSemesterView
 
 urlpatterns = [
     url(r'^Suplemen/$', TestView, name='Test'),

@@ -194,3 +194,16 @@ def calculateLOSuplemen(_nim, _year, _semester):
             lo_suplemen_dict[lo_list[i]] = "-"
 
     return lo_suplemen_dict
+
+def LOSuplemenSemesterView(request, nim):
+    student = Student.objects.get(nim = request.user.first_name)
+
+    #TODO: TIDAK DI HARDCODE
+    list_lo_suplemen = []
+    lo_suplemen_sem1 = calculateLOSuplemen(request.user.first_name, 2020, 1)
+    lo_suplemen_sem2 = calculateLOSuplemen(request.user.first_name, 2020, 2)
+    list_lo_suplemen.append(lo_suplemen_sem1)
+    list_lo_suplemen.append(lo_suplemen_sem2)
+
+    context = {'student' : student, 'list' : list_lo_suplemen}
+    return render(request, 'Mahasiswa/lo_suplemen.html', context)
