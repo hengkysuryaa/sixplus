@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Bobot Nilai dan Indeks
+        </title>
+    </head>
+    <body>
+        <h1> Persentase Bobot Nilai dan Batas Indeks </h1>
+        <h1> {{section}} </h1>
+        <form action="{% url 'dosen:BobotIndeksSubmit' nip year semester course_id section_id %}" method="POST">
+            {% csrf_token %}
+            <h3> Persentase Bobot Komponen Nilai </h3>
+            {% for key,value in komponen_dict.items %}
+                <label> {{key}} </label>
+                <input type="number" name="{{key}}" min="0" max="100" value="{{value}}" required/>
+            {% endfor %}
+            <h3> Batas Bawah Indeks </h3>
+            {% for key,value in batas_dict.items %}
+                <label> {{key}} </label>
+                <input type="number" name="{{key}}" min="0" max="100" value="{{value}}" required/>
+            {% endfor %} <br> <br>
+            <button type="submit"> Submit </button>
+        </form>
+    </body>
+</html>

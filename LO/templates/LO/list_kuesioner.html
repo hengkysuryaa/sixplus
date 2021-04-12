@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            List Kuesioner Tersedia Semester {{semester}} {{year}}-{{year}+1}
+        </title>
+    </head>
+    <body>
+        <h1> Pilih Kuesioner </h1>
+        {% csrf_token %}
+        <ul>
+        {% for item in kuesioner_list %}
+            <li><a href="{% url 'mhs:FormKuesioner' nim year semester item.section.course.course_id %}">{{item}}</a></li> <br>
+        {% endfor %}
+        </ul>
+    </body>
+</html>

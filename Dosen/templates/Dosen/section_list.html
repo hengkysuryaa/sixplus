@@ -92,7 +92,7 @@
                         <label for="section">Choose a section</label>
                         <select id="section" name="section">
                             {% for kelas in section_list %}
-                            <option value="{{kelas.course_id}}, {{kelas.sec_id}}">{{kelas}}</option>
+                            <option value="{{kelas.course.course_id}}, {{kelas.sec_id}}">{{kelas}}</option>
                             {% endfor %}
                         </select>
                         <input type="submit">

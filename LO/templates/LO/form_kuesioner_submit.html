@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>
-            Form Komunikasi
+            Form Kuesioner
         </title>
     </head>
     <style>
@@ -13,11 +13,8 @@
     </style>
     <body>  
         <h1> Berhasil Tersimpan </h1>
-        <form action="{% url 'mhs:NextFormKomunikasi' nim course_id %}" method="POST"> 
+        <form action="{% url 'mhs:ListKuesioner' identitas.first_name year semester %}" method="GET"> 
             {% csrf_token %}
-            <h3> Identitas Anda</h3>
-            <label> Kelompok: </label>
-            <input name="kelompok" type="text" readonly value="{{kel}}">
             <h3> Apakah ada anggota lain yang ingin dinilai?</h3>
             <button type="submit"> Ya </button>
         </form>
