@@ -18,3 +18,11 @@ class Teaches(models.Model):
 
 	def __str__(self):
 		return f"{self.dosen} --- {self.section}"
+
+class BobotIndeks(models.Model):
+	section = models.ForeignKey(Section, on_delete=models.CASCADE)
+	listbobot = ArrayField(models.IntegerField())
+	batasindeks = ArrayField(models.IntegerField())
+	
+	def __str__(self):
+		return f"{self.section}, Bobot: {self.listbobot}, Batas Indeks: {self.batasindeks}"

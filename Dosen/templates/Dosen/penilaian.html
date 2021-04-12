@@ -117,6 +117,7 @@
                         <th> UAS </th>
                         <th> Kuis </th>
                         <th> Tutorial </th>
+                        <th> Indeks </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,6 +130,7 @@
                             <td> {{score.uas}} </td>
                             <td> {{score.kuis}} </td>
                             <td> {{score.tutorial}} </td>
+                            <td> {{score.takes.grade}} </td>
                         <tr>
                     {% endfor %}
                 </tbody>
@@ -147,6 +149,9 @@
             </form>
             <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
               <button class="button button2" type='submit'> Download Excel Template</button>
+            </form>
+            <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
+                <button class="button button2" type='submit'> Set Persentase dan Batas Indeks </button>
             </form>
         </div>
         <!-- {% if messages %}
