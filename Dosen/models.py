@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from LO.models import *
 
 # Create your models here.
 class Lecturer(models.Model):
@@ -9,4 +10,19 @@ class Lecturer(models.Model):
 	dept_name = models.CharField(max_length = 10)
 
 	def __str__(self):
-		return self.nip + self.name
+		return self.nip + " "+ self.name
+
+class Teaches(models.Model):
+	dosen = models.ForeignKey(Lecturer, on_delete=models.CASCADE, null = True)
+	section = models.ForeignKey(Section, on_delete=models.CASCADE, null = True)
+
+	def __str__(self):
+		return f"{self.dosen} --- {self.section}"
+
+class BobotIndeks(models.Model):
+	section = models.ForeignKey(Section, on_delete=models.CASCADE)
+	listbobot = ArrayField(models.IntegerField())
+	batasindeks = ArrayField(models.IntegerField())
+	
+	def __str__(self):
+		return f"{self.section}, Bobot: {self.listbobot}, Batas Indeks: {self.batasindeks}"

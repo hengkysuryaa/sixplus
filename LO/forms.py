@@ -121,3 +121,28 @@ class PenilaianKomunikasiForm(forms.Form):
     Menjawab = forms.ChoiceField(widget=forms.RadioSelect, choices=MenjawabChoice, label='Menjawab')
     Media = forms.ChoiceField(widget=forms.RadioSelect, choices=MediaChoice, label='Media')
     Waktu = forms.ChoiceField(widget=forms.RadioSelect, choices=WaktuChoice, label='Waktu')
+
+
+class IdentitasKuesionerForm(forms.Form):
+    name = forms.CharField(label="Nama ", max_length=50)
+    NIM = forms.CharField(label="NIM ", max_length=10)
+
+class PenilaianKuesionerForm(forms.Form):
+    KuesionerChoice = [
+        (1,'1'),
+        (2,'2'),
+        (3,'3'),
+        (4,'4') 
+    ]
+    Kuesioner1 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner1')
+    Kuesioner2 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner2')
+    Kuesioner3 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner3')
+    Kuesioner4 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner4')
+    Kuesioner5 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner5')
+    Kuesioner6 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner6')
+    Kuesioner7 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner7')
+    Kuesioner8 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner8')
+    Kuesioner9 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner9')
+    Kuesioner10 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner10')
+    Kuesioner11 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner11')
+    Kuesioner12 = forms.ChoiceField(widget=forms.RadioSelect, choices=KuesionerChoice, label='Kuesioner12')

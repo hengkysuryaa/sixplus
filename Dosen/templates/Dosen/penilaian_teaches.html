@@ -87,12 +87,12 @@
             <h3>NIP  : {{dosen.nip}}</h3>
             <div class="row">
                 <div class="col-md-8">
-                    <form action="{% url 'dosen:GetSection' nip year semester %}" method = "POST">
+                    <form action="{% url 'dosen:GetSection2' nip %}" method = "POST">
                         {% csrf_token %}
                         <label for="section">Choose a section</label>
                         <select id="section" name="section">
-                            {% for kelas in section_list %}
-                            <option value="{{kelas.course.course_id}}, {{kelas.sec_id}}">{{kelas}}</option>
+                            {% for kelas in teaches %}
+                            <option value="{{kelas.section.year}}, {{kelas.section.semester}}, {{kelas.section.course.course_id}}, {{kelas.section.sec_id}}">{{kelas.section}}</option>
                             {% endfor %}
                         </select>
                         <input type="submit">

@@ -9,13 +9,13 @@
     </head>
     <body>
         <h1> Form Kerjasama {{course_id}} </h1>
-        <form action="{% url 'mhs:SubmitFormKerjasama' course_id %}" method="POST">
+        <form action="{% url 'mhs:SubmitFormKerjasama' identitas.first_name course_id %}" method="POST">
             {% csrf_token %}
             <h3> Identitas Anda</h3>
             <label> Nama: </label>
-            <input name="name" type="text" readonly value="{{nama}}">
+            <input name="name" type="text" readonly value="{{identitas.last_name}}">
             <label> NIM: </label>
-            <input name="NIM" type="text" readonly value="{{nim}}">
+            <input name="NIM" type="text" readonly value="{{identitas.first_name}}">
             <label> Kelompok: </label>
             <input name="kelompok" type="text" readonly value="{{kel}}">
             <h3> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok, bukan Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) Anda maupun anggota kelompok.</h3>

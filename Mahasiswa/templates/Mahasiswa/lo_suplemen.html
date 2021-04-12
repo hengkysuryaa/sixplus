@@ -40,6 +40,7 @@
             }
             
             </style>
+            {% include 'Dosen/message.html' %}
     </head>
     <body>
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -79,26 +80,68 @@
             </ul>
         </nav>
         <div class="container">
-            <h1>Daftar Kelas </h1>
+            <h1>LO Suplemen Mahasiswa</h1>
         </div>
         
         <div class="container">
-            <h3>Nama : {{dosen.name}} </h3>
-            <h3>NIP  : {{dosen.nip}}</h3>
-            <div class="row">
+            <h3>Nama : {{student.name}} </h3>
+            <h3>NIM  : {{student.nim}}</h3>
+            <!-- <div class="row">
                 <div class="col-md-8">
-                    <form action="{% url 'dosen:GetSection' nip year semester %}" method = "POST">
-                        {% csrf_token %}
+                    <form action="">
                         <label for="section">Choose a section</label>
                         <select id="section" name="section">
-                            {% for kelas in section_list %}
-                            <option value="{{kelas.course.course_id}}, {{kelas.sec_id}}">{{kelas}}</option>
+                            {% for kelas in section %}
+                            <option value="{{kelas}}">{{kelas}}</option>
                             {% endfor %}
                         </select>
                         <input type="submit">
                     </form>
                 </div>
-            </div> 
+            </div> -->
+            <!-- {% for score in scores %}
+            <div class="row">
+               
+                <h6>{{score}}</h6> 
+                
+            </div>
+            {% endfor %} -->
+                {{score}}
+            <table border="1" width='100%' style="text-align: center;" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th> Semester </th> 
+                        <th> LO A </th>
+                        <th> LO B </th>
+                        <th> LO C </th>
+                        <th> LO D </th>
+                        <th> LO E </th>
+                        <th> LO F </th>
+                        <th> LO G </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in list %}
+                        <tr>
+                            <td> {{forloop.counter}} </td>
+                            <td> {{item.lo_a}} </td>
+                            <td> {{item.lo_b}} </td>
+                            <td> {{item.lo_c}} </td>
+                            <td> {{item.lo_d}} </td>
+                            <td> {{item.lo_e}} </td>
+                            <td> {{item.lo_f}} </td>
+                            <td> {{item.lo_g}} </td>
+                        <tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+        <!-- {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %} -->
     </body>
 </html>

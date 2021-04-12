@@ -13,7 +13,7 @@
     </style>
     <body>  
         <h1> Berhasil Tersimpan </h1>
-        <form action="{% url 'mhs:NextFormKomunikasi' course_id %}" method="POST"> 
+        <form action="{% url 'mhs:NextFormKomunikasi' nim course_id %}" method="POST"> 
             {% csrf_token %}
             <h3> Identitas Anda</h3>
             <label> Kelompok: </label>
