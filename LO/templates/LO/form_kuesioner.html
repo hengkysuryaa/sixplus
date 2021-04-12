@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        ul {list-style: none;}
+        div {font-size: large;}
+    </style>
+    <head>
+        <title> Form Kuesioner</title>
+    </head>
+    <body>
+        <h1> Form Kuesioner {{course_id}}</h1>
+        <form action="{% url 'mhs:SubmitFormKuesioner' identitas.first_name year semester course_id %}" method="POST">
+            {% csrf_token %}
+            <h3> Isi Identitas Anda</h3>
+            {{identitas}}
+            <h3> Pertanyaan berikut merupakan penilaian terhadap keberjalanan mata kuliah yang anda ambil. Harap menilai kualitas mata kuliah dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP).</h3>
+                <div> 
+                    <h4>1. Saya memperoleh informasi yang cukup tentang hal-hal tertentu yang harus saya capai atau kuasai (luaran matakuliah) sesudah mengikuti matakuliah ini.</h4>
+                    {{penilaian.Kuesioner1}}
+                    <h4>2. Pelaksanaan perkuliahan diarahkan agar mahasiswa dapat mencapai atau menguasai luaran matakuliah ini.</h4>
+                    {{penilaian.Kuesioner2}}
+                    <h4>3. Saya mencapai atau menguasai luaran matakuliah ini.</h4>
+                    {{penilaian.Kuesioner3}}
+                    <h4>4. Pelaksanaan perkuliahan terorganisir dengan baik.</h4>
+                    {{penilaian.Kuesioner4}}
+                    <h4>5. Dosen berkomunikasi dengan efektif.</h4>
+                    {{penilaian.Kuesioner5}}
+                    <h4>6. Dosen peduli terhadap pencapaian atau penguasaan mahasiswa akan luaran matakuliah ini.</h4>
+                    {{penilaian.Kuesioner6}}
+                    <h4>7. Dosen berlaku adil (fair) kepada mahasiswa.</h4>
+                    {{penilaian.Kuesioner7}}
+                    <h4>8. Beban kerja untuk matakuliah ini sesuai dengan SKS-nya.</h4>
+                    {{penilaian.Kuesioner8}}
+                    <h4>9. Sarana prasarana untuk matakuliah tersedia dengan memadai.</h4>
+                    {{penilaian.Kuesioner9}}
+                    <h4>10. Tersedia cukup fasilitas pendukung di luar kuliah yang memungkinkan saya mengikuti matakuliah ini dengan baik.</h4>
+                    {{penilaian.Kuesioner10}}
+                    <h4>11. Saya berusaha dengan sungguh-sungguh mengikuti matakuliah ini.</h4>
+                    {{penilaian.Kuesioner11}}
+                    <h4>12. Saya memperoleh pengalaman belajar yang positif dalam matakuliah ini.</h4>
+                    {{penilaian.Kuesioner12}}
+                </div>
+            <input type="submit" value="Submit"> <br>
+        </form>
+    </body>
+</html>
