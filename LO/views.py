@@ -155,6 +155,7 @@ class ListKuesionerView(generic.ListView):
 
 
 def courseAssessmentPage(request, nip, year, semester):
+    refreshCourseAssesmentPage(nip, year, semester)
     courseAssesment_list = CourseAssessmentScore.objects.filter(year = year, semester = semester)
 
     ##score_list = Score.objects.filter(nim__in = student_list, course = course)
@@ -166,7 +167,7 @@ def courseAssessmentPage(request, nip, year, semester):
     return render(request, 'Dosen/course_assessment.html', context)
 
 
-def refreshCourseAssesmentPage(request, nip, year, semester):
+def refreshCourseAssesmentPage(nip, year, semester):
     section_list = Section.objects.filter(semester = semester, year = year).order_by('course_id', 'sec_id')
     course_list = section_list.values_list('course__course_id', flat = True).distinct()
 
@@ -219,16 +220,11 @@ def refreshCourseAssesmentPage(request, nip, year, semester):
             totalKuesioner += section_kuesioner
             totalCourseOutcome += section_courseOutcome
 
-        totalKuesioner = totalKuesioner/count 
+        totalKuesioner = round(totalKuesioner/count, 2) 
         print("Total kuesioner ", totalKuesioner, "count ", count)
-        totalCourseOutcome = totalCourseOutcome/student_count
-        finalScore = (0.5 * totalCourseOutcome) + (0.4 * totalKuesioner) + 0.4
+        totalCourseOutcome = round(totalCourseOutcome/student_count, 2)
+        finalScore = round(((0.5 * totalCourseOutcome) + (0.4 * totalKuesioner) + 0.4) , 2)
 
         res = CourseAssessmentScore.setCourseAssessment(CourseAssessmentScore, semester = semester, year = year, 
             course_id = course, section_count = count,
             courseOutcomeScore = totalCourseOutcome, kuesionerScore = totalKuesioner, finalScore = finalScore)
-        
-        print(res)
-
-    # TODO prepare rendering
-    return redirect('dosen:CourseAssessment', nip = nip, year = year, semester = semester)
