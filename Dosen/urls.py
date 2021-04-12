@@ -3,7 +3,7 @@ from django.conf.urls import url
 from Dosen.views import penilaianPage, showPenilaianPage
 
 from . import views
-from LO.views import LOView
+from LO.views import LOView, courseAssessmentPage
 
 urlpatterns = [
 			url(r'^OMM/$', LOView.as_view(), name='OMM'),
@@ -20,4 +20,5 @@ urlpatterns = [
             url(r'^KomponenNilai/(?P<course_id>[A-Z0-9]+)/Result/$', views.SubmitView, name='Submit'),
 			url(r'', views.HomepageDosenView, name='Home'),
             path('penilaian', penilaianPage, name = 'penilaian'),
+			re_path(r'^CourseAssessment/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', courseAssessmentPage, name='CourseAssessment'),
 ]
