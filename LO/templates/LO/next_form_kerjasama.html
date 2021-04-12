@@ -9,7 +9,7 @@
     </head>
     <body>
         <h1> Form Kerjasama {{course_id}} </h1>
-        <form action="{% url 'mhs:SubmitFormKerjasama' course_id %}" method="POST">
+        <form action="{% url 'mhs:SubmitFormKerjasama' identitas.first_name course_id %}" method="POST">
             {% csrf_token %}
             <h3> Identitas Anda</h3>
             <label> Nama: </label>

@@ -3,8 +3,8 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 
 from django.views import generic
-from .models import LO, Course, ResponseKerjasama, ResponseKomunikasi, Takes
-from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiForm, PenilaianKomunikasiForm
+from .models import LO, Course, ResponseKerjasama, ResponseKomunikasi, Takes, ResponseKuesioner
+from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiForm, PenilaianKomunikasiForm, IdentitasKuesionerForm, PenilaianKuesionerForm
 
 from Mahasiswa.models import Student
 
@@ -24,7 +24,7 @@ class LOView(generic.ListView):
         context['nip'] = self.kwargs['nip']
         return context
 
-def NextKerjasamaView(request, course_id):
+def NextKerjasamaView(request, nim, course_id):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
     identitas = request.user
@@ -32,7 +32,7 @@ def NextKerjasamaView(request, course_id):
     penilaian = PenilaianKerjasamaForm()
     return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
 
-def KerjasamaView(request, course_id):
+def KerjasamaView(request,nim, course_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
     #TODO: Checking apakah dia takes matkul itu pada semester dan tahun itu(?)
@@ -43,7 +43,7 @@ def KerjasamaView(request, course_id):
 
     return render(request, 'LO/form_kerjasama.html', {'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
 
-def SubmitKerjasamaView(request, course_id):
+def SubmitKerjasamaView(request,nim, course_id):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
     if (request.POST['NIMPeer'] == request.user.first_name):
@@ -59,7 +59,7 @@ def SubmitKerjasamaView(request, course_id):
 
     return render(request, 'LO/form_kerjasama_submit.html', {'identitas':identitas, 'kel':kel, 'course_id': course_id})    
 
-def KomunikasiView(request, course_id):
+def KomunikasiView(request, nim, course_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
     #TODO: Checking apakah dia takes matkul itu pada semester dan tahun itu(?)
@@ -67,9 +67,9 @@ def KomunikasiView(request, course_id):
     identitas = IdentitasKomunikasiForm()
     penilaian = PenilaianKomunikasiForm()
 
-    return render(request, 'LO/form_komunikasi.html', {'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
+    return render(request, 'LO/form_komunikasi.html', {'nim' : nim, 'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
 
-def SubmitKomunikasiView(request, course_id):
+def SubmitKomunikasiView(request, nim, course_id):
     kel = request.POST['kelompok']
     
     student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
@@ -83,9 +83,72 @@ def SubmitKomunikasiView(request, course_id):
         )
     res.save()
 
-    return render(request, 'LO/form_komunikasi_submit.html', {'kel':kel, 'course_id': course_id})  
+    return render(request, 'LO/form_komunikasi_submit.html', {'nim' : nim, 'kel':kel, 'course_id': course_id})  
 
-def NextKomunikasiView(request, course_id):
+def NextKomunikasiView(request, nim, course_id):
     kel = request.POST['kelompok']
     penilaian = PenilaianKomunikasiForm()
-    return render(request, 'LO/next_form_komunikasi.html', {'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+    return render(request, 'LO/next_form_komunikasi.html', {'nim' : nim, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+
+def NextKuesionerView(request, nim, course_id):
+    # namaPengisi = request.POST['name']
+    # NIMPengisi = request.POST['NIM']
+    identitas = request.user
+    kel = request.POST['kelompok']
+    penilaian = PenilaianKerjasamaForm()
+    return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+
+def KuesionerView(request, nim, course_id, year, semester):
+    # Get all the takes that semester
+    identitas = request.user
+    NIM = identitas.first_name
+    takes = get_object_or_404(Takes, student__nim = NIM, section__course__course_id = course_id, section__year = year, section__semester = semester, isKuesionerFilled = False)
+
+    penilaian = PenilaianKuesionerForm()
+
+    return render(request, 'LO/form_kuesioner.html', {'penilaian':penilaian, 'course_id': course_id, 'year' : year, 'semester' : semester, 'identitas': identitas})
+
+def SubmitKuesionerView(request, nim, course_id, year, semester):
+    # namaPengisi = request.POST['name']
+    # NIMPengisi = request.POST['NIM']
+    identitas = request.user
+    NIM = identitas.first_name
+    
+    takes = get_object_or_404(Takes, student__nim = NIM, section__course__course_id = course_id, section__year = year, section__semester = semester, isKuesionerFilled = False)
+    res = ResponseKuesioner(takes = takes, 
+        Kuesioner1=int(request.POST['Kuesioner1']),
+        Kuesioner2=int(request.POST['Kuesioner2']),
+        Kuesioner3=int(request.POST['Kuesioner3']),
+        Kuesioner4=int(request.POST['Kuesioner4']),
+        Kuesioner5=int(request.POST['Kuesioner5']),
+        Kuesioner6=int(request.POST['Kuesioner6']),
+        Kuesioner7=int(request.POST['Kuesioner7']),
+        Kuesioner8=int(request.POST['Kuesioner8']),
+        Kuesioner9=int(request.POST['Kuesioner9']),
+        Kuesioner10=int(request.POST['Kuesioner10']),
+        Kuesioner11=int(request.POST['Kuesioner11']),
+        Kuesioner12=int(request.POST['Kuesioner12'])
+        )
+    res.save()
+    takes.isKuesionerFilled = True
+    takes.save()
+
+    return render(request, 'LO/form_kuesioner_submit.html', {'identitas':identitas, 'course_id': course_id, 'year' : year, 'semester' : semester})    
+
+class ListKuesionerView(generic.ListView):
+    template_name = 'LO/list_kuesioner.html'
+    context_object_name = 'kuesioner_list'
+
+    def get_queryset(self):
+        takes = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = self.kwargs['year'], section__semester = self.kwargs['semester'], isKuesionerFilled = False).order_by('section__course__course_id')
+        
+        return takes
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        context['nim'] = self.kwargs['nim']
+        context['year'] = self.kwargs['year']
+        context['semester'] = self.kwargs['semester']
+        return context
