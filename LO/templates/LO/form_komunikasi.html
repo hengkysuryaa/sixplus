@@ -5,45 +5,99 @@
         div {font-size: large;}
     </style>
     <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
         <title> Form Komunikasi</title>
     </head>
     <body>
-        <h1> Form Komunikasi {{course_id}}</h1>
-        <form action="{% url 'mhs:SubmitFormKomunikasi' course_id %}" method="POST">
-            {% csrf_token %}
-            <h3> Isi Identitas Anda</h3>
-            {{identitas}}
-            <h3> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok lain, bukan kelompok Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) anggota kelompok Anda maupun anggota kelompok tersebut.</h3>
-                <h3> Identitas anggota yang dinilai </h3>
-                    <label> Kelompok: </label>
-                    {{penilaian.KelompokPeer}}
-                    <label> Nama: </label>
-                    {{penilaian.NamePeer}}
-                    <label> NIM: </label>
-                    {{penilaian.NIMPeer}}
-                <div> 
-                    <h4> Cara Penyampaian Informasi (1) </h4>
-                    {{penilaian.Penyampaian1}}
-                    <h4> Cara Penyampaian Informasi (2) </h4>
-                    {{penilaian.Penyampaian2}}
-                    <h4> Cara Penyampaian Informasi (3) </h4>
-                    {{penilaian.Penyampaian3}}
-                    <h4> Cara Penyampaian Informasi (4) </h4>
-                    {{penilaian.Penyampaian4}}
-                    <h4> Konten Informasi Yang Disampaikan </h4>
-                    {{penilaian.Konten}}
-                    <h4> Bahasa Yang Digunakan Dalam Penyampaian Informasi </h4>
-                    {{penilaian.Bahasa}}
-                    <h4> Penguasaan Materi </h4>
-                    {{penilaian.Penguasaan}}
-                    <h4> Menjawab Pertanyaan </h4>
-                    {{penilaian.Menjawab}}
-                    <h4> Penggunaan Media Pendukung </h4>
-                    {{penilaian.Media}}
-                    <h4> Menggunakan Waktu Dengan Efektif Dan Efisien </h4>
-                    {{penilaian.Waktu}}
-                </div>
-            <input type="submit" value="Submit"> <br>
-        </form>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <ul class="nav navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">SIXPlus</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Aplikasi</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="">Kelas</a>
+                        <a class="dropdown-item" href="">LO Suplemen</a>
+                        <a class="dropdown-item" href="">Form Komunikasi</a>
+                        <a class="dropdown-item" href="">Form Kerjasama</a>
+                        <!--
+                        <a class="dropdown-item" href="#">Keuangan & Beasiswa</a>
+                        <a class="dropdown-item" href="#">Kelas</a>
+                        <a class="dropdown-item" href="#">Rencana Studi & Perwalian</a>
+                        <a class="dropdown-item" href="#">Penjurusan TPB</a>
+                        <a class="dropdown-item" href="#">Evaluasi Perkuliahan & Portofolio</a>
+                        <a class="dropdown-item" href="#">Wisuda</a>
+                        <a class="dropdown-item" href="#">Control Panel</a> -->
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">ID</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">EN</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>User</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-user"></span>Profil</a>
+                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div class="container">
+            <h1 class="mt-4 mb-5"> Form Komunikasi {{course_id}}</h1><br>
+            <form action="{% url 'mhs:SubmitFormKomunikasi' course_id %}" method="POST">
+                {% csrf_token %}
+                <h3 class="mt-0 mb-3"> Isi Identitas Anda</h3>
+                {{identitas}}
+                <h5 class="mt-5 mb-5"> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok lain, bukan kelompok Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) anggota kelompok Anda maupun anggota kelompok tersebut.</h4>
+                    <h3 class="mt-0 mb-3"> Identitas anggota yang dinilai </h3>
+                        <label class="mt-0 mb-5"> Kelompok: </label>
+                        {{penilaian.KelompokPeer}}
+                        <label class="mt-0 mb-5 ms-4"> Nama: </label>
+                        {{penilaian.NamePeer}}
+                        <label class="mt-0 mb-5 ms-4"> NIM: </label>
+                        {{penilaian.NIMPeer}}
+                    <div> 
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (1) </h4>
+                        {{penilaian.Penyampaian1}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (2) </h4>
+                        {{penilaian.Penyampaian2}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (3) </h4>
+                        {{penilaian.Penyampaian3}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (4) </h4>
+                        {{penilaian.Penyampaian4}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Konten Informasi Yang Disampaikan </h4>
+                        {{penilaian.Konten}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Bahasa Yang Digunakan Dalam Penyampaian Informasi </h4>
+                        {{penilaian.Bahasa}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Penguasaan Materi </h4>
+                        {{penilaian.Penguasaan}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Menjawab Pertanyaan </h4>
+                        {{penilaian.Menjawab}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Penggunaan Media Pendukung </h4>
+                        {{penilaian.Media}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Menggunakan Waktu Dengan Efektif Dan Efisien </h4>
+                        {{penilaian.Waktu}}
+                        <br>
+                    </div>
+                <input type="submit" value="Submit" class="btn btn-primary btn-lg mb-5"> <br>
+            </form>
+        </div>
     </body>
 </html>
