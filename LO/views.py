@@ -95,7 +95,7 @@ def NextKomunikasiView(request, nim, course_id):
     penilaian = PenilaianKomunikasiForm()
     return render(request, 'LO/next_form_komunikasi.html', {'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
 
-def LOSuplemenSemesterView(request):
+def LOSuplemenSemesterView(request, nim):
     student = Student.objects.get(nim = request.user.first_name)
     loSuple = LOSuplemenSemester.objects.filter(student = student)
     print(loSuple[0].lo_a)

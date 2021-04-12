@@ -19,7 +19,7 @@ INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 ##########################
 ### HOMEPAGE MAHASISWA ###
 ##########################
-def HomepageMahasiswaView(request):
+def HomepageMahasiswaView(request, nim):
     return render(request, 'Mahasiswa/mahasiswa.html')
 
 def TestView(request):
