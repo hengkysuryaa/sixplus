@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 
 from django.views import generic
-from .models import LO, Course, Section, ResponseKerjasama, ResponseKomunikasi, Takes, ResponseKuesioner, CourseAssessmentScore
+from .models import *
 from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiForm, PenilaianKomunikasiForm, IdentitasKuesionerForm, PenilaianKuesionerForm
 
 from Mahasiswa.models import Student
@@ -93,7 +93,14 @@ def SubmitKomunikasiView(request, nim, course_id):
 def NextKomunikasiView(request, nim, course_id):
     kel = request.POST['kelompok']
     penilaian = PenilaianKomunikasiForm()
-    return render(request, 'LO/next_form_komunikasi.html', {'nim' : nim, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+    return render(request, 'LO/next_form_komunikasi.html', {'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+
+def LOSuplemenSemesterView(request):
+    student = Student.objects.get(nim = request.user.first_name)
+    loSuple = LOSuplemenSemester.objects.filter(student = student)
+    print(loSuple[0].lo_a)
+    context = {'student' : student, 'LO' : loSuple}
+    return render(request, 'LO/lo_suplemen.html', context)
 
 def NextKuesionerView(request, nim, course_id):
     # namaPengisi = request.POST['name']
