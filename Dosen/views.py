@@ -288,6 +288,10 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
 
     for i in range(len(takes)):
         score = list(Score.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section).values())
+        
+        if (len(score) == 0):
+            break
+
         sum = 0
         for j in range(len(komponen_nilai_list)):
             sum = sum + (score[0].get(komponen_nilai_list[j]) * bobotindeks[j]) / 100
