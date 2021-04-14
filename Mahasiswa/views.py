@@ -198,12 +198,15 @@ def calculateLOSuplemen(_nim, _year, _semester):
 def LOSuplemenSemesterView(request, nim):
     student = Student.objects.get(nim = request.user.first_name)
 
-    #TODO: TIDAK DI HARDCODE
+    list_tahun = []
+    list_takes = list(Takes.objects.filter(student = student).values())
+    for item in list_takes:
+        list_tahun.append(Section.objects.filter(id=item.get('section_id'))[0].year)
+
     list_lo_suplemen = []
-    lo_suplemen_sem1 = calculateLOSuplemen(request.user.first_name, 2020, 1)
-    lo_suplemen_sem2 = calculateLOSuplemen(request.user.first_name, 2020, 2)
-    list_lo_suplemen.append(lo_suplemen_sem1)
-    list_lo_suplemen.append(lo_suplemen_sem2)
+    for year in list(set(list_tahun)):
+        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 1))
+        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 2))
 
     context = {'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
