@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib import messages
 
+from User.decorators import authenticated_user
+
 # Konstanta
 komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 indeks_list = ["A", "AB", "B", "BC", "C", "D", "E"]
@@ -17,12 +19,16 @@ indeks_list = ["A", "AB", "B", "BC", "C", "D", "E"]
 ######################
 ### HOMEPAGE DOSEN ###
 ######################
+
+@authenticated_user
 def HomepageDosenView(request, nip):
     return render(request, 'Dosen/dosen.html', {'nip' : nip})
 
 ##########################
 ### SECTION NAVIGATION ###
 ##########################
+
+@authenticated_user
 class DosenSectionListView(generic.ListView):
     # TO DO : RENDER SECTIONS FOR SEMESTER AND YEAR
     template_name = 'Dosen/section_list.html' # Placeholder
@@ -53,6 +59,7 @@ class DosenSectionListView(generic.ListView):
         context['semester'] = self.kwargs['semester']
         return context
 
+@authenticated_user
 def SectionPage(request, nip, year, semester):
     #TO DO : Implementasi halaman untuk setiap kelas, ini termasuk upload dan download xlsx nilai
     if(request.method == 'POST'):
@@ -63,6 +70,7 @@ def SectionPage(request, nip, year, semester):
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
 
+@authenticated_user
 def SectionPage2(request, nip):
     if(request.method == 'POST'):
         section = request.POST.get('section')
@@ -76,6 +84,8 @@ def SectionPage2(request, nip):
 ######################
 ### KOMPONEN NILAI ###
 ######################
+
+@authenticated_user
 class DistribusiKomponenNilaiView(generic.ListView):
     template_name = 'Dosen/page.html'
     context_object_name = 'course_list'
@@ -95,10 +105,12 @@ class DistribusiKomponenNilaiView(generic.ListView):
         context['nip'] = self.kwargs['nip']
         return context
 
+@authenticated_user
 def FormsDistribusiNilai(request, nip, course_id):
     lo_list, course = LO.getCourseLO(LO, course_id)
     return render(request, 'Dosen/lo_form.html', {'list' : lo_list, 'nip' : nip, 'course' : course})
 
+@authenticated_user
 def SubmitView(request, nip, course_id):
     # get all input values & convert to array of integer 
     uts1 = [int(numeric_str) for numeric_str in request.POST.getlist('uts1')]
@@ -112,6 +124,7 @@ def SubmitView(request, nip, course_id):
     return render(request, 'Dosen/berhasil.html', {'nip' : nip})
 
 
+@authenticated_user
 def penilaianPage(request, nip, year, semester, course_id, section_id):
     username = User.objects.filter(username = request.user.username)
     lecturer = Lecturer.objects.get(user = username[0])
@@ -134,6 +147,7 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     context = {'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id, 'scores' : score_list, 'header' : header}
     return render(request, 'Dosen/penilaian.html', context)
 
+@authenticated_user
 def showPenilaianPage(request, nip):
     # print(request.POST.get('section'))
     username = User.objects.filter(username = request.user.username)
@@ -155,6 +169,7 @@ def showPenilaianPage(request, nip):
     context = {'dosen' : lecturer , 'nip' : nip, 'teaches' : teaches}
     return render(request, 'Dosen/penilaian_teaches.html', context)
 
+@authenticated_user
 def exportListMhs(request, nip, year, semester, course_id, section_id):
     course = Course.objects.filter(course_id = course_id)[0]
     section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
@@ -197,16 +212,19 @@ def exportListMhs(request, nip, year, semester, course_id, section_id):
 
     return response
 
+@authenticated_user
 def FormsImportNilai(request, course_id):
     lo_list, course = LO.getCourseLO(LO, course_id)
     return render(request, 'Dosen/import.html', {'course' : course})
 
+@authenticated_user
 def checkScores(scores):
     for score in scores:
         if(score < 0 or score > 100):
             return False
     return True
 
+@authenticated_user
 def importListMhs(request, nip, year, semester, course_id, section_id):
     try:
         excel_file = request.FILES['excelUpload']
@@ -229,7 +247,8 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
         messages.error(request, 'FILE FORMAT NOT SUPPORTED')
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
-    
+ 
+@authenticated_user   
 def BobotIndeksView(request, nip, year, semester, course_id, section_id):
     
     #Ambil data
@@ -252,6 +271,7 @@ def BobotIndeksView(request, nip, year, semester, course_id, section_id):
 
     return render(request, 'Dosen/bobot_indeks.html', {'nip':nip, 'year':year, 'semester':semester, 'course_id':course_id, 'section_id':section_id, 'section':section[0], 'batas_dict':batas_indeks_dict, 'komponen_dict':komponen_dict})
 
+@authenticated_user
 def BobotIndeksSubmitView(request, nip, year, semester, course_id, section_id):
     
     #Ambil data
@@ -280,6 +300,7 @@ def BobotIndeksSubmitView(request, nip, year, semester, course_id, section_id):
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)    
 
+@authenticated_user
 def calculateNilaiAkhir(year, semester, course_id, section_id):
     section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
     takes = list(Takes.objects.filter(section=section[0]))

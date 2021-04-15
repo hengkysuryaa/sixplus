@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
 from Mahasiswa.models import Student
+from User.decorators import authenticated_user
 
 # Konstanta
 BOBOT_FORM_KOMUNIKASI = 100 # dalam persen
@@ -19,6 +20,7 @@ INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 ##########################
 ### HOMEPAGE MAHASISWA ###
 ##########################
+@authenticated_user
 def HomepageMahasiswaView(request, nim):
     return render(request, 'Mahasiswa/mahasiswa.html')
 
@@ -27,6 +29,7 @@ def TestView(request):
     score = calculateLOSuplemen("13120002", 2020, 2)
     return render(request, 'Mahasiswa/test.html', {'score' : score})
 
+@authenticated_user
 def scaleScore(_nim, _course_id, _year, _semester):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
@@ -42,6 +45,7 @@ def scaleScore(_nim, _course_id, _year, _semester):
 
     return score_dict
 
+@authenticated_user
 def createLOAndBobotDict(_course_id):
     dict = {}
 
@@ -61,6 +65,7 @@ def createLOAndBobotDict(_course_id):
     
     return dict
 
+@authenticated_user
 def mapScoreAndBobot(_nim, _course_id, _year, _semester):
     score = scaleScore(_nim, _course_id, _year, _semester)
     lo_bobot_dict = createLOAndBobotDict(_course_id)
@@ -78,6 +83,7 @@ def mapScoreAndBobot(_nim, _course_id, _year, _semester):
 
     return mapped_score_dict
 
+@authenticated_user
 def calculateLO(_nim, _course_id,  _year, _semester):
     map_score_dict = mapScoreAndBobot(_nim, _course_id, _year, _semester)
     lo_bobot_dict = createLOAndBobotDict(_course_id)
@@ -106,6 +112,7 @@ def calculateLO(_nim, _course_id,  _year, _semester):
     final_lo_score_dict["course"] = Course.objects.filter(course_id=_course_id)[0]
     return final_lo_score_dict
 
+@authenticated_user
 def summarizeResponseKerjasama(_nim, _course_id, _year, _semester):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
@@ -134,6 +141,7 @@ def summarizeResponseKerjasama(_nim, _course_id, _year, _semester):
     
     return total_sum
 
+@authenticated_user
 def summarizeResponseKomunikasi(_nim, _course_id, _year, _semester):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
@@ -164,6 +172,7 @@ def summarizeResponseKomunikasi(_nim, _course_id, _year, _semester):
     
     return total_sum
 
+@authenticated_user
 def calculateLOSuplemen(_nim, _year, _semester):
     
     takes_list = []
@@ -195,6 +204,7 @@ def calculateLOSuplemen(_nim, _year, _semester):
 
     return lo_suplemen_dict
 
+@authenticated_user
 def LOSuplemenSemesterView(request, nim):
     student = Student.objects.get(nim = request.user.first_name)
 

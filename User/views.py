@@ -4,6 +4,7 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 
 from User.forms import CreateUserForm
 from User.decorators import *
@@ -19,9 +20,17 @@ def registerPage(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, f'Akun {user} berhasil dibuat')
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            nimp = form.cleaned_data.get('first_name') #nimp = nip / nim
+            messages.success(request, f'Akun {username} berhasil dibuat')
+            if len(nimp) == 8: 
+                group = Group.objects.get(name = 'mahasiswa')
+            elif len(nimp) > 8:
+                group = Group.objects.get(name = 'dosen')
+            else:
+                group = Group.objects.get(name = 'tu')
+            user.groups.add(group)
             return redirect('login')
     
     context = {'form' : form}
