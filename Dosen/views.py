@@ -28,13 +28,12 @@ def HomepageDosenView(request, nip):
 ### SECTION NAVIGATION ###
 ##########################
 
-@authenticated_user
 class DosenSectionListView(generic.ListView):
     # TO DO : RENDER SECTIONS FOR SEMESTER AND YEAR
     template_name = 'Dosen/section_list.html' # Placeholder
     context_object_name = 'section_list'
     
-
+    @authenticated_user
     def get_queryset(self):
         # Get the sections you want to show here
         # nip = self.kwargs['nip']
@@ -44,7 +43,7 @@ class DosenSectionListView(generic.ListView):
         section_list = Section.objects.filter(semester = self.kwargs['semester'], year = self.kwargs['year'])
         print(section_list)
         return section_list
-
+    @authenticated_user
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
@@ -85,11 +84,12 @@ def SectionPage2(request, nip):
 ### KOMPONEN NILAI ###
 ######################
 
-@authenticated_user
+
 class DistribusiKomponenNilaiView(generic.ListView):
     template_name = 'Dosen/page.html'
     context_object_name = 'course_list'
 
+    @authenticated_user
     def get_queryset(self):
         bobot_list = BobotKomponenScore.objects.all()
         course_list = Course.objects.all().order_by('course_id')
@@ -97,7 +97,7 @@ class DistribusiKomponenNilaiView(generic.ListView):
             course_list = course_list.exclude(course_id=items.course.course_id)
         
         return course_list
-
+    @authenticated_user
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)

@@ -18,14 +18,14 @@ SEC_ID = 1
 # def index(request):
 #     return HttpResponse("You're at the LO index")
 
-@authenticated_user
 class LOView(generic.ListView):
     template_name = 'LO/lo_page.html'
     context_object_name = 'lo'
 
+    @authenticated_user
     def get_queryset(self):
         return LO.objects.all().order_by('course_id__course_id')
-
+    @authenticated_user
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
@@ -152,16 +152,17 @@ def SubmitKuesionerView(request, nim, course_id, year, semester):
 
     return render(request, 'LO/form_kuesioner_submit.html', {'identitas':identitas, 'course_id': course_id, 'year' : year, 'semester' : semester})    
 
-@authenticated_user
 class ListKuesionerView(generic.ListView):
     template_name = 'LO/list_kuesioner.html'
     context_object_name = 'kuesioner_list'
 
+    @authenticated_user
     def get_queryset(self):
         takes = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = self.kwargs['year'], section__semester = self.kwargs['semester'], isKuesionerFilled = False).order_by('section__course__course_id')
         
         return takes
 
+    @authenticated_user
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
