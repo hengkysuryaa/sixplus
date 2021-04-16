@@ -23,5 +23,7 @@ urlpatterns = [
             path('penilaian', penilaianPage, name = 'penilaian'),
 			re_path(r'^CourseAssessment/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', courseAssessmentPage, name='CourseAssessment'),
 			re_path(r'^LOAssessment/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', views.LOAssessmentView, name='LOAssessment'),
+			re_path(r'^LOAssessment/$', views.ListLOAssessmentPage, name='LOAssessmentList'),
+			re_path(r'^LOAssessment/Submit/$', views.redirectLOAssessment, name='SubmitLOAssessmentList'),
 			url(r'', views.HomepageDosenView, name='Home'),
 ]

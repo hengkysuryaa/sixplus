@@ -380,7 +380,37 @@ def LOAssessmentView(request, nip, year, semester):
         return HttpResponseNotFound(f"<h2> Tidak ada course pada semester {semester} - {year}/{int(year)+1}</h2>")
     list_course, lo_assessment = calculateLOAssesment(year, semester)
 
+    ListLOAssessmentPage(request, nip)
+
     return render(request, 'Dosen/lo_assessment.html', {'lo_assessment':lo_assessment, 'sem':semester, 'tahun1':year, 'tahun2':str(int(year)+1), 'list_matkul':list_course})
+
+def ListLOAssessmentPage(request, nip):
+    
+    list_tahun_dict = {}
+    list_takes = list(Section.objects.all().values())
+    for item in list_takes:
+        sem = item.get('semester')
+        year = item.get('year')
+        val = list_tahun_dict.get(year)
+
+        if (val == None):
+            list_tahun_dict[year] = []
+
+        list_tahun_dict[year].append(sem)
+        list_tahun_dict[year] = list(set(list_tahun_dict.get(year)))
+        
+    list_tahun = list(list_tahun_dict.keys())
+
+    return render(request, 'Dosen/lo_assessment_list.html', {'nip' : nip, 'list_tahun_dict' : list_tahun_dict, 'list_tahun':list_tahun})
+
+def redirectLOAssessment(request, nip):
+    if(request.method == 'POST'):
+        semyear = request.POST.get('semyear')
+        sem_year_info = semyear.split(', ')
+        year = sem_year_info[0]
+        semester = sem_year_info[1]
+
+    return redirect('dosen:LOAssessment', nip = nip, year = year, semester = semester)
 
 def TestView(request, nip):
     print(nip)
