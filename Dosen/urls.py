@@ -22,5 +22,6 @@ urlpatterns = [
             url(r'^KomponenNilai/(?P<course_id>[A-Z0-9]+)/Result/$', views.SubmitView, name='Submit'),
             path('penilaian', penilaianPage, name = 'penilaian'),
 			re_path(r'^CourseAssessment/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', courseAssessmentPage, name='CourseAssessment'),
+			re_path(r'^LOAssessment/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', views.LOAssessmentView, name='LOAssessment'),
 			url(r'', views.HomepageDosenView, name='Home'),
 ]
