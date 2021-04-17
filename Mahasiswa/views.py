@@ -110,8 +110,9 @@ def summarizeResponseKerjasama(_nim, _course_id, _year, _semester):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
     section = Section.objects.filter(course=course[0], year=_year, semester=_semester)
-    takes = Takes.objects.filter(student=std[0], section=section[0])
-    
+    #takes = Takes.objects.filter(student=std[0], section=section[0])
+    takes = Takes.objects.filter(student=std[0], section__year = _year, section__semester = _semester, section__course__course_id = _course_id)
+
     responses = list(ResponseKerjasama.objects.filter(takes=takes[0]).values())
     
     if (len(responses) == 0):
@@ -138,8 +139,9 @@ def summarizeResponseKomunikasi(_nim, _course_id, _year, _semester):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
     section = Section.objects.filter(course=course[0], year=_year, semester=_semester)
-    takes = Takes.objects.filter(student=std[0], section=section[0])
-    
+    #takes = Takes.objects.filter(student=std[0], section=section[0])
+    takes = Takes.objects.filter(student=std[0], section__year = _year, section__semester = _semester, section__course__course_id = _course_id)
+ 
     responses = list(ResponseKomunikasi.objects.filter(takes=takes[0]).values())
     
     if (len(responses) == 0):

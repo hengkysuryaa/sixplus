@@ -5,13 +5,20 @@ from Dosen.models import Lecturer, Teaches, BobotIndeks
 from User.views import *
 from django.contrib.auth.models import User
 from Utils.xlsxutil import export_pandas_to_sheet, convert_normal_array_to_pandas, import_workbook_as_pandasDict, import_sheet_as_pandas
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib import messages
+from Mahasiswa.views import calculateLO
 
 # Konstanta
 komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 indeks_list = ["A", "AB", "B", "BC", "C", "D", "E"]
+lo_list = ['lo_a', 'lo_b', 'lo_c', 'lo_d', 'lo_e', 'lo_f', 'lo_g']
+KMT = {
+    "L" : 1,
+    "M" : 2,
+    "H" : 3
+}
 
 # Create your views here.
 ######################
@@ -303,6 +310,107 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
                 break
         
         Takes.objects.filter(student=takes[i].student, section=section[0]).update(grade=indeks)
+
+def calculateCourseOutcomeLO(_course_id, _year, _semester):
+    takes_list = list(Takes.objects.filter(section__year = _year, section__semester = _semester, section__course__course_id = _course_id))
+    lo_sup_std_list = []
+    for i in range (len(takes_list)):
+        # Cek apakah nilai nya ada
+        score = Score.objects.filter(takes=takes_list[i])
+        if (len(score) > 0):
+            lo_course = calculateLO(takes_list[i].student.nim, _course_id, _year, _semester)
+            lo_sup_std_list.append(lo_course)
+    
+    course_outcome_dict = {}
+
+    course_lo_list = list(LO.getCourseLO(LO, _course_id)[0].keys())
+
+    for i in range (len(lo_list)):
+        if (len(lo_sup_std_list) > 0):
+            if (lo_list[i] in course_lo_list):
+                sum = 0
+                for j in range (len(lo_sup_std_list)):
+                    sum = sum + float(lo_sup_std_list[j].get(lo_list[i]))
+                course_outcome_dict[lo_list[i]] = round(sum/len(lo_sup_std_list), 2)
+            else:
+                course_outcome_dict[lo_list[i]] = '-'
+        else:
+            course_outcome_dict[lo_list[i]] = '-'
+
+    course_outcome_dict["course"] = LO.getCourseLO(LO, _course_id)[1]
+    if (len(lo_sup_std_list) == 0):
+        course_outcome_dict["len_lo_sup_std"] = 0
+
+    return course_outcome_dict
+
+def calculateLOAssesment(_year, _semester):
+    section_list = list(Section.objects.filter(year=_year, semester=_semester))
+    course_list = []
+    for item in section_list:
+        course_list.append(item.course.course_id)
+    course_list = sorted(list(set(course_list)))
+    
+    course_assessment_list = []
+    for i in range(len(course_list)):
+        course_assessment_list.append(calculateCourseOutcomeLO(course_list[i], _year, _semester))
+
+    lo_assessment_dict = {}
+    
+    for i in range(len(lo_list)):
+        sum = 0.0
+        sum_divisor = 0.0
+        for j in range(len(course_assessment_list)):
+            if (course_assessment_list[j].get('len_lo_sup_std') == None):
+                lo_course_dict = LO.getCourseLO(LO, course_assessment_list[j].get('course').course_id)[0]
+                course_lo = list(lo_course_dict.keys())
+                if (lo_list[i] in course_lo):
+                    sum = sum + float(course_assessment_list[j].get(lo_list[i]) * KMT.get(lo_course_dict.get(lo_list[i])))
+                    sum_divisor = sum_divisor + float(KMT.get(lo_course_dict.get(lo_list[i])))
+        if (sum == 0.0 and sum_divisor == 0.0):
+            lo_assessment_dict[lo_list[i]] = '-'
+        else:
+            lo_assessment_dict[lo_list[i]] = round(sum/sum_divisor, 2)
+
+    return course_assessment_list, lo_assessment_dict
+
+def LOAssessmentView(request, nip, year, semester):
+    section = Section.objects.filter(year=year, semester=semester)
+    
+    if (len(section) == 0):
+        return HttpResponseNotFound(f"<h2> Tidak ada course pada semester {semester} - {year}/{int(year)+1}</h2>")
+    list_course, lo_assessment = calculateLOAssesment(year, semester)
+
+    ListLOAssessmentPage(request, nip)
+
+    return render(request, 'Dosen/lo_assessment.html', {'lo_assessment':lo_assessment, 'sem':semester, 'tahun1':year, 'tahun2':str(int(year)+1), 'list_matkul':list_course})
+
+def ListLOAssessmentPage(request, nip):
+    
+    list_tahun_dict = {}
+    list_takes = list(Section.objects.all().values())
+    for item in list_takes:
+        sem = item.get('semester')
+        year = item.get('year')
+        val = list_tahun_dict.get(year)
+
+        if (val == None):
+            list_tahun_dict[year] = []
+
+        list_tahun_dict[year].append(sem)
+        list_tahun_dict[year] = list(set(list_tahun_dict.get(year)))
+        
+    list_tahun = list(list_tahun_dict.keys())
+
+    return render(request, 'Dosen/lo_assessment_list.html', {'nip' : nip, 'list_tahun_dict' : list_tahun_dict, 'list_tahun':list_tahun})
+
+def redirectLOAssessment(request, nip):
+    if(request.method == 'POST'):
+        semyear = request.POST.get('semyear')
+        sem_year_info = semyear.split(', ')
+        year = sem_year_info[0]
+        semester = sem_year_info[1]
+
+    return redirect('dosen:LOAssessment', nip = nip, year = year, semester = semester)
 
 def TestView(request, nip):
     print(nip)

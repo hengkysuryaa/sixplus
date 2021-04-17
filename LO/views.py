@@ -11,7 +11,7 @@ from Mahasiswa.models import Student
 # KONSTANTA
 SEMESTER = 2
 YEAR = 2020
-SEC_ID = 1
+SEC_ID = 2
 
 # Create your views here.
 # def index(request):
