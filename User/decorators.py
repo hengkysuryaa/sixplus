@@ -23,14 +23,19 @@ def allowed_users(allowed_roles=[]):
     def decorator(view_func):
         def wrapper_func(request, *args, **kwargs):        
             group = None
-            
+            # print(request.user.groups.all())
+            # print(allowed_roles)
             if request.user.groups.exists():
-                group = request.user.groups.all()[0].name
+                groups = request.user.groups.all()
             
-            if group in allowed_roles:
-                return view_func(request, *args, **kwargs)
-            else:
-                return HttpResponse("Anda tidak memiliki izin untuk laman ini")
+            for group in groups:
+                # print(group)
+                for role in allowed_roles:
+                    # print(role)
+                    if group.name == role:
+                        return view_func(request, *args, **kwargs)
+                    
+            return HttpResponse("Anda tidak memiliki izin untuk laman ini")
 
         return wrapper_func
     return decorator
