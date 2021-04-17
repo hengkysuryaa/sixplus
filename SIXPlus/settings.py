@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import random
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATIC_URL = '/static/'
+STATIC_ROOT = 'static'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -23,9 +26,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '+)0f72(s7bszm0^)7j1x@uyv18)oc0o+i0)&30)i@$!5wt5n#x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if 'DJANGO_DEBUG_FALSE' in os.environ:
+	DEBUG = False
+	#SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+	SECRET_KEY = ''.join(random.SystemRandom().choices('abcdefghijklmnopqrstuvwxyz0123456789', k=50))
+	ALLOWED_HOSTS = [os.environ['SITENAME']]
+else:
+	DEBUG = True
+	SECRET_KEY = 'insecure-key-for-dev'
+	ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS = []
+#DEBUG = True
+
+#ALLOWED_HOSTS = ['*']
 
 
 # Application definition
