@@ -35,7 +35,7 @@ class DosenSectionListView(generic.ListView):
     context_object_name = 'section_list'
     
     
-    @allowed_users(['dosen'])
+    # @allowed_users(['dosen'])
     def get_queryset(self):
         # Get the sections you want to show here
         # nip = self.kwargs['nip']
@@ -46,7 +46,7 @@ class DosenSectionListView(generic.ListView):
         print(section_list)
         return section_list
     
-    @allowed_users(['dosen'])
+    # @allowed_users(['dosen'])
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
@@ -92,7 +92,7 @@ class DistribusiKomponenNilaiView(generic.ListView):
     template_name = 'Dosen/page.html'
     context_object_name = 'course_list'
 
-    @allowed_users(['dosen'])
+    # @allowed_users(['dosen'])
     def get_queryset(self):
         bobot_list = BobotKomponenScore.objects.all()
         course_list = Course.objects.all().order_by('course_id')
@@ -101,7 +101,7 @@ class DistribusiKomponenNilaiView(generic.ListView):
         
         return course_list
     
-    @allowed_users(['dosen'])
+    # @allowed_users(['dosen'])
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)

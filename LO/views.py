@@ -23,11 +23,11 @@ class LOView(generic.ListView):
     template_name = 'LO/lo_page.html'
     context_object_name = 'lo'
     
-    @allowed_users(['mahasiswa'])
+    # @allowed_users(['mahasiswa'])
     def get_queryset(self):
         return LO.objects.all().order_by('course_id__course_id')
 
-    @allowed_users(['mahasiswa'])
+    # @allowed_users(['mahasiswa'])
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
@@ -158,13 +158,13 @@ class ListKuesionerView(generic.ListView):
     template_name = 'LO/list_kuesioner.html'
     context_object_name = 'kuesioner_list'
 
-    @allowed_users(['mahasiswa'])
+    # @allowed_users(['mahasiswa'])
     def get_queryset(self):
         takes = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = self.kwargs['year'], section__semester = self.kwargs['semester'], isKuesionerFilled = False).order_by('section__course__course_id')
         
         return takes
 
-    @allowed_users(['mahasiswa'])
+    # @allowed_users(['mahasiswa'])
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
