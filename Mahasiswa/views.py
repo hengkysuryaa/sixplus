@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
 from Mahasiswa.models import Student
-from User.decorators import authenticated_user
+from User.decorators import allowed_users
 
 # Konstanta
 BOBOT_FORM_KOMUNIKASI = 100 # dalam persen

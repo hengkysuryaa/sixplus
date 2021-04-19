@@ -7,6 +7,8 @@ from .models import *
 from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiForm, PenilaianKomunikasiForm, IdentitasKuesionerForm, PenilaianKuesionerForm
 
 from Mahasiswa.models import Student
+from User.decorators import allowed_users
+
 
 # KONSTANTA
 SEMESTER = 2

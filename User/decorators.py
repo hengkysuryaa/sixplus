@@ -33,9 +33,18 @@ def allowed_users(allowed_roles=[]):
                 for role in allowed_roles:
                     # print(role)
                     if group.name == role:
-                        return view_func(request, *args, **kwargs)
-                    
-            return HttpResponse("Anda tidak memiliki izin untuk laman ini")
+                        if 'nim' in kwargs:
+                            if kwargs['nim'] == request.user.first_name:
+                                return view_func(request, *args, **kwargs)
+                            else:
+                                break  
+                        elif 'nip' in kwargs:
+                            if kwargs['nip'] == request.user.first_name:
+                                return view_func(request, *args, **kwargs)
+                            else:
+                                break         
+            return redirect('dashboard') 
+            # HttpResponse("Anda tidak memiliki izin untuk laman ini")
 
         return wrapper_func
     return decorator

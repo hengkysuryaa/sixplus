@@ -9,6 +9,9 @@ from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib import messages
 
+from User.decorators import allowed_users
+
+
 # Konstanta
 komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 indeks_list = ["A", "AB", "B", "BC", "C", "D", "E"]
