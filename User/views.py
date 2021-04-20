@@ -9,8 +9,17 @@ from django.contrib.auth.models import Group
 from User.forms import CreateUserForm
 from User.decorators import *
 
+@authenticated_user
 def dashboard(request):
     context = {}
+    if(len(request.user.groups.filter(name = "dosen")) == 1):
+        print("This is dosen")
+        return redirect("dosen:Home", nip = request.user.first_name)
+    elif(len(request.user.groups.filter(name = "tu")) == 1):
+        print("This is tu")
+    elif(len(request.user.groups.filter(name = "mahasiswa")) == 1):
+        print("This is mahasiswa")
+        return redirect("mhs:Home", nim = request.user.first_name)
     return render(request, "User/dashboard.html", context)
 
 @unauthenticated_user

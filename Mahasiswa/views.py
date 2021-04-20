@@ -22,7 +22,7 @@ INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 ##########################
 @allowed_users(['mahasiswa'])
 def HomepageMahasiswaView(request, nim):
-    return render(request, 'Mahasiswa/mahasiswa.html')
+    return render(request, 'Mahasiswa/mahasiswa.html', {'nim' : nim})
 
 def TestView(request):
     

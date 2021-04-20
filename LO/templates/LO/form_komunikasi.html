@@ -52,7 +52,7 @@
         </nav>
         <div class="container">
             <h1 class="mt-4 mb-5"> Form Komunikasi {{course_id}}</h1><br>
-            <form action="{% url 'mhs:SubmitFormKomunikasi' nim course_id %}" method="POST">
+            <form action="{% url 'mhs:SubmitFormKomunikasi' nim year semester course_id section_id %}" method="POST">
                 {% csrf_token %}
                 <h3 class="mt-0 mb-3"> Isi Identitas Anda</h3>
                 {{identitas}}

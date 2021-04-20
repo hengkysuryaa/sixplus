@@ -35,16 +35,16 @@ class LOView(generic.ListView):
         return context
 
 @allowed_users(['mahasiswa'])
-def NextKerjasamaView(request, nim, course_id):
+def NextKerjasamaView(request, nim, year, semester, course_id, section_id):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
     identitas = request.user
     kel = request.POST['kelompok']
     penilaian = PenilaianKerjasamaForm()
-    return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+    return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})
 
 @allowed_users(['mahasiswa'])
-def KerjasamaView(request,nim, course_id):
+def KerjasamaView(request, nim, year, semester, course_id, section_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
     #TODO: Checking apakah dia takes matkul itu pada semester dan tahun itu(?)
@@ -53,10 +53,10 @@ def KerjasamaView(request,nim, course_id):
     identitas = request.user
     penilaian = PenilaianKerjasamaForm()
 
-    return render(request, 'LO/form_kerjasama.html', {'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
+    return render(request, 'LO/form_kerjasama.html', {'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id, 'identitas': identitas})
 
 @allowed_users(['mahasiswa'])
-def SubmitKerjasamaView(request,nim, course_id):
+def SubmitKerjasamaView(request, nim, year, semester, course_id, section_id):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
     if (request.POST['NIMPeer'] == request.user.first_name):
@@ -66,14 +66,14 @@ def SubmitKerjasamaView(request,nim, course_id):
     
     student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
     course = get_object_or_404(Course, course_id=course_id)
-    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = SEMESTER, section__year = YEAR, section__sec_id = SEC_ID)[0]
+    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
     res = ResponseKerjasama(takes = takes, Kontribusi=int(request.POST['Kontribusi']), PemecahanMasalah=int(request.POST['PemecahanMasalah']), Sikap=int(request.POST['Sikap']), FokusTerhadapTugas=int(request.POST['FokusTerhadapTugas']), BekerjaDenganOrangLain=int(request.POST['BekerjaDenganOrangLain']))
     res.save()
 
-    return render(request, 'LO/form_kerjasama_submit.html', {'identitas':identitas, 'kel':kel, 'course_id': course_id})    
+    return render(request, 'LO/form_kerjasama_submit.html', {'identitas':identitas, 'kel':kel,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})    
 
 @allowed_users(['mahasiswa'])
-def KomunikasiView(request, nim, course_id):
+def KomunikasiView(request, nim, year, semester, course_id, section_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
     #TODO: Checking apakah dia takes matkul itu pada semester dan tahun itu(?)
@@ -81,16 +81,16 @@ def KomunikasiView(request, nim, course_id):
     identitas = IdentitasKomunikasiForm()
     penilaian = PenilaianKomunikasiForm()
 
-    return render(request, 'LO/form_komunikasi.html', {'nim' : nim, 'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
+    return render(request, 'LO/form_komunikasi.html', {'nim' : nim, 'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id, 'identitas': identitas})
 
 @allowed_users(['mahasiswa'])
-def SubmitKomunikasiView(request, nim, course_id):
+def SubmitKomunikasiView(request, nim, year, semester, course_id, section_id):
     kel = request.POST['kelompok']
     
     student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
     kelompok = request.POST['KelompokPeer']
     course = get_object_or_404(Course, course_id=course_id)
-    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = SEMESTER, section__year = YEAR, section__sec_id = SEC_ID)[0]
+    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
     res = ResponseKomunikasi(takes = takes, kelompok = kelompok,  
         Penyampaian1=int(request.POST['Penyampaian1']), Penyampaian2=int(request.POST['Penyampaian2']), Penyampaian3=int(request.POST['Penyampaian3']), Penyampaian4=int(request.POST['Penyampaian4']), 
         Konten=int(request.POST['Konten']), Bahasa=int(request.POST['Bahasa']), Penguasaan=int(request.POST['Penguasaan']), 
@@ -98,13 +98,13 @@ def SubmitKomunikasiView(request, nim, course_id):
         )
     res.save()
 
-    return render(request, 'LO/form_komunikasi_submit.html', {'nim' : nim, 'kel':kel, 'course_id': course_id})  
+    return render(request, 'LO/form_komunikasi_submit.html', {'nim' : nim, 'kel':kel, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})  
 
 @allowed_users(['mahasiswa'])
-def NextKomunikasiView(request, nim, course_id):
+def NextKomunikasiView(request, nim, year, semester, course_id, section_id):
     kel = request.POST['kelompok']
     penilaian = PenilaianKomunikasiForm()
-    return render(request, 'LO/next_form_komunikasi.html', {'nim':request.user.first_name, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+    return render(request, 'LO/next_form_komunikasi.html', {'nim':request.user.first_name, 'kel':kel, 'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})
 
 @allowed_users(['mahasiswa'])
 def NextKuesionerView(request, nim, course_id):
