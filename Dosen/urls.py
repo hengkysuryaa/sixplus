@@ -4,8 +4,10 @@ from Dosen.views import penilaianPage, showPenilaianPage
 
 from . import views
 from LO.views import LOView, courseAssessmentPage
+from User.views import logoutUser
 
 urlpatterns = [
+    		url(r'^logout/$', logoutUser, name='logout'),
 			url(r'^OMM/$', LOView.as_view(), name='OMM'),
 			url(r'^Test/$', views.TestClassView.as_view(), name='test'),
 			re_path(r'^Nilai/$', showPenilaianPage, name='SectionWithTeaches'),

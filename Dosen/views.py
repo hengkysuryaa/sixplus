@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from LO.models import *
 from Dosen.models import Lecturer, Teaches, BobotIndeks
@@ -31,7 +31,8 @@ KMT = {
 
 @allowed_users(['dosen'])
 def HomepageDosenView(request, nip):
-    return render(request, 'Dosen/dosen.html', {'nip' : nip})
+    dosen = get_object_or_404(Lecturer, nip = nip)
+    return render(request, 'Dosen/dosen.html', {'nip' : nip, 'dosen' : dosen})
 
 ##########################
 ### SECTION NAVIGATION ###
@@ -146,6 +147,10 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     course = Course.objects.filter(course_id = course_id)[0]
     section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
     
+    teach = Teaches.objects.filter(dosen = lecturer, section = section)
+    if(len(teach) == 0):
+        return redirect('dosen:Home', nim = request.user.first_name)
+
     student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
     score_list = Score.getStudentTakesScores(Score, course_id = course_id, year = year, semester = semester, section_id = section_id)

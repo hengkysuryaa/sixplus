@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
@@ -22,7 +22,8 @@ INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 ##########################
 @allowed_users(['mahasiswa'])
 def HomepageMahasiswaView(request, nim):
-    return render(request, 'Mahasiswa/mahasiswa.html')
+    mahasiswa = get_object_or_404(Student, nim = nim)
+    return render(request, 'Mahasiswa/mahasiswa.html', {'nim' : nim, 'mahasiswa' : mahasiswa})
 
 def TestView(request):
     
