@@ -80,12 +80,12 @@
             </ul>
         </nav>
         <div class="container">
-            <h1>Penilaian {{header}} </h1>
+            <h1 class="mt-4 mb-4">Penilaian {{header}} </h1>
         </div>
         
         <div class="container">
-            <h3>Nama : {{dosen.name}} </h3>
-            <h3>NIP  : {{dosen.nip}}</h3>
+            <h3 class="mt-0 mb-2">Nama : {{dosen.name}} </h3>
+            <h3 class="mt-0 mb-4">NIP  : {{dosen.nip}}</h3>
             <!-- <div class="row">
                 <div class="col-md-8">
                     <form action="">
@@ -144,14 +144,14 @@
             <form action="{% url 'dosen:ExcelUpload' nip year semester course_id section_id %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 Select File to upload:
-                <input class = "button button2" type="file" name="excelUpload" id="excelUpload">
-                <input class = "button button2" type="submit" value="Upload Penilaian Kelas">
+                <input class = "button button2 mt-4 mb-2 me-2" type="file" name="excelUpload" id="excelUpload">
+                <input class = "button button2 mt-0 mb-4" type="submit" value="Upload Penilaian Kelas">
             </form>
             <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
-              <button class="button button2" type='submit'> Download Excel Template</button>
+              <button class="button button2 mt-0 mb-2" type='submit'> Download Excel Template</button>
             </form>
             <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
-                <button class="button button2" type='submit'> Set Persentase dan Batas Indeks </button>
+                <button class="button button2 mt-0 mb-5" type='submit'> Set Persentase dan Batas Indeks </button>
             </form>
         </div> <br>
         <div class="container">
