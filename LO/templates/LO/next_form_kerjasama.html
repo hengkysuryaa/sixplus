@@ -50,40 +50,42 @@
                 </li>
             </ul>
         </nav>
-        <h1 class="mt-4 mb-5"> Form Kerjasama {{course_id}} </h1>
-        <form action="{% url 'mhs:SubmitFormKerjasama' identitas.first_name course_id %}" method="POST">
-            {% csrf_token %}
-            <h3 class="mt-0 mb-3"> Identitas Anda</h3>
-            <label class="mt-0 mb-5"> Nama: </label>
-            <input name="name" type="text" readonly value="{{identitas.last_name}}">
-            <label class="mt-0 mb-5 ms-4"> NIM: </label>
-            <input name="NIM" type="text" readonly value="{{identitas.first_name}}">
-            <label class="mt-0 mb-5 ms-4"> Kelompok: </label>
-            <input name="kelompok" type="text" readonly value="{{kel}}">
-            <h5 class="mt-0 mb-5"> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok, bukan Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) Anda maupun anggota kelompok.</h3>
-                <h3 class="mt-0 mb-3"> Identitas anggota yang dinilai </h3>
-                    <label class="mt-0 mb-5"> Nama: </label>
-                    {{penilaian.NamePeer}}
-                    <label class="mt-0 mb-5 ms-4"> NIM: </label>
-                    {{penilaian.NIMPeer}}
-                <div> 
-                    <h4 class="mt-0 mb-3"> Kontribusi </h4>
-                    {{penilaian.Kontribusi}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Pemecahan Masalah </h4>
-                    {{penilaian.PemecahanMasalah}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Sikap </h4>
-                    {{penilaian.Sikap}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Fokus Terhadap Tugas </h4>
-                    {{penilaian.FokusTerhadapTugas}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Bekerja Dengan Orang Lain </h4>
-                    {{penilaian.BekerjaDenganOrangLain}}
-                    <br>
-                </div>
-            <input type="submit" value="Submit" class="btn btn-primary btn-lg mb-5"> <br>
-        </form>
+        <div class="container">
+            <h1 class="mt-4 mb-5"> Form Kerjasama {{course_id}} </h1>
+            <form action="{% url 'mhs:SubmitFormKerjasama' identitas.first_name course_id %}" method="POST">
+                {% csrf_token %}
+                <h3 class="mt-0 mb-3"> Identitas Anda</h3>
+                <label class="mt-0 mb-5"> Nama: </label>
+                <input name="name" type="text" readonly value="{{identitas.last_name}}">
+                <label class="mt-0 mb-5 ms-4"> NIM: </label>
+                <input name="NIM" type="text" readonly value="{{identitas.first_name}}">
+                <label class="mt-0 mb-5 ms-4"> Kelompok: </label>
+                <input name="kelompok" type="text" readonly value="{{kel}}">
+                <h5 class="mt-0 mb-5"> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok, bukan Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) Anda maupun anggota kelompok.</h3>
+                    <h3 class="mt-0 mb-3"> Identitas anggota yang dinilai </h3>
+                        <label class="mt-0 mb-5"> Nama: </label>
+                        {{penilaian.NamePeer}}
+                        <label class="mt-0 mb-5 ms-4"> NIM: </label>
+                        {{penilaian.NIMPeer}}
+                    <div> 
+                        <h4 class="mt-0 mb-3"> Kontribusi </h4>
+                        {{penilaian.Kontribusi}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Pemecahan Masalah </h4>
+                        {{penilaian.PemecahanMasalah}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Sikap </h4>
+                        {{penilaian.Sikap}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Fokus Terhadap Tugas </h4>
+                        {{penilaian.FokusTerhadapTugas}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Bekerja Dengan Orang Lain </h4>
+                        {{penilaian.BekerjaDenganOrangLain}}
+                        <br>
+                    </div>
+                <input type="submit" value="Submit" class="btn btn-primary btn-lg mb-5"> <br>
+            </form>
+        </div>
     </body>
 </html>

@@ -50,53 +50,55 @@
                 </li>
             </ul>
         </nav>
-        <h1 class="mt-4 mb-5"> Form Komunikasi {{course_id}}</h1>
-        <form action="{% url 'mhs:SubmitFormKomunikasi' nim course_id %}" method="POST">
-            {% csrf_token %}
-            <h3 class="mt-0 mb-3"> Isi Identitas Anda</h3>
-            <label class="mt-0 mb-5"> Kelompok: </label>
-            <input name="kelompok" type="text" readonly value="{{kel}}">
-            <h5 class="mt-0 mb-5"> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok lain, bukan kelompok Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) anggota kelompok Anda maupun anggota kelompok tersebut.</h3>
-                <h3 class="mt-0 mb-3"> Identitas anggota yang dinilai </h3>
-                    <label class="mt-0 mb-5"> Kelompok: </label>
-                    {{penilaian.KelompokPeer}}
-                    <label class="mt-0 mb-5 ms-4"> Nama: </label>
-                    {{penilaian.NamePeer}}
-                    <label class="mt-0 mb-5 ms-4"> NIM: </label>
-                    {{penilaian.NIMPeer}}
-                <div> 
-                    <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (1) </h4>
-                    {{penilaian.Penyampaian1}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (2) </h4>
-                    {{penilaian.Penyampaian2}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (3) </h4>
-                    {{penilaian.Penyampaian3}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (4) </h4>
-                    {{penilaian.Penyampaian4}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Konten Informasi Yang Disampaikan </h4>
-                    {{penilaian.Konten}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Bahasa Yang Digunakan Dalam Penyampaian Informasi </h4>
-                    {{penilaian.Bahasa}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Penguasaan Materi </h4>
-                    {{penilaian.Penguasaan}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Menjawab Pertanyaan </h4>
-                    {{penilaian.Menjawab}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Penggunaan Media Pendukung </h4>
-                    {{penilaian.Media}}
-                    <br>
-                    <h4 class="mt-0 mb-3"> Menggunakan Waktu Dengan Efektif Dan Efisien </h4>
-                    {{penilaian.Waktu}}
-                    <br>
-                </div>
-            <input type="submit" value="Submit" class="btn btn-primary btn-lg mb-5"> <br>
-        </form>
+        <div class="container">
+            <h1 class="mt-4 mb-5"> Form Komunikasi {{course_id}}</h1>
+            <form action="{% url 'mhs:SubmitFormKomunikasi' nim course_id %}" method="POST">
+                {% csrf_token %}
+                <h3 class="mt-0 mb-3"> Isi Identitas Anda</h3>
+                <label class="mt-0 mb-5"> Kelompok: </label>
+                <input name="kelompok" type="text" readonly value="{{kel}}">
+                <h5 class="mt-0 mb-5"> Pertanyaan berikut merupakan penilaian terhadap anggota kelompok lain, bukan kelompok Anda sendiri. Harap menilai kinerja masing-masing anggota kelompok dengan jujur karena penilaian yang Anda berikan tidak akan mempengaruhi indeks prestasi (IP) anggota kelompok Anda maupun anggota kelompok tersebut.</h3>
+                    <h3 class="mt-0 mb-3"> Identitas anggota yang dinilai </h3>
+                        <label class="mt-0 mb-5"> Kelompok: </label>
+                        {{penilaian.KelompokPeer}}
+                        <label class="mt-0 mb-5 ms-4"> Nama: </label>
+                        {{penilaian.NamePeer}}
+                        <label class="mt-0 mb-5 ms-4"> NIM: </label>
+                        {{penilaian.NIMPeer}}
+                    <div> 
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (1) </h4>
+                        {{penilaian.Penyampaian1}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (2) </h4>
+                        {{penilaian.Penyampaian2}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (3) </h4>
+                        {{penilaian.Penyampaian3}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Cara Penyampaian Informasi (4) </h4>
+                        {{penilaian.Penyampaian4}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Konten Informasi Yang Disampaikan </h4>
+                        {{penilaian.Konten}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Bahasa Yang Digunakan Dalam Penyampaian Informasi </h4>
+                        {{penilaian.Bahasa}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Penguasaan Materi </h4>
+                        {{penilaian.Penguasaan}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Menjawab Pertanyaan </h4>
+                        {{penilaian.Menjawab}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Penggunaan Media Pendukung </h4>
+                        {{penilaian.Media}}
+                        <br>
+                        <h4 class="mt-0 mb-3"> Menggunakan Waktu Dengan Efektif Dan Efisien </h4>
+                        {{penilaian.Waktu}}
+                        <br>
+                    </div>
+                <input type="submit" value="Submit" class="btn btn-primary btn-lg mb-5"> <br>
+            </form>
+        </div>
     </body>
 </html>
