@@ -4,12 +4,22 @@ from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 
 from User.forms import CreateUserForm
 from User.decorators import *
 
+@authenticated_user
 def dashboard(request):
     context = {}
+    if(len(request.user.groups.filter(name = "dosen")) == 1):
+        print("This is dosen")
+        return redirect("dosen:Home", nip = request.user.first_name)
+    elif(len(request.user.groups.filter(name = "tu")) == 1):
+        print("This is tu")
+    elif(len(request.user.groups.filter(name = "mahasiswa")) == 1):
+        print("This is mahasiswa")
+        return redirect("mhs:Home", nim = request.user.first_name)
     return render(request, "User/dashboard.html", context)
 
 @unauthenticated_user
@@ -19,9 +29,17 @@ def registerPage(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, f'Akun {user} berhasil dibuat')
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            nimp = form.cleaned_data.get('first_name') #nimp = nip / nim
+            messages.success(request, f'Akun {username} berhasil dibuat')
+            if len(nimp) == 8: 
+                group = Group.objects.get(name = 'mahasiswa')
+            elif len(nimp) > 8:
+                group = Group.objects.get(name = 'dosen')
+            else:
+                group = Group.objects.get(name = 'tu')
+            user.groups.add(group)
             return redirect('login')
     
     context = {'form' : form}
@@ -44,6 +62,6 @@ def loginPage(request):
     context = {}
     return render(request, "User/login.html", context)
 
-def logoutUser(request):
+def logoutUser(request, nip = None, nim = None):
     logout(request)
     return redirect('login')
