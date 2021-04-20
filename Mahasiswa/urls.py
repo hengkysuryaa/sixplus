@@ -4,8 +4,10 @@ from . import views
 
 from LO.views import *
 from .views import TestView, LOSuplemenSemesterView
+from User.views import logoutUser
 
 urlpatterns = [
+    url(r'^logout/$', logoutUser, name='logout'),
     url(r'^Suplemen/$', TestView, name='Test'),
     url(r'^LOSuplemen/$', LOSuplemenSemesterView, name='ViewLOSuplemen'),
     re_path(r'^FormKerjasama/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/(?P<course_id>[A-Z0-9]+)/(?P<section_id>[0-9]+)/$', KerjasamaView, name='FormKerjasama'),

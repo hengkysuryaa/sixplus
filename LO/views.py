@@ -36,8 +36,11 @@ class LOView(generic.ListView):
 
 @allowed_users(['mahasiswa'])
 def NextKerjasamaView(request, nim, year, semester, course_id, section_id):
-    # namaPengisi = request.POST['name']
-    # NIMPengisi = request.POST['NIM']
+    # Check if takes is also valid, if not redirect to home
+    takes = Takes.objects.filter(student__nim = nim, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = request.user.first_name)
+
     identitas = request.user
     kel = request.POST['kelompok']
     penilaian = PenilaianKerjasamaForm()
@@ -47,7 +50,11 @@ def NextKerjasamaView(request, nim, year, semester, course_id, section_id):
 def KerjasamaView(request, nim, year, semester, course_id, section_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
-    #TODO: Checking apakah dia takes matkul itu pada semester dan tahun itu(?)
+
+    # Check if takes is also valid, if not redirect to home
+    takes = Takes.objects.filter(student__nim = nim, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = request.user.first_name)
 
     #identitas = IdentitasForm()
     identitas = request.user
@@ -57,8 +64,11 @@ def KerjasamaView(request, nim, year, semester, course_id, section_id):
 
 @allowed_users(['mahasiswa'])
 def SubmitKerjasamaView(request, nim, year, semester, course_id, section_id):
-    # namaPengisi = request.POST['name']
-    # NIMPengisi = request.POST['NIM']
+    # Check if takes is also valid, if not redirect to home
+    takes = Takes.objects.filter(student__nim = nim, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = request.user.first_name)
+
     if (request.POST['NIMPeer'] == request.user.first_name):
         return HttpResponseNotFound("<h2> Tidak bisa menilai diri anda sendiri!</h2> Silakan back ke laman sebelumnya")
     identitas = request.user
@@ -66,8 +76,8 @@ def SubmitKerjasamaView(request, nim, year, semester, course_id, section_id):
     
     student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
     course = get_object_or_404(Course, course_id=course_id)
-    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
-    res = ResponseKerjasama(takes = takes, Kontribusi=int(request.POST['Kontribusi']), PemecahanMasalah=int(request.POST['PemecahanMasalah']), Sikap=int(request.POST['Sikap']), FokusTerhadapTugas=int(request.POST['FokusTerhadapTugas']), BekerjaDenganOrangLain=int(request.POST['BekerjaDenganOrangLain']))
+    #takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
+    res = ResponseKerjasama(takes = takes[0], Kontribusi=int(request.POST['Kontribusi']), PemecahanMasalah=int(request.POST['PemecahanMasalah']), Sikap=int(request.POST['Sikap']), FokusTerhadapTugas=int(request.POST['FokusTerhadapTugas']), BekerjaDenganOrangLain=int(request.POST['BekerjaDenganOrangLain']))
     res.save()
 
     return render(request, 'LO/form_kerjasama_submit.html', {'identitas':identitas, 'kel':kel,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})    
@@ -76,7 +86,11 @@ def SubmitKerjasamaView(request, nim, year, semester, course_id, section_id):
 def KomunikasiView(request, nim, year, semester, course_id, section_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
-    #TODO: Checking apakah dia takes matkul itu pada semester dan tahun itu(?)
+
+    # Check if takes is also valid, if not redirect to home
+    takes = Takes.objects.filter(student__nim = nim, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = request.user.first_name)
 
     identitas = IdentitasKomunikasiForm()
     penilaian = PenilaianKomunikasiForm()
@@ -85,13 +99,18 @@ def KomunikasiView(request, nim, year, semester, course_id, section_id):
 
 @allowed_users(['mahasiswa'])
 def SubmitKomunikasiView(request, nim, year, semester, course_id, section_id):
+    # Check if takes is also valid, if not redirect to home
+    takes = Takes.objects.filter(student__nim = nim, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = request.user.first_name)
+
     kel = request.POST['kelompok']
     
     student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
     kelompok = request.POST['KelompokPeer']
     course = get_object_or_404(Course, course_id=course_id)
-    takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
-    res = ResponseKomunikasi(takes = takes, kelompok = kelompok,  
+    #takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
+    res = ResponseKomunikasi(takes = takes[0], kelompok = kelompok,  
         Penyampaian1=int(request.POST['Penyampaian1']), Penyampaian2=int(request.POST['Penyampaian2']), Penyampaian3=int(request.POST['Penyampaian3']), Penyampaian4=int(request.POST['Penyampaian4']), 
         Konten=int(request.POST['Konten']), Bahasa=int(request.POST['Bahasa']), Penguasaan=int(request.POST['Penguasaan']), 
         Menjawab=int(request.POST['Menjawab']), Media=int(request.POST['Media']), Waktu=int(request.POST['Waktu'])     
@@ -102,6 +121,11 @@ def SubmitKomunikasiView(request, nim, year, semester, course_id, section_id):
 
 @allowed_users(['mahasiswa'])
 def NextKomunikasiView(request, nim, year, semester, course_id, section_id):
+    # Check if takes is also valid, if not redirect to home
+    takes = Takes.objects.filter(student__nim = nim, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = request.user.first_name)
+
     kel = request.POST['kelompok']
     penilaian = PenilaianKomunikasiForm()
     return render(request, 'LO/next_form_komunikasi.html', {'nim':request.user.first_name, 'kel':kel, 'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})
@@ -120,7 +144,10 @@ def KuesionerView(request, nim, course_id, year, semester):
     # Get all the takes that semester
     identitas = request.user
     NIM = identitas.first_name
-    takes = get_object_or_404(Takes, student__nim = NIM, section__course__course_id = course_id, section__year = year, section__semester = semester, isKuesionerFilled = False)
+    takes = Takes.objects.filter(student__nim = NIM, section__course__course_id = course_id, section__year = year, section__semester = semester, isKuesionerFilled = False)
+
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = identitas.first_name)
 
     penilaian = PenilaianKuesionerForm()
 
@@ -133,8 +160,12 @@ def SubmitKuesionerView(request, nim, course_id, year, semester):
     identitas = request.user
     NIM = identitas.first_name
     
-    takes = get_object_or_404(Takes, student__nim = NIM, section__course__course_id = course_id, section__year = year, section__semester = semester, isKuesionerFilled = False)
-    res = ResponseKuesioner(takes = takes, 
+    #takes = get_object_or_404(Takes, student__nim = NIM, section__course__course_id = course_id, section__year = year, section__semester = semester, isKuesionerFilled = False)
+    takes = Takes.objects.filter(student__nim = NIM, section__course__course_id = course_id, section__year = year, section__semester = semester, isKuesionerFilled = False)
+
+    if(len(takes) == 0):
+        return redirect("mhs:Home", nim = identitas.first_name)
+    res = ResponseKuesioner(takes = takes[0], 
         Kuesioner1=int(request.POST['Kuesioner1']),
         Kuesioner2=int(request.POST['Kuesioner2']),
         Kuesioner3=int(request.POST['Kuesioner3']),
@@ -174,7 +205,7 @@ class ListKuesionerView(generic.ListView):
         context['semester'] = self.kwargs['semester']
         return context
 
-@allowed_users(['mahasiswa'])
+@allowed_users(['dosen'])
 def courseAssessmentPage(request, nip, year, semester):
     refreshCourseAssesmentPage(nip, year, semester)
     courseAssesment_list = CourseAssessmentScore.objects.filter(year = year, semester = semester)

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from LO.models import *
 from Dosen.models import Lecturer, Teaches, BobotIndeks
@@ -31,7 +31,8 @@ KMT = {
 
 @allowed_users(['dosen'])
 def HomepageDosenView(request, nip):
-    return render(request, 'Dosen/dosen.html', {'nip' : nip})
+    dosen = get_object_or_404(Lecturer, nip = nip)
+    return render(request, 'Dosen/dosen.html', {'nip' : nip, 'dosen' : dosen})
 
 ##########################
 ### SECTION NAVIGATION ###

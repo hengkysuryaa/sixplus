@@ -62,6 +62,6 @@ def loginPage(request):
     context = {}
     return render(request, "User/login.html", context)
 
-def logoutUser(request):
+def logoutUser(request, nip = None, nim = None):
     logout(request)
     return redirect('login')
