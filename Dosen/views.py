@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib import messages
 from Mahasiswa.views import calculateLO
+import numpy as np
 
 from User.decorators import allowed_users
 
@@ -137,6 +138,8 @@ def SubmitView(request, nip, course_id):
 
 @allowed_users(['dosen'])
 def penilaianPage(request, nip, year, semester, course_id, section_id):
+    count_indeks_dict = countIndeks(year, semester, course_id, section_id)
+
     username = User.objects.filter(username = request.user.username)
     lecturer = Lecturer.objects.get(user = username[0])
 
@@ -155,7 +158,7 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     header = str(course_id) + " " + course.title +  " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
 
     #context = {'dosen' : lecturer}, 'section': sections, 'scores': scores}
-    context = {'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id, 'scores' : score_list, 'header' : header}
+    context = {'indeks_dict' : count_indeks_dict, 'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id, 'scores' : score_list, 'header' : header}
     return render(request, 'Dosen/penilaian.html', context)
 
 @allowed_users(['dosen'])
@@ -436,6 +439,17 @@ def redirectLOAssessment(request, nip):
         semester = sem_year_info[1]
 
     return redirect('dosen:LOAssessment', nip = nip, year = year, semester = semester)
+
+def countIndeks(year, semester, course_id, section_id):
+    
+    takes_list = list(Takes.objects.filter(section__course__course_id=course_id, section__semester=semester, section__year = year, section__sec_id = section_id).values('grade'))
+    sec_indeks_list = []
+    for item in takes_list:
+        sec_indeks_list.append(item.get('grade'))
+    sec_indeks_list = np.array(sec_indeks_list)
+    unique, counts = np.unique(sec_indeks_list, return_counts=True)
+    
+    return dict(zip(unique, counts))
 
 def TestView(request, nip):
     print(nip)

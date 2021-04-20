@@ -104,7 +104,7 @@ def SubmitKomunikasiView(request, nim, course_id):
 def NextKomunikasiView(request, nim, course_id):
     kel = request.POST['kelompok']
     penilaian = PenilaianKomunikasiForm()
-    return render(request, 'LO/next_form_komunikasi.html', {'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+    return render(request, 'LO/next_form_komunikasi.html', {'nim':request.user.first_name, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
 
 @allowed_users(['mahasiswa'])
 def NextKuesionerView(request, nim, course_id):
