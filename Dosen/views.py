@@ -147,6 +147,10 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     course = Course.objects.filter(course_id = course_id)[0]
     section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
     
+    teach = Teaches.objects.filter(dosen = lecturer, section = section)
+    if(len(teach) == 0):
+        return redirect('dosen:Home', nim = request.user.first_name)
+
     student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
     score_list = Score.getStudentTakesScores(Score, course_id = course_id, year = year, semester = semester, section_id = section_id)
