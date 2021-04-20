@@ -7,6 +7,8 @@ from .models import *
 from .forms import IdentitasForm, PenilaianKerjasamaForm, IdentitasKomunikasiForm, PenilaianKomunikasiForm, IdentitasKuesionerForm, PenilaianKuesionerForm
 
 from Mahasiswa.models import Student
+from User.decorators import allowed_users
+
 
 # KONSTANTA
 SEMESTER = 2
@@ -16,19 +18,23 @@ SEC_ID = 2
 # Create your views here.
 # def index(request):
 #     return HttpResponse("You're at the LO index")
+
 class LOView(generic.ListView):
     template_name = 'LO/lo_page.html'
     context_object_name = 'lo'
-
+    
+    # @allowed_users(['mahasiswa'])
     def get_queryset(self):
         return LO.objects.all().order_by('course_id__course_id')
 
+    # @allowed_users(['mahasiswa'])
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['nip'] = self.kwargs['nip']
         return context
 
+@allowed_users(['mahasiswa'])
 def NextKerjasamaView(request, nim, course_id):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
@@ -37,6 +43,7 @@ def NextKerjasamaView(request, nim, course_id):
     penilaian = PenilaianKerjasamaForm()
     return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
 
+@allowed_users(['mahasiswa'])
 def KerjasamaView(request,nim, course_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
@@ -48,6 +55,7 @@ def KerjasamaView(request,nim, course_id):
 
     return render(request, 'LO/form_kerjasama.html', {'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
 
+@allowed_users(['mahasiswa'])
 def SubmitKerjasamaView(request,nim, course_id):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
@@ -64,6 +72,7 @@ def SubmitKerjasamaView(request,nim, course_id):
 
     return render(request, 'LO/form_kerjasama_submit.html', {'identitas':identitas, 'kel':kel, 'course_id': course_id})    
 
+@allowed_users(['mahasiswa'])
 def KomunikasiView(request, nim, course_id):
     #Checking course_id nya valid gak
     course = get_object_or_404(Course, course_id=course_id)
@@ -74,6 +83,7 @@ def KomunikasiView(request, nim, course_id):
 
     return render(request, 'LO/form_komunikasi.html', {'nim' : nim, 'penilaian':penilaian, 'course_id': course_id, 'identitas': identitas})
 
+@allowed_users(['mahasiswa'])
 def SubmitKomunikasiView(request, nim, course_id):
     kel = request.POST['kelompok']
     
@@ -90,11 +100,13 @@ def SubmitKomunikasiView(request, nim, course_id):
 
     return render(request, 'LO/form_komunikasi_submit.html', {'nim' : nim, 'kel':kel, 'course_id': course_id})  
 
+@allowed_users(['mahasiswa'])
 def NextKomunikasiView(request, nim, course_id):
     kel = request.POST['kelompok']
     penilaian = PenilaianKomunikasiForm()
     return render(request, 'LO/next_form_komunikasi.html', {'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
 
+@allowed_users(['mahasiswa'])
 def NextKuesionerView(request, nim, course_id):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
@@ -103,6 +115,7 @@ def NextKuesionerView(request, nim, course_id):
     penilaian = PenilaianKerjasamaForm()
     return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
 
+@allowed_users(['mahasiswa'])
 def KuesionerView(request, nim, course_id, year, semester):
     # Get all the takes that semester
     identitas = request.user
@@ -113,6 +126,7 @@ def KuesionerView(request, nim, course_id, year, semester):
 
     return render(request, 'LO/form_kuesioner.html', {'penilaian':penilaian, 'course_id': course_id, 'year' : year, 'semester' : semester, 'identitas': identitas})
 
+@allowed_users(['mahasiswa'])
 def SubmitKuesionerView(request, nim, course_id, year, semester):
     # namaPengisi = request.POST['name']
     # NIMPengisi = request.POST['NIM']
@@ -144,11 +158,13 @@ class ListKuesionerView(generic.ListView):
     template_name = 'LO/list_kuesioner.html'
     context_object_name = 'kuesioner_list'
 
+    # @allowed_users(['mahasiswa'])
     def get_queryset(self):
         takes = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = self.kwargs['year'], section__semester = self.kwargs['semester'], isKuesionerFilled = False).order_by('section__course__course_id')
         
         return takes
 
+    # @allowed_users(['mahasiswa'])
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
@@ -158,7 +174,7 @@ class ListKuesionerView(generic.ListView):
         context['semester'] = self.kwargs['semester']
         return context
 
-
+@allowed_users(['mahasiswa'])
 def courseAssessmentPage(request, nip, year, semester):
     refreshCourseAssesmentPage(nip, year, semester)
     courseAssesment_list = CourseAssessmentScore.objects.filter(year = year, semester = semester)
@@ -170,7 +186,6 @@ def courseAssessmentPage(request, nip, year, semester):
     #context = {'dosen' : lecturer}, 'section': sections, 'scores': scores}
     context = {'nip' : nip, 'year' : year, 'semester': semester, 'scores' : courseAssesment_list, 'header' : header}
     return render(request, 'Dosen/course_assessment.html', context)
-
 
 def refreshCourseAssesmentPage(nip, year, semester):
     section_list = Section.objects.filter(semester = semester, year = year).order_by('course_id', 'sec_id')

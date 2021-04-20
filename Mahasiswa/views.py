@@ -3,6 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
 from Mahasiswa.models import Student
+from User.decorators import allowed_users
 
 # Konstanta
 BOBOT_FORM_KOMUNIKASI = 100 # dalam persen
@@ -19,6 +20,7 @@ INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 ##########################
 ### HOMEPAGE MAHASISWA ###
 ##########################
+@allowed_users(['mahasiswa'])
 def HomepageMahasiswaView(request, nim):
     return render(request, 'Mahasiswa/mahasiswa.html')
 
@@ -197,6 +199,7 @@ def calculateLOSuplemen(_nim, _year, _semester):
 
     return lo_suplemen_dict
 
+@allowed_users(['mahasiswa'])
 def LOSuplemenSemesterView(request, nim):
     student = Student.objects.get(nim = request.user.first_name)
 
