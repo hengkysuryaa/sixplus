@@ -204,6 +204,8 @@ class ListKuesionerView(generic.ListView):
             semester = 2
         else:
             semester = 1
+
+
         takes = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester, isKuesionerFilled = False).order_by('section__course__course_id')
         
         return takes

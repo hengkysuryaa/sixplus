@@ -239,8 +239,8 @@ class ListKerjasamaView(generic.ListView):
         else:
             semester = 1
 
-
-        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester)
+        available_kerjasama_course = LO.objects.all().exclude(lo_e = '-').values_list('course_id__course_id', flat = True)
+        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester, section__course__course_id__in = available_kerjasama_course)
         return takes_list
     
     def get_context_data(self, **kwargs):
@@ -268,9 +268,10 @@ class ListKomunikasiView(generic.ListView):
             semester = 2
         else:
             semester = 1
+        
 
-
-        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester)
+        available_komunikasi_course = LO.objects.all().exclude(lo_c = '-').values_list('course_id__course_id', flat = True)
+        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester, section__course__course_id__in = available_komunikasi_course)
         return takes_list
     
     def get_context_data(self, **kwargs):
