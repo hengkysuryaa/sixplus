@@ -53,7 +53,7 @@
             {% csrf_token %}
             <ul>
             {% for item in kuesioner_list %}
-                <li><h4 class="mt-0 mb-3"><a href="{% url 'mhs:FormKuesioner' nim item.section.year item.section.semester item.section.course.course_id %}">{{item}}</a></h4></li>
+                <li><h4 class="mt-0 mb-3"><a href="{% url 'mhs:FormKuesioner' nim item.section.year item.section.semester item.section.course.course_id %}">{{item.section.course}}</a></h4></li>
             {% endfor %}
             </ul>
             <br>
