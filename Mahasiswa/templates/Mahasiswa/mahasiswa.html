@@ -53,8 +53,9 @@
             <div class="d-grid gap-3 col-6 mx-auto">
                 <a class="btn btn-primary" type="button" href="" target="_blank">Kelas</a>
                 <a class="btn btn-primary" type="button" href="{% url 'mhs:ViewLOSuplemen' nim %}" target="_blank">LO Suplemen</a>
-                <a class="btn btn-primary" type="button" href="" target="_blank">Form Komunikasi</a>
-                <a class="btn btn-primary" type="button" href="" target="_blank">Form Kerjasama</a>
+                <a class="btn btn-primary" type="button" href="{% url 'mhs:ListFormKomunikasi' nim %}" target="_blank">Form Komunikasi</a>
+                <a class="btn btn-primary" type="button" href="{% url 'mhs:ListFormKerjasama' nim %}" target="_blank">Form Kerjasama</a>
+                <a class="btn btn-primary" type="button" href="{% url 'mhs:ListKuesioner' nim %}" target="_blank">Form Kuesioner</a>
             </div>
         </div>
     </body>
