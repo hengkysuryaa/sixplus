@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
 # Create your views here.
-from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
+from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section, ListKomponenScore
 from Mahasiswa.models import Student
 from User.decorators import allowed_users
 
@@ -17,7 +17,7 @@ KMT = {
     "M" : 2,
     "H" : 3
 }
-komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"] #TODO apabila ada perubahan jumlah komponen dapat diganti disini
+#komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"] #TODO apabila ada perubahan jumlah komponen dapat diganti disini
 INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 
 ##########################
@@ -34,6 +34,8 @@ def TestView(request):
     return render(request, 'Mahasiswa/test.html', {'score' : score})
 
 def scaleScore(_nim, _course_id, _year, _semester):
+    mhs_takes_section = Takes.objects.filter(student__nim=_nim, section__course__course_id=_course_id, section__semester=_semester, section__year=_year)[0].section
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=mhs_takes_section)[0].komponen
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
 
@@ -43,12 +45,16 @@ def scaleScore(_nim, _course_id, _year, _semester):
             takes__section__semester = _semester).values())[0]
 
     score_dict = {}
-    for i in range(len(komponen_nilai_list)):
-        score_dict[komponen_nilai_list[i]] = std_score[komponen_nilai_list[i]] / 100 * 4
+    for i in range(len(_komponen_nilai_list)):
+        score_dict[_komponen_nilai_list[i]] = std_score[_komponen_nilai_list[i]] / 100 * 4
 
     return score_dict
 
-def createLOAndBobotDict(_course_id):
+def createLOAndBobotDict(_nim, _course_id, _year, _semester):
+    
+    mhs_takes_section = Takes.objects.filter(student__nim=_nim, section__course__course_id=_course_id, section__semester=_semester, section__year=_year)[0].section
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=mhs_takes_section)[0].komponen
+    
     dict = {}
 
     #get LO list from a course
@@ -61,15 +67,15 @@ def createLOAndBobotDict(_course_id):
 
     for i in range(n):
         komponen_dict = {}
-        for j in range(len(komponen_nilai_list)):
-            komponen_dict[komponen_nilai_list[j]] = bobot_list.get(komponen_nilai_list[j])[i]
+        for j in range(len(_komponen_nilai_list)):
+            komponen_dict[_komponen_nilai_list[j]] = bobot_list.get(_komponen_nilai_list[j])[i]
         dict[lo_list[i]] = komponen_dict
     
     return dict
 
 def mapScoreAndBobot(_nim, _course_id, _year, _semester):
     score = scaleScore(_nim, _course_id, _year, _semester)
-    lo_bobot_dict = createLOAndBobotDict(_course_id)
+    lo_bobot_dict = createLOAndBobotDict(_nim, _course_id, _year, _semester)
 
     score_keys = list(score.keys())
     lo_bobot_keys = list(lo_bobot_dict.keys())
@@ -86,7 +92,7 @@ def mapScoreAndBobot(_nim, _course_id, _year, _semester):
 
 def calculateLO(_nim, _course_id,  _year, _semester):
     map_score_dict = mapScoreAndBobot(_nim, _course_id, _year, _semester)
-    lo_bobot_dict = createLOAndBobotDict(_course_id)
+    lo_bobot_dict = createLOAndBobotDict(_nim, _course_id, _year, _semester)
     
     lo_keys = list(map_score_dict.keys())
     komponen_keys = list(list(map_score_dict.values())[0].keys())

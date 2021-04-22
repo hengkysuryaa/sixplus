@@ -79,6 +79,13 @@ class Takes(models.Model):
     def get_individual_student_takes(self, nim, section):
         return Takes.objects.filter(student__nim = nim, section = section)
 
+class ListKomponenScore(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    komponen = ArrayField(models.CharField(max_length=100))
+
+    def __str__(self):
+        return f"{self.section} - {self.komponen}"
+
 class Score(models.Model):
     takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
     uts1 = models.IntegerField()

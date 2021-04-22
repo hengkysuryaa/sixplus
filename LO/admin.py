@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import LO, Course, Section, BobotKomponenScore, Score, Takes, ResponseKerjasama, ResponseKomunikasi, ResponseKuesioner, LOSuplemenCourse, LOSuplemenSemester, CourseAssessmentScore
+from .models import LO, Course, Section, BobotKomponenScore, Score, Takes, ResponseKerjasama, ResponseKomunikasi, ResponseKuesioner, LOSuplemenCourse, LOSuplemenSemester, CourseAssessmentScore, ListKomponenScore
 
 # Register your models here.
 admin.site.register(LO)
@@ -14,3 +14,4 @@ admin.site.register(LOSuplemenCourse)
 admin.site.register(LOSuplemenSemester)
 admin.site.register(ResponseKuesioner)
 admin.site.register(CourseAssessmentScore)
+admin.site.register(ListKomponenScore)

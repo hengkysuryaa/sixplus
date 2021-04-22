@@ -15,7 +15,7 @@ from User.decorators import allowed_users
 
 
 # Konstanta
-komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
+#komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"]
 indeks_list = ["A", "AB", "B", "BC", "C", "D", "E"]
 lo_list = ['lo_a', 'lo_b', 'lo_c', 'lo_d', 'lo_e', 'lo_f', 'lo_g']
 KMT = {
@@ -274,13 +274,13 @@ def BobotIndeksView(request, nip, year, semester, course_id, section_id):
     #Ambil data
     section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
     bobotindeks = BobotIndeks.objects.filter(section=section[0])
-
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=section[0])[0].komponen
     komponen_dict = {}
-    for i in range(len(komponen_nilai_list)):
+    for i in range(len(_komponen_nilai_list)):
         if (len(bobotindeks) != 0):
-            komponen_dict[komponen_nilai_list[i]] = bobotindeks[0].listbobot[i]
+            komponen_dict[_komponen_nilai_list[i]] = bobotindeks[0].listbobot[i]
         else:
-            komponen_dict[komponen_nilai_list[i]] = ''
+            komponen_dict[_komponen_nilai_list[i]] = ''
 
     batas_indeks_dict = {}
     for i in range(len(indeks_list)):
@@ -297,12 +297,13 @@ def BobotIndeksSubmitView(request, nip, year, semester, course_id, section_id):
     #Ambil data
     section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
     bobotindeks = BobotIndeks.objects.filter(section=section[0])
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=section[0])[0].komponen
 
     listbobot = []
     sum = 0
-    for i in range(len(komponen_nilai_list)):
-        listbobot.append(int(request.POST[komponen_nilai_list[i]]))
-        sum = sum + int(request.POST[komponen_nilai_list[i]])
+    for i in range(len(_komponen_nilai_list)):
+        listbobot.append(int(request.POST[_komponen_nilai_list[i]]))
+        sum = sum + int(request.POST[_komponen_nilai_list[i]])
     
     batasindeks = []
     for i in range(len(indeks_list)):
@@ -325,6 +326,7 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
     takes = list(Takes.objects.filter(section=section[0]))
     bobotindeks = list(BobotIndeks.objects.filter(section=section[0]).values())[0].get('listbobot')
     batas_indeks_list = list(BobotIndeks.objects.filter(section=section[0]).values())[0].get('batasindeks')
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=section[0])[0].komponen
 
     for i in range(len(takes)):
         score = list(Score.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section).values())
@@ -333,8 +335,8 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
             break
 
         sum = 0
-        for j in range(len(komponen_nilai_list)):
-            sum = sum + (score[0].get(komponen_nilai_list[j]) * bobotindeks[j]) / 100
+        for j in range(len(_komponen_nilai_list)):
+            sum = sum + (score[0].get(_komponen_nilai_list[j]) * bobotindeks[j]) / 100
         
         indeks = '-'
         # Mapping sum ke indeks
