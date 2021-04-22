@@ -61,8 +61,9 @@ class DosenSectionListView(generic.ListView):
         context = super().get_context_data(**kwargs)
 
         # Add in a QuerySet of all the context
-        username = User.objects.filter(username = self.request.user.username)
-        lecturer = Lecturer.objects.get(user = username[0])
+        # username = User.objects.filter(username = self.request.user.username)
+        # lecturer = Lecturer.objects.get(user = username[0])
+        lecturer = Lecturer.objects.get(nip = self.request.user.first_name)
 
         context['dosen'] = lecturer
         context['nip'] = self.kwargs['nip']
@@ -141,8 +142,9 @@ def SubmitView(request, nip, course_id):
 def penilaianPage(request, nip, year, semester, course_id, section_id):
     count_indeks_dict = countIndeks(year, semester, course_id, section_id)
 
-    username = User.objects.filter(username = request.user.username)
-    lecturer = Lecturer.objects.get(user = username[0])
+    # username = User.objects.filter(username = request.user.username)
+    # lecturer = Lecturer.objects.get(user = username[0])
+    lecturer = Lecturer.objects.get(nip = request.user.first_name)
 
     course = Course.objects.filter(course_id = course_id)[0]
     section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
@@ -169,9 +171,11 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
 @allowed_users(['dosen'])
 def showPenilaianPage(request, nip):
     # print(request.POST.get('section'))
-    username = User.objects.filter(username = request.user.username)
-    lecturer = Lecturer.objects.get(user = username[0])
-    lecturerForTeaches = Lecturer.objects.filter(user = username[0])
+    # username = User.objects.filter(username = request.user.username)
+    # lecturer = Lecturer.objects.get(user = username[0])
+    # lecturerForTeaches = Lecturer.objects.filter(user = username[0])
+    lecturer = Lecturer.objects.get(nip = request.user.first_name)
+    lecturerForTeaches = Lecturer.objects.filter(nip = request.user.first_name)
     teaches = Teaches.objects.filter(dosen = lecturerForTeaches[0])
     
 
