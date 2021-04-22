@@ -120,22 +120,44 @@ class DistribusiKomponenNilaiView(generic.ListView):
         return context
 
 @allowed_users(['dosen'])
-def FormsDistribusiNilai(request, nip, course_id):
+def FormsDistribusiNilai(request, nip, year, semester, course_id, section_id):
     lo_list, course = LO.getCourseLO(LO, course_id)
-    return render(request, 'Dosen/lo_form.html', {'list' : lo_list, 'nip' : nip, 'course' : course})
+    section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=section[0])[0].komponen
+    return render(request, 'Dosen/lo_form.html', {'komponen_list':_komponen_nilai_list, 
+            'list' : lo_list, 'nip' : nip, 'course' : course, 'year':year, 'semester':semester, 'section_id':section_id})
 
 @allowed_users(['dosen'])
-def SubmitView(request, nip, course_id):
+def SubmitView(request, nip, year, semester, course_id, section_id):
+    section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=section[0])[0].komponen
+    
     # get all input values & convert to array of integer 
-    uts1 = [int(numeric_str) for numeric_str in request.POST.getlist('uts1')]
-    uts2 = [int(numeric_str) for numeric_str in request.POST.getlist('uts2')]
-    uas = [int(numeric_str) for numeric_str in request.POST.getlist('uas')]
-    kuis = [int(numeric_str) for numeric_str in request.POST.getlist('kuis')]
-    tutorial = [int(numeric_str) for numeric_str in request.POST.getlist('tutorial')]
-    course = Course.objects.filter(course_id = course_id)
-    b = BobotKomponenScore(course=course[0], uts1=uts1, uts2=uts2, uas=uas, kuis=kuis, tutorial=tutorial)
-    b.save()
-    return render(request, 'Dosen/berhasil.html', {'nip' : nip})
+    # uts1 = [int(numeric_str) for numeric_str in request.POST.getlist('uts1')]
+    # uts2 = [int(numeric_str) for numeric_str in request.POST.getlist('uts2')]
+    # uas = [int(numeric_str) for numeric_str in request.POST.getlist('uas')]
+    # kuis = [int(numeric_str) for numeric_str in request.POST.getlist('kuis')]
+    # tutorial = [int(numeric_str) for numeric_str in request.POST.getlist('tutorial')]
+    # course = Course.objects.filter(course_id = course_id)
+    # b = BobotKomponenScore(course=course[0], uts1=uts1, uts2=uts2, uas=uas, kuis=kuis, tutorial=tutorial)
+    # b.save()
+
+    _bobot = []
+    flag = False
+    for i in range (len(_komponen_nilai_list)):
+        res = [int(numeric_str) for numeric_str in request.POST.getlist(_komponen_nilai_list[i])]
+        if (sum(res) > 100):
+            msg = _komponen_nilai_list[i] + " lebih dari 100%" 
+            messages.error(request, msg)
+            flag = True
+            break
+        _bobot.append(res)
+
+    if (not(flag)):
+        bbt = BobotKomponenScores(section=section[0], bobot=_bobot)
+        bbt.save()
+
+    return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id) 
 
 
 @allowed_users(['dosen'])

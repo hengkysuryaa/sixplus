@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
 # Create your views here.
-from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section, ListKomponenScore
+from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section, ListKomponenScore, BobotKomponenScores
 from Mahasiswa.models import Student
 from User.decorators import allowed_users
 
@@ -62,13 +62,18 @@ def createLOAndBobotDict(_nim, _course_id, _year, _semester):
     n = len(lo_list)
 
     #get bobot komponen score from a course
-    course = Course.objects.filter(course_id=_course_id)
-    bobot_list = list(BobotKomponenScore.objects.filter(course=course[0]).values())[0]
+    # course = Course.objects.filter(course_id=_course_id)
+    # bobot_list = list(BobotKomponenScore.objects.filter(course=course[0]).values())[0]
+    
+    bobot_komponen_dict = {}
+    _bobot_list = BobotKomponenScores.objects.filter(section=mhs_takes_section)[0].bobot
+    for i in range(len(_komponen_nilai_list)):
+        bobot_komponen_dict[_komponen_nilai_list[i]] = _bobot_list[i]
 
     for i in range(n):
         komponen_dict = {}
         for j in range(len(_komponen_nilai_list)):
-            komponen_dict[_komponen_nilai_list[j]] = bobot_list.get(_komponen_nilai_list[j])[i]
+            komponen_dict[_komponen_nilai_list[j]] = bobot_komponen_dict.get(_komponen_nilai_list[j])[i]
         dict[lo_list[i]] = komponen_dict
     
     return dict

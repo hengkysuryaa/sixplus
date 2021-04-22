@@ -148,6 +148,13 @@ class BobotKomponenScore(models.Model):
     def __str__(self):
         return f"{self.course}, UTS1:{self.uts1}, UTS2:{self.uts2}, UAS:{self.uas}, Kuis:{self.kuis}, Tutorial:{self.tutorial}"
 
+class BobotKomponenScores(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    bobot = ArrayField(ArrayField(models.IntegerField()))
+
+    def __str__(self):
+        return f"{self.section}, bobot:{self.bobot}"
+
 class ResponseKerjasama(models.Model):
     takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
     Kontribusi = models.IntegerField()
