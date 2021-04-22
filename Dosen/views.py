@@ -12,6 +12,7 @@ from Mahasiswa.views import calculateLO
 import numpy as np
 
 from User.decorators import allowed_users
+from Mahasiswa.views import createScoreDict
 
 
 # Konstanta
@@ -351,14 +352,15 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
     _komponen_nilai_list = ListKomponenScore.objects.filter(section=section[0])[0].komponen
 
     for i in range(len(takes)):
-        score = list(Score.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section).values())
-        
-        if (len(score) == 0):
+        #score = list(Score.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section).values())
+        _score_list = Scores.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section)[0].scores
+        _score = createScoreDict(_komponen_nilai_list, _score_list)
+        if (len(_score) == 0):
             break
 
         sum = 0
         for j in range(len(_komponen_nilai_list)):
-            sum = sum + (score[0].get(_komponen_nilai_list[j]) * bobotindeks[j]) / 100
+            sum = sum + (_score.get(_komponen_nilai_list[j]) * bobotindeks[j]) / 100
         
         indeks = '-'
         # Mapping sum ke indeks
@@ -377,8 +379,9 @@ def calculateCourseOutcomeLO(_course_id, _year, _semester):
     lo_sup_std_list = []
     for i in range (len(takes_list)):
         # Cek apakah nilai nya ada
-        score = Score.objects.filter(takes=takes_list[i])
-        if (len(score) > 0):
+        #score = Score.objects.filter(takes=takes_list[i])
+        _score = Scores.objects.filter(takes=takes_list[i])
+        if (len(_score) > 0):
             lo_course = calculateLO(takes_list[i].student.nim, _course_id, _year, _semester)
             lo_sup_std_list.append(lo_course)
     

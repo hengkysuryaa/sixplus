@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
 # Create your views here.
-from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section, ListKomponenScore, BobotKomponenScores
+from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section, ListKomponenScore, BobotKomponenScores, Scores
 from Mahasiswa.models import Student
 from User.decorators import allowed_users
 
@@ -33,20 +33,29 @@ def TestView(request):
     score = calculateLOSuplemen("13120002", 2020, 2)
     return render(request, 'Mahasiswa/test.html', {'score' : score})
 
+def createScoreDict(komponen_nilai_list, score_list):
+    score_dict = {}
+    for i in range (len(komponen_nilai_list)):
+        score_dict[komponen_nilai_list[i]] = score_list[i]
+    return score_dict
+
 def scaleScore(_nim, _course_id, _year, _semester):
     mhs_takes_section = Takes.objects.filter(student__nim=_nim, section__course__course_id=_course_id, section__semester=_semester, section__year=_year)[0].section
     _komponen_nilai_list = ListKomponenScore.objects.filter(section=mhs_takes_section)[0].komponen
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
 
-    std_score = list(Score.objects.filter(takes__student=std[0], 
-            takes__section__course = course[0], 
-            takes__section__year = _year, 
-            takes__section__semester = _semester).values())[0]
+    # std_score = list(Score.objects.filter(takes__student=std[0], 
+    #         takes__section__course = course[0], 
+    #         takes__section__year = _year, 
+    #         takes__section__semester = _semester).values())[0]
+    
+    score_list = Scores.objects.filter(takes__section = mhs_takes_section)[0].scores
+    _std_score = createScoreDict(_komponen_nilai_list, score_list)
 
     score_dict = {}
     for i in range(len(_komponen_nilai_list)):
-        score_dict[_komponen_nilai_list[i]] = std_score[_komponen_nilai_list[i]] / 100 * 4
+        score_dict[_komponen_nilai_list[i]] = _std_score.get(_komponen_nilai_list[i]) / 100 * 4
 
     return score_dict
 

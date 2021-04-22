@@ -86,6 +86,13 @@ class ListKomponenScore(models.Model):
     def __str__(self):
         return f"{self.section} - {self.komponen}"
 
+class Scores(models.Model):
+    takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
+    scores = ArrayField(models.IntegerField())
+
+    def __str__(self):
+        return f"{self.takes}, Skor:{self.scores}"
+
 class Score(models.Model):
     takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
     uts1 = models.IntegerField()
