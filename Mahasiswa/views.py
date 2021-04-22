@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404
+from django.views import generic
 
 # Create your views here.
 from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
 from Mahasiswa.models import Student
 from User.decorators import allowed_users
+
+import datetime
 
 # Konstanta
 BOBOT_FORM_KOMUNIKASI = 100 # dalam persen
@@ -216,3 +219,64 @@ def LOSuplemenSemesterView(request, nim):
 
     context = {'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
+
+###########################
+### LIST FORM KERJASAMA ###
+###########################
+class ListKerjasamaView(generic.ListView):
+    template_name = 'Mahasiswa/list_form_kerjasama.html'
+    context_object_name = 'takes_list'
+
+    def get_queryset(self):
+        date = datetime.date.today()
+        year = date.year
+        month = date.month
+        semester = 1
+
+        if(month <= 6):
+            year -= 1
+            semester = 2
+        else:
+            semester = 1
+
+        available_kerjasama_course = LO.objects.all().exclude(lo_e = '-').values_list('course_id__course_id', flat = True)
+        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester, section__course__course_id__in = available_kerjasama_course)
+        return takes_list
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        context['nim'] = self.kwargs['nim']
+        return context
+
+###########################
+### LIST FORM KOMUNIKASI ###
+###########################
+class ListKomunikasiView(generic.ListView):
+    template_name = 'Mahasiswa/list_form_komunikasi.html'
+    context_object_name = 'takes_list'
+
+    def get_queryset(self):
+        date = datetime.date.today()
+        year = date.year
+        month = date.month
+        semester = 1
+
+        if(month <= 6):
+            year -= 1
+            semester = 2
+        else:
+            semester = 1
+        
+
+        available_komunikasi_course = LO.objects.all().exclude(lo_c = '-').values_list('course_id__course_id', flat = True)
+        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester, section__course__course_id__in = available_komunikasi_course)
+        return takes_list
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        context['nim'] = self.kwargs['nim']
+        return context

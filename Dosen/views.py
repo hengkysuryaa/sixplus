@@ -149,7 +149,7 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     
     teach = Teaches.objects.filter(dosen = lecturer, section = section)
     if(len(teach) == 0):
-        return redirect('dosen:Home', nim = request.user.first_name)
+        return redirect('dosen:Home', nip = request.user.first_name)
 
     student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 

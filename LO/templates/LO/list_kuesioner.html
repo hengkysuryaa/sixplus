@@ -5,7 +5,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
         <title>
-            List Kuesioner Tersedia Semester {{semester}} {{year}}-{{year}+1}
+            List Kuesioner Tersedia
         </title>
     </head>
     <body>
@@ -53,7 +53,7 @@
             {% csrf_token %}
             <ul>
             {% for item in kuesioner_list %}
-                <li><h4 class="mt-0 mb-3"><a href="{% url 'mhs:FormKuesioner' nim year semester item.section.course.course_id %}">{{item}}</a></h4></li>
+                <li><h4 class="mt-0 mb-3"><a href="{% url 'mhs:FormKuesioner' nim item.section.year item.section.semester item.section.course.course_id %}">{{item.section.course}}</a></h4></li>
             {% endfor %}
             </ul>
             <br>
