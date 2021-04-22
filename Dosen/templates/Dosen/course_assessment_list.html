@@ -1,11 +1,46 @@
-<html>
+<!DOCTYPE html>
     <head>
+        <title> Course Asessment </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <title>
-            Pembobotan Komponen Penilaian
-        </title>
+        <style>
+            .button {
+              border: none;
+              color: white;
+              padding: 16px 32px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 16px;
+              margin: 4px 2px;
+              transition-duration: 0.4s;
+              cursor: pointer;
+            }
+            
+            .button1 {
+              background-color: white; 
+              color: black; 
+              border: 2px solid #4CAF50;
+            }
+            
+            .button1:hover {
+              background-color: #4CAF50;
+              color: white;
+            }
+            
+            .button2 {
+              background-color: white; 
+              color: black; 
+              border: 2px solid #008CBA;
+            }
+            
+            .button2:hover {
+              background-color: #008CBA;
+              color: white;
+            }
+            
+            </style>
     </head>
     <body>
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -16,17 +51,15 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Aplikasi</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'dosen:OMM' nip %}">Objective Matrix Model</a>
-                        <a class="dropdown-item" href="{% url 'dosen:SectionWithTeaches' nip %}">Nilai</a>
-                        <a class="dropdown-item" href="{% url 'dosen:KomponenNilai' nip %}">Komponen Nilai</a>
-                        <!--
+                        <a class="dropdown-item" href="#">Kurikulum</a>
+                        <a class="dropdown-item" href="#">Status Mahasiswa</a>
                         <a class="dropdown-item" href="#">Keuangan & Beasiswa</a>
                         <a class="dropdown-item" href="#">Kelas</a>
                         <a class="dropdown-item" href="#">Rencana Studi & Perwalian</a>
                         <a class="dropdown-item" href="#">Penjurusan TPB</a>
                         <a class="dropdown-item" href="#">Evaluasi Perkuliahan & Portofolio</a>
                         <a class="dropdown-item" href="#">Wisuda</a>
-                        <a class="dropdown-item" href="#">Control Panel</a> -->
+                        <a class="dropdown-item" href="#">Control Panel</a>
                     </div>
                 </li>
             </ul>
@@ -47,9 +80,25 @@
             </ul>
         </nav>
         <div class="container">
-            {% csrf_token %}
-            <h1 class="mt-4 mb-4"> Berhasil Tersimpan </h1>
-            <h4 class="mt-0 mb-4"><a href="{% url 'dosen:KomponenNilai' nip %}">Klik disini untuk mengisi lagi</a></h4>
+            <h1>Course Assessment </h1>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <form action="{% url 'dosen:SubmitCourseAssessmentList' nip %}" method = "POST">
+                        {% csrf_token %}
+                        <label for="semyear">Choose semester and year</label>
+                        <select id="semyear" name="semyear">
+                            {% for key, value in list_tahun_dict.items %}
+                                {% for sem in value %}
+                                    <option value="{{key}}, {{sem}}"> Course Assessment {{key}}-{{sem}} </option>
+                                {% endfor %}
+                            {% endfor %}
+                        </select>
+                        <input type="submit">
+                    </form>
+                </div>
+            </div> 
         </div>
     </body>
 </html>

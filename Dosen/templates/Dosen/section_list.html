@@ -1,5 +1,6 @@
 <!DOCTYPE html>
     <head>
+        <title> Penilaian Kelas </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -79,23 +80,23 @@
             </ul>
         </nav>
         <div class="container">
-            <h1>Daftar Kelas </h1>
+            <h1 class="mt-4 mb-4">Daftar Kelas </h1>
         </div>
         
         <div class="container">
-            <h3>Nama : {{dosen.name}} </h3>
-            <h3>NIP  : {{dosen.nip}}</h3>
+            <h3 class="mt-0 mb-2"><small>Nama : {{dosen.name}} </small></h3>
+            <h3 class="mt-0 mb-4"><small>NIP  : {{dosen.nip}} </small></h3>
             <div class="row">
                 <div class="col-md-8">
                     <form action="{% url 'dosen:GetSection' nip year semester %}" method = "POST">
                         {% csrf_token %}
-                        <label for="section">Choose a section</label>
+                        <label for="section" class="mt-0 mb-5 me-1">Choose a section</label>
                         <select id="section" name="section">
                             {% for kelas in section_list %}
                             <option value="{{kelas.course.course_id}}, {{kelas.sec_id}}">{{kelas}}</option>
                             {% endfor %}
                         </select>
-                        <input type="submit">
+                        <input type="submit" class="ms-2">
                     </form>
                 </div>
             </div> 

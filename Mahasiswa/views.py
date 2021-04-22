@@ -1,8 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.views import generic
 
 # Create your views here.
 from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
 from Mahasiswa.models import Student
+from User.decorators import allowed_users
+
+import datetime
 
 # Konstanta
 BOBOT_FORM_KOMUNIKASI = 100 # dalam persen
@@ -19,8 +23,10 @@ INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 ##########################
 ### HOMEPAGE MAHASISWA ###
 ##########################
+@allowed_users(['mahasiswa'])
 def HomepageMahasiswaView(request, nim):
-    return render(request, 'Mahasiswa/mahasiswa.html')
+    mahasiswa = get_object_or_404(Student, nim = nim)
+    return render(request, 'Mahasiswa/mahasiswa.html', {'nim' : nim, 'mahasiswa' : mahasiswa})
 
 def TestView(request):
     
@@ -110,8 +116,9 @@ def summarizeResponseKerjasama(_nim, _course_id, _year, _semester):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
     section = Section.objects.filter(course=course[0], year=_year, semester=_semester)
-    takes = Takes.objects.filter(student=std[0], section=section[0])
-    
+    #takes = Takes.objects.filter(student=std[0], section=section[0])
+    takes = Takes.objects.filter(student=std[0], section__year = _year, section__semester = _semester, section__course__course_id = _course_id)
+
     responses = list(ResponseKerjasama.objects.filter(takes=takes[0]).values())
     
     if (len(responses) == 0):
@@ -138,8 +145,9 @@ def summarizeResponseKomunikasi(_nim, _course_id, _year, _semester):
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
     section = Section.objects.filter(course=course[0], year=_year, semester=_semester)
-    takes = Takes.objects.filter(student=std[0], section=section[0])
-    
+    #takes = Takes.objects.filter(student=std[0], section=section[0])
+    takes = Takes.objects.filter(student=std[0], section__year = _year, section__semester = _semester, section__course__course_id = _course_id)
+ 
     responses = list(ResponseKomunikasi.objects.filter(takes=takes[0]).values())
     
     if (len(responses) == 0):
@@ -195,15 +203,80 @@ def calculateLOSuplemen(_nim, _year, _semester):
 
     return lo_suplemen_dict
 
+@allowed_users(['mahasiswa'])
 def LOSuplemenSemesterView(request, nim):
     student = Student.objects.get(nim = request.user.first_name)
 
-    #TODO: TIDAK DI HARDCODE
+    list_tahun = []
+    list_takes = list(Takes.objects.filter(student = student).values())
+    for item in list_takes:
+        list_tahun.append(Section.objects.filter(id=item.get('section_id'))[0].year)
+
     list_lo_suplemen = []
-    lo_suplemen_sem1 = calculateLOSuplemen(request.user.first_name, 2020, 1)
-    lo_suplemen_sem2 = calculateLOSuplemen(request.user.first_name, 2020, 2)
-    list_lo_suplemen.append(lo_suplemen_sem1)
-    list_lo_suplemen.append(lo_suplemen_sem2)
+    for year in list(set(list_tahun)):
+        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 1))
+        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 2))
 
     context = {'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
+
+###########################
+### LIST FORM KERJASAMA ###
+###########################
+class ListKerjasamaView(generic.ListView):
+    template_name = 'Mahasiswa/list_form_kerjasama.html'
+    context_object_name = 'takes_list'
+
+    def get_queryset(self):
+        date = datetime.date.today()
+        year = date.year
+        month = date.month
+        semester = 1
+
+        if(month <= 6):
+            year -= 1
+            semester = 2
+        else:
+            semester = 1
+
+        available_kerjasama_course = LO.objects.all().exclude(lo_e = '-').values_list('course_id__course_id', flat = True)
+        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester, section__course__course_id__in = available_kerjasama_course)
+        return takes_list
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        context['nim'] = self.kwargs['nim']
+        return context
+
+###########################
+### LIST FORM KOMUNIKASI ###
+###########################
+class ListKomunikasiView(generic.ListView):
+    template_name = 'Mahasiswa/list_form_komunikasi.html'
+    context_object_name = 'takes_list'
+
+    def get_queryset(self):
+        date = datetime.date.today()
+        year = date.year
+        month = date.month
+        semester = 1
+
+        if(month <= 6):
+            year -= 1
+            semester = 2
+        else:
+            semester = 1
+        
+
+        available_komunikasi_course = LO.objects.all().exclude(lo_c = '-').values_list('course_id__course_id', flat = True)
+        takes_list = Takes.objects.filter(student__nim = self.kwargs['nim'], section__year = year, section__semester = semester, section__course__course_id__in = available_komunikasi_course)
+        return takes_list
+    
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        context['nim'] = self.kwargs['nim']
+        return context
