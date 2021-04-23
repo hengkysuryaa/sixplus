@@ -227,15 +227,24 @@ def calculateLOSuplemen(_nim, _year, _semester):
 def LOSuplemenSemesterView(request, nim):
     student = Student.objects.get(nim = request.user.first_name)
 
-    list_tahun = []
+    #list_tahun = []
     list_takes = list(Takes.objects.filter(student = student).values())
+    year_sem_dict = {}
     for item in list_takes:
-        list_tahun.append(Section.objects.filter(id=item.get('section_id'))[0].year)
+        #list_tahun.append(Section.objects.filter(id=item.get('section_id'))[0].year)
+        sem = Section.objects.filter(id=item.get('section_id'))[0].semester
+        year = Section.objects.filter(id=item.get('section_id'))[0].year
+        val = year_sem_dict.get(year)
+
+        if (val == None):
+            year_sem_dict[year] = []
+        year_sem_dict[year].append(sem)
+        year_sem_dict[year] = list(set(year_sem_dict.get(year)))
 
     list_lo_suplemen = []
-    for year in list(set(list_tahun)):
-        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 1))
-        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 2))
+    for key, value in year_sem_dict.items():
+        for sem in value:
+            list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, key, sem))
 
     context = {'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
