@@ -329,6 +329,9 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
                 bobotindeks = BobotIndeks.objects.filter(section = section)
                 if (len(bobotindeks) != 0):
                     bobotindeks[0].delete()
+                update_takes = list(Takes.objects.filter(section=section))
+                for i in range(len(update_takes)):
+                    Takes.objects.filter(student=update_takes[i].student, section=section).update(grade='-')
                 return redirect('dosen:FormKomponen', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
         else:
             messages.error(request, 'FILENAME IS WRONG, PLEASE CHECK THE NAME ONCE AGAIN')
