@@ -326,6 +326,9 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
                         Scores.setStudentScore(Scores, takes = takes[0], row = row)
                         print(row)
             if(isNeedChangeBobot):
+                bobotindeks = BobotIndeks.objects.filter(section = section)
+                if (len(bobotindeks) != 0):
+                    bobotindeks[0].delete()
                 return redirect('dosen:FormKomponen', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
         else:
             messages.error(request, 'FILENAME IS WRONG, PLEASE CHECK THE NAME ONCE AGAIN')
