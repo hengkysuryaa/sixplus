@@ -68,7 +68,7 @@ class Takes(models.Model):
         return f"{self.student}, {self.section}, {self.grade}"
     
     def get_student_takes(self, Section):
-        t = Takes.objects.filter(section = Section)
+        t = Takes.objects.filter(section = Section).order_by('student__nim')
         student_nim_list = []
         student_name_list = []
         for obj in t:
@@ -96,7 +96,7 @@ class ListKomponenScore(models.Model):
                 different = True
             else:
                 for i in range(len(columns)):
-                    different = (columns[i] != check[0].komponen[i])
+                    different = (columns[i].lower() != check[0].komponen[i].lower())
                     if(different):
                         check[0].delete()
                         new_komponen = ListKomponenScore.objects.create(section = section, komponen = columns)
@@ -119,7 +119,7 @@ class Scores(models.Model):
             takes__section__course__course_id = course_id, 
             takes__section__year = year, 
             takes__section__semester = semester,
-            takes__section__sec_id = section_id)
+            takes__section__sec_id = section_id).order_by('takes__student__nim')
         score_list = []
 
         for obj in scores:

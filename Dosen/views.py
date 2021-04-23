@@ -94,11 +94,10 @@ def SectionPage2(request, nip):
         section_id = section_info[-1]
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
+
 ######################
 ### KOMPONEN NILAI ###
 ######################
-
-
 class DistribusiKomponenNilaiView(generic.ListView):
     template_name = 'Dosen/page.html'
     context_object_name = 'course_list'
@@ -201,7 +200,14 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
 
     student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
-    score_list = Score.getStudentTakesScores(Score, course_id = course_id, year = year, semester = semester, section_id = section_id)
+    score_list = Scores.getStudentTakesScores(Scores, course_id = course_id, year = year, semester = semester, section_id = section_id)
+    score_komponen_list = ListKomponenScore.objects.filter(section = section)[0].komponen
+    score_komponen_list_upper = []
+    for komponen in score_komponen_list:
+    	score_komponen_list_upper.append(komponen.upper())
+
+    print(score_komponen_list_upper)
+
     bobotindeks = BobotIndeks.objects.filter(section=section)
     if (len(score_list) != 0 and len(bobotindeks) !=0):
         calculateNilaiAkhir(year, semester, course_id, section_id)
@@ -211,7 +217,7 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     header = str(course_id) + " " + course.title +  " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
 
     #context = {'dosen' : lecturer}, 'section': sections, 'scores': scores}
-    context = {'indeks_dict' : count_indeks_dict, 'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id, 'scores' : score_list, 'header' : header}
+    context = {'indeks_dict' : count_indeks_dict, 'dosen' : lecturer , 'nip' : nip, 'year' : year, 'semester': semester, 'course_id' :course_id, 'section_id' : section_id, 'scores' : score_list, 'scores_komponen' : score_komponen_list_upper, 'header' : header}
     return render(request, 'Dosen/penilaian.html', context)
 
 @allowed_users(['dosen'])
@@ -244,35 +250,22 @@ def exportListMhs(request, nip, year, semester, course_id, section_id):
     list_nim, list_nama = Takes.get_student_takes(Takes, section)
     
     komponent_list = ListKomponenScore.objects.filter(section = section)[0].komponen
-    print(komponent_list)
     score_list = Scores.getStudentTakesScores(Scores, course_id = course_id, year = year, semester = semester, section_id = section_id)
 
     data = {'NIM':list_nim, 'Nama':list_nama}
     for i in range(len(komponent_list)):
         data[komponent_list[i]] = []
-    #data = {'NIM':[], 'Nama':[], 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
+
 
     for nim in list_nim:
         score = score_list.filter(takes__student__nim = nim)
         if(len(score) != 0):
             for i in range(len(komponent_list)):
                 data[komponent_list[i]].append(score[0].scores[i])
-            # data['UTS1'].append(score[0].uts1)
-            # data['UTS2'].append(score[0].uts2)
-            # data['UAS'].append(score[0].uas)
-            # data['Kuis'].append(score[0].kuis)
-            # data['Tutorial'].append(score[0].tutorial)
         else:
             for i in range(len(komponent_list)):
                 data[komponent_list[i]].append('')
-            # data['UTS1'].append('')
-            # data['UTS2'].append('')
-            # data['UAS'].append('')
-            # data['Kuis'].append('')
-            # data['Tutorial'].append('')
 
-
-    #data = {'NIM':list_nim, 'Nama':list_nama, 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
     df = convert_normal_array_to_pandas(data)
     #name = section.course_id.course_id + " K" + str(section.sec_id)
     name = str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
@@ -284,7 +277,7 @@ def exportListMhs(request, nip, year, semester, course_id, section_id):
         name = name,
     )
 
-    export_pandas_to_sheet(df, response, name)
+    export_pandas_to_sheet(df, response, name, use_title = True, title = "Mohon tidak memodifikasi kolom NIM dan nama, silahkan memodifikasi/mengurangi/menambah komponen nilai sesuai kebutuhan setelah kedua kolom tersebut")
 
     return response
 
@@ -310,7 +303,7 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
     if(filename[-1] == "xlsx"):
         if(filename[0] == "Lembar Penilaian " + str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)):    
             section = get_object_or_404(Section, year = year, semester = semester, course_id__course_id  = course_id, sec_id = section_id)
-            dc = import_sheet_as_pandas(excel_file, str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1))
+            dc = import_sheet_as_pandas(excel_file, str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1), skiprows = 1)
             columns = list(dc.columns)
             print(columns)
             isNeedChangeBobot = ListKomponenScore.setListKomponenScores(ListKomponenScore, section = section, columns = columns[2:])
