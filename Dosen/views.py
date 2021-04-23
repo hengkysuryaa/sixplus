@@ -122,11 +122,31 @@ class DistribusiKomponenNilaiView(generic.ListView):
 
 @allowed_users(['dosen'])
 def FormsDistribusiNilai(request, nip, year, semester, course_id, section_id):
-    lo_list, course = LO.getCourseLO(LO, course_id)
+    lo_list_course, course = LO.getCourseLO(LO, course_id)
     section = Section.objects.filter(course__course_id = course_id, sec_id=section_id, semester=semester, year=year)
     _komponen_nilai_list = ListKomponenScore.objects.filter(section=section[0])[0].komponen
-    return render(request, 'Dosen/lo_form.html', {'komponen_list':_komponen_nilai_list, 
-            'list' : lo_list, 'nip' : nip, 'course' : course, 'year':year, 'semester':semester, 'section_id':section_id})
+
+    bobot_komponen_skor = BobotKomponenScores.objects.filter(section=section[0])
+    bobot_komponen_list = []
+    if (len(bobot_komponen_skor) > 0):
+        bobot_komponen_list = bobot_komponen_skor[0].bobot
+    lo_course_keys = list(lo_list_course.keys())
+
+    bobot_komponen_lo_dict = {}
+    for i in range(len(_komponen_nilai_list)):
+        bobot_per_lo = {}
+        for j in range (len(lo_course_keys)):
+            if (len(bobot_komponen_skor) > 0):
+                print()
+                bobot_per_lo[lo_course_keys[j]] = bobot_komponen_list[i][j]
+            else:
+                bobot_per_lo[lo_course_keys[j]] = ''
+        bobot_komponen_lo_dict[_komponen_nilai_list[i]] = bobot_per_lo
+    
+    print(bobot_komponen_lo_dict)
+
+    return render(request, 'Dosen/lo_form.html', {'bobot_dict':bobot_komponen_lo_dict, 'section':section[0],
+            'nip' : nip, 'course' : course, 'year':year, 'semester':semester, 'section_id':section_id})
 
 @allowed_users(['dosen'])
 def SubmitView(request, nip, year, semester, course_id, section_id):
@@ -142,7 +162,7 @@ def SubmitView(request, nip, year, semester, course_id, section_id):
     # course = Course.objects.filter(course_id = course_id)
     # b = BobotKomponenScore(course=course[0], uts1=uts1, uts2=uts2, uas=uas, kuis=kuis, tutorial=tutorial)
     # b.save()
-
+    bobot_komponen_skor = BobotKomponenScores.objects.filter(section=section[0])
     _bobot = []
     flag = False
     for i in range (len(_komponen_nilai_list)):
@@ -155,8 +175,11 @@ def SubmitView(request, nip, year, semester, course_id, section_id):
         _bobot.append(res)
 
     if (not(flag)):
-        bbt = BobotKomponenScores(section=section[0], bobot=_bobot)
-        bbt.save()
+        if (len(bobot_komponen_skor) == 0):
+            bbt = BobotKomponenScores(section=section[0], bobot=_bobot)
+            bbt.save()
+        else:
+            BobotKomponenScores.objects.filter(section=section[0]).update(bobot=_bobot)
 
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id) 
 
