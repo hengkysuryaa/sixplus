@@ -50,21 +50,3 @@ def import_sheet_as_pandas(file_name, sheet_name, index_col = None):
 	# index_col is the col used as index (default to integers)
 	cols_to_exclude = ['unnamed']
 	return pd.read_excel(file_name, sheet_name=sheet_name, index_col = index_col, na_filter = False, usecols = column_check)
-
-
-# res = import_sheet_as_pandas("Lembar Penilaian MS1210 K1 Semester 2 2020-2021.xlsx", "MS1210 K1 Semester 2 2020-2021", index_col = 0)
-# print(res)
-# print(len(res.columns))
-# print(list(res.columns))
-# print(res.columns[0])
-# columns = list(res.columns)
-# print(columns[2:])
-# for row in res.itertuples():
-# 	row = list(row)
-# 	row.pop(0)
-# 	row.pop(0)
-# 	row.pop(0)
-# 	print(row)
-# 	for idx in range(2, len(columns)):
-# 		print(columns[idx] , ':', row[idx-2], end = " ")
-# 	print("")
