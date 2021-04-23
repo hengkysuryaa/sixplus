@@ -86,12 +86,51 @@ class ListKomponenScore(models.Model):
     def __str__(self):
         return f"{self.section} - {self.komponen}"
 
+    def setListKomponenScores(self, section, columns):
+        check = ListKomponenScore.objects.filter(section = section)
+        different = False
+        if(len(check) != 0):
+            if(len(columns) != len(check[0].komponen)):
+                check[0].delete()
+                new_komponen = ListKomponenScore.objects.create(section = section, komponen = columns)
+                different = True
+            else:
+                for i in range(len(columns)):
+                    different = (columns[i] != check[0].komponen[i])
+                    if(different):
+                        check[0].delete()
+                        new_komponen = ListKomponenScore.objects.create(section = section, komponen = columns)
+                        break
+            if(different):
+                bobot = BobotKomponenScores.objects.filter(section = section)
+                if(len(bobot) != 0):
+                    bobot[0].delete()
+        return different
+
 class Scores(models.Model):
     takes = models.ForeignKey(Takes, on_delete=models.CASCADE)
     scores = ArrayField(models.IntegerField())
 
     def __str__(self):
         return f"{self.takes}, Skor:{self.scores}"
+
+    def getStudentTakesScores(self, course_id, year, semester, section_id):
+        scores = Scores.objects.filter( 
+            takes__section__course__course_id = course_id, 
+            takes__section__year = year, 
+            takes__section__semester = semester,
+            takes__section__sec_id = section_id)
+        score_list = []
+
+        for obj in scores:
+            score_list.append(obj)
+        return scores
+
+    def setStudentScore(self, takes, row):
+        check = Scores.objects.filter(takes = takes)
+        if(len(check) != 0):
+            check[0].delete()
+        new_score = Scores.objects.create(takes = takes, scores = row)
 
 class Score(models.Model):
     takes = models.ForeignKey(Takes, on_delete=models.CASCADE)

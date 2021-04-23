@@ -243,25 +243,33 @@ def exportListMhs(request, nip, year, semester, course_id, section_id):
     section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
     list_nim, list_nama = Takes.get_student_takes(Takes, section)
     
-    score_list = Score.getStudentTakesScores(Score, course_id = course_id, year = year, semester = semester, section_id = section_id)
+    komponent_list = ListKomponenScore.objects.filter(section = section)[0].komponen
+    print(komponent_list)
+    score_list = Scores.getStudentTakesScores(Scores, course_id = course_id, year = year, semester = semester, section_id = section_id)
 
-    data = {'NIM':list_nim, 'Nama':list_nama, 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
+    data = {'NIM':list_nim, 'Nama':list_nama}
+    for i in range(len(komponent_list)):
+        data[komponent_list[i]] = []
     #data = {'NIM':[], 'Nama':[], 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
 
     for nim in list_nim:
         score = score_list.filter(takes__student__nim = nim)
-        if(len(score) != 0):      
-            data['UTS1'].append(score[0].uts1)
-            data['UTS2'].append(score[0].uts2)
-            data['UAS'].append(score[0].uas)
-            data['Kuis'].append(score[0].kuis)
-            data['Tutorial'].append(score[0].tutorial)
+        if(len(score) != 0):
+            for i in range(len(komponent_list)):
+                data[komponent_list[i]].append(score[0].scores[i])
+            # data['UTS1'].append(score[0].uts1)
+            # data['UTS2'].append(score[0].uts2)
+            # data['UAS'].append(score[0].uas)
+            # data['Kuis'].append(score[0].kuis)
+            # data['Tutorial'].append(score[0].tutorial)
         else:
-            data['UTS1'].append('')
-            data['UTS2'].append('')
-            data['UAS'].append('')
-            data['Kuis'].append('')
-            data['Tutorial'].append('')
+            for i in range(len(komponent_list)):
+                data[komponent_list[i]].append('')
+            # data['UTS1'].append('')
+            # data['UTS2'].append('')
+            # data['UAS'].append('')
+            # data['Kuis'].append('')
+            # data['Tutorial'].append('')
 
 
     #data = {'NIM':list_nim, 'Nama':list_nama, 'UTS1':[], 'UTS2':[], 'UAS':[], 'Kuis':[], 'Tutorial':[]}
@@ -301,12 +309,24 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
     filename = str(excel_file).split('.')
     if(filename[-1] == "xlsx"):
         if(filename[0] == "Lembar Penilaian " + str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)):    
+            section = get_object_or_404(Section, year = year, semester = semester, course_id__course_id  = course_id, sec_id = section_id)
             dc = import_sheet_as_pandas(excel_file, str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1))
-            print(dc)
+            columns = list(dc.columns)
+            print(columns)
+            isNeedChangeBobot = ListKomponenScore.setListKomponenScores(ListKomponenScore, section = section, columns = columns[2:])
             for row in dc.itertuples():
-                if(checkScores([row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial])):
-                    Score.setStudentScore(Score, row.NIM, course_id, year, semester, section_id, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
-                    print(row.NIM, row.Nama, row.UTS1, row.UTS2, row.UAS, row.Kuis, row.Tutorial)
+                row = list(row)
+                row.pop(0)
+                nim = str(row.pop(0))
+                name = row.pop(0)
+                print(row)
+                if(checkScores(row)):
+                    takes = Takes.objects.filter(student__nim = nim, section = section)
+                    if(len(takes) == 1):
+                        Scores.setStudentScore(Scores, takes = takes[0], row = row)
+                        print(row)
+            if(isNeedChangeBobot):
+                return redirect('dosen:FormKomponen', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
         else:
             messages.error(request, 'FILENAME IS WRONG, PLEASE CHECK THE NAME ONCE AGAIN')
     else:
@@ -382,6 +402,8 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
             break
 
         sum = 0
+        print(_komponen_nilai_list)
+        print(bobotindeks)
         for j in range(len(_komponen_nilai_list)):
             sum = sum + (_score.get(_komponen_nilai_list[j]) * bobotindeks[j]) / 100
         
