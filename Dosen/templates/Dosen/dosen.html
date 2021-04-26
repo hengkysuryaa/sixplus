@@ -3,21 +3,43 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
         <title> Home </title>
         {% include 'Dosen/navbar_dosen.html' %}
     </head>
     <body>
         <div class="container">
           <h1 class="mt-4 mb-4">Home</h1>
-          <h3 class="mt-0 mb-5"><small>Selamat datang, {{nip}} - {{dosen.name}}</small></h3>
+          <h3 class="mt-0 mb-4"><small>Selamat datang, {{nip}} - {{dosen.name}}</small></h3>
         </div>
-        <div class="container">
-            <div class="d-grid gap-3 col-6 mx-auto">
-                <a class="btn btn-primary" type="button" href="{% url 'dosen:OMM' nip %}">Objective Matrix Model</a>
-                <a class="btn btn-primary" type="button" href="{% url 'dosen:SectionWithTeaches' nip %}">Nilai</a>
-                <!-- <a class="btn btn-primary" type="button" href="{% url 'dosen:KomponenNilai' nip %}">Komponen Nilai</a> -->
-                <a class="btn btn-primary" type="button" href="{% url 'dosen:CourseAssessmentList' nip %}">Course Assessment</a>
-                <a class="btn btn-primary" type="button" href="{% url 'dosen:LOAssessmentList' nip %}">LO Assessment</a>
+        <div class="container d-flex justify-content-center">
+            <div class="row mx-auto btn-group justify-content-center" role="group">
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'dosen:OMM' nip %}">
+                        <h1><i class="bi bi-bar-chart-fill" href="{% url 'dosen:OMM' nip %}"></i></h1>
+                        Objective Matrix<br>Model
+                    </a>
+                </div>
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'dosen:SectionWithTeaches' nip %}">
+                        <h1><i class="bi bi-people-fill" href="{% url 'dosen:SectionWithTeaches' nip %}"></i></h1>
+                        Nilai Mahasiswa
+                        <br><br>
+                    </a>
+                </div>
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'dosen:CourseAssessmentList' nip %}">
+                        <h1><i class="bi bi-list-check" href="{% url 'dosen:CourseAssessmentList' nip %}"></i></h1>
+                        Course Assessment
+                    </a>
+                </div>
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'dosen:LOAssessmentList' nip %}">
+                        <h1><i class="bi bi-ui-checks" href="{% url 'dosen:LOAssessmentList' nip %}"></i></h1>
+                        LO Assessment
+                        <br><br>
+                    </a>
+                </div>
             </div>
         </div>
     </body>
