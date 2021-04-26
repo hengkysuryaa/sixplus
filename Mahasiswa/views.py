@@ -252,7 +252,7 @@ def LOSuplemenSemesterView(request, nim):
         for sem in value:
             list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, key, sem))
 
-    context = {'student' : student, 'list' : list_lo_suplemen}
+    context = {'nim':request.user.first_name, 'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
 
 ###########################
