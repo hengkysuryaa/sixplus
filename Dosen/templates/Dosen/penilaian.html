@@ -113,11 +113,9 @@
                     <tr>
                         <th> NIM </th> 
                         <th> Nama </th>
-                        <th> UTS1 </th>
-                        <th> UTS2 </th>
-                        <th> UAS </th>
-                        <th> Kuis </th>
-                        <th> Tutorial </th>
+                        {% for komponen in scores_komponen %}
+                            <th> {{komponen}} </th>
+                        {% endfor %}
                         <th> Indeks </th>
                     </tr>
                 </thead>
@@ -126,12 +124,11 @@
                         <tr>
                             <td> {{score.takes.student.nim}} </td>
                             <td> {{score.takes.student.name}} </td>
-                            <td> {{score.uts1}} </td>
-                            <td> {{score.uts2}} </td>
-                            <td> {{score.uas}} </td>
-                            <td> {{score.kuis}} </td>
-                            <td> {{score.tutorial}} </td>
+                            {% for inv_score in score.scores %}
+                                <td> {{inv_score}} </td>
+                            {% endfor %}
                             <td> {{score.takes.grade}} </td>
+
                         <tr>
                     {% endfor %}
                 </tbody>
@@ -152,10 +149,14 @@
               <button class="button button2 mt-0 mb-2" type='submit'> Download Excel Template</button>
             </form>
             <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
-                <button class="button button2 mt-0 mb-5" type='submit'> Set Persentase dan Batas Indeks </button>
+                <button class="button button2 mt-0 mb-2" type='submit'> Set Persentase dan Batas Indeks </button>
+            </form>
+            <form action="{% url 'dosen:FormKomponen' nip year semester course_id section_id %}" method='GET'>
+                <button class="button button2 mt-0 mb-0" type='submit'> Set Persentase Komponen Nilai per LO </button>
             </form>
         </div> <br>
         <div class="container">
+            <h3 class="mt-0 mb-2">Summary Indeks</h3>
             <table border="1" width='100%' style="text-align: center;" class="table table-hover">
                 <thead>
                     <tr>
