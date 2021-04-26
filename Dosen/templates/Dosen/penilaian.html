@@ -41,31 +41,28 @@
             <div class="table-responsive">
                 <table border="1" style="text-align: center;" class="table table-hover mb-4"><!-- tambahin table-bordered kalau mau bergaris -->
                     <thead>
-                        <tr> <!-- tambahin class="table-active" kalau mau jadi abu-abu -->
-                            <th> NIM </th> 
-                            <th> Nama </th>
-                            <th> UTS1 </th>
-                            <th> UTS2 </th>
-                            <th> UAS </th>
-                            <th> Kuis </th>
-                            <th> Tutorial </th>
-                            <th> Indeks </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for score in scores %}
-                            <tr>
-                                <td> {{score.takes.student.nim}} </td>
-                                <td> {{score.takes.student.name}} </td>
-                                <td> {{score.uts1}} </td>
-                                <td> {{score.uts2}} </td>
-                                <td> {{score.uas}} </td>
-                                <td> {{score.kuis}} </td>
-                                <td> {{score.tutorial}} </td>
-                                <td> {{score.takes.grade}} </td>
-                            <tr>
+                    <tr>
+                        <th> NIM </th> 
+                        <th> Nama </th>
+                        {% for komponen in scores_komponen %}
+                            <th> {{komponen}} </th>
                         {% endfor %}
-                    </tbody>
+                        <th> Indeks </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in scores %}
+                        <tr>
+                            <td> {{score.takes.student.nim}} </td>
+                            <td> {{score.takes.student.name}} </td>
+                            {% for inv_score in score.scores %}
+                                <td> {{inv_score}} </td>
+                            {% endfor %}
+                            <td> {{score.takes.grade}} </td>
+
+                        <tr>
+                    {% endfor %}
+                </tbody>
                 </table>
             </div>
             <div class="d-flex flex-row">
@@ -109,34 +106,7 @@
                 <br>
                 <input class = "btn btn-primary mt-0 mb-5" type="submit" value="Upload Penilaian Kelas">
             </form>
-            <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
-              <button class="button button2 mt-0 mb-2" type='submit'> Download Excel Template</button>
-            </form>
-            <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
-                <button class="button button2 mt-0 mb-2" type='submit'> Set Persentase dan Batas Indeks </button>
-            </form>
-            <form action="{% url 'dosen:FormKomponen' nip year semester course_id section_id %}" method='GET'>
-                <button class="button button2 mt-0 mb-0" type='submit'> Set Persentase Komponen Nilai per LO </button>
-            </form>
-        </div> <br>
-        <div class="container">
-            <h3 class="mt-0 mb-2">Summary Indeks</h3>
-            <table border="1" width='100%' style="text-align: center;" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th> Indeks </th> 
-                        <th> Jumlah </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for key, value in indeks_dict.items %}
-                        <tr>
-                            <td> {{key}} </td>
-                            <td> {{value}} </td>
-                        <tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
         </div>
 
         <!-- {% if messages %}
