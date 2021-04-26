@@ -10,11 +10,10 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
         <title> Peer Assessment Komunikasi</title>
         {% include 'Mahasiswa/navbar_mahasiswa.html' %}
-        <h1 class="mt-4 mb-5"> Kuesioner Evaluasi Perkuliahan {{course_id}}</h1>
     </head>
     <body>
         <div class="container">
-            <h1 class="mt-4 mb-5"> Peer Assessment Komunikasi {{course_id}}</h1>
+            <h1 class="mt-4 mb-4"> Peer Assessment Komunikasi {{course_id}}</h1>
             <form action="{% url 'mhs:SubmitFormKomunikasi' nim year semester course_id section_id %}" method="POST">
                 {% csrf_token %}
                 <h3 class="mt-0 mb-3"> Isi Identitas Anda</h3>
