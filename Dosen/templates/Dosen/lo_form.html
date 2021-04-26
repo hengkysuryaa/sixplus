@@ -9,11 +9,24 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="mt-4 mb-4"> Formulir Persentase Komponen Penilaian terhadap LO </h1>
-            <h2 class="mt-4 mb-5"> {{course}} </h2>
-            <form action="{% url 'dosen:Submit' nip course.course_id %}" method="POST">
+            <h1 class="mt-4 mb-4"> Formulir Persentase Komponen Penilaian terhadap LO {{section}}</h1>
+            <form action="{% url 'dosen:Submit' nip year semester course.course_id section_id %}" method="POST">
                 {% csrf_token %}
-                <h3 class="mt-0 mb-3"> UTS 1</h3>
+                {% for key,value in bobot_dict.items %}
+                    <h3 class="mt-4 mb-3">{{key}}</h3>
+                    {% for key2, value2 in value.items %}
+                        <label> {{key2}} </label>
+                        <input type="number" name="{{key}}" min="0" max="100" value="{{value2}}" required/>
+                    {% endfor %}
+                {% endfor %}
+                <!-- {% for item in komponen_list %}
+                    <h3 class="mt-4 mb-3">{{item}}</h3>
+                    {% for lo in list %}
+                        <label> {{lo}} </label>
+                        <input type="number" name="{{item}}" min="0" max="100" required/>
+                    {% endfor %}
+                {% endfor %} -->
+                <!-- <h3 class="mt-0 mb-3"> UTS 1</h3>
                 {% for item in list %}
                     <label> {{item}} </label>
                     <input type="number" name="uts1" min="0" max="100" required/>
@@ -37,7 +50,7 @@
                 {% for item in list %}
                     <label> {{item}} </label>
                     <input type="number" name="tutorial" min="0" max="100" required/>
-                {% endfor %}
+                {% endfor %} -->
                 <br>
                 <button type="submit" class="btn btn-primary btn-lg mt-5 mb-5"> Submit </button><br>
             </form>

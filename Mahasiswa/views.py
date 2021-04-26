@@ -2,11 +2,12 @@ from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
 # Create your views here.
-from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section
+from LO.models import Score, Course, BobotKomponenScore, LO, ResponseKerjasama, ResponseKomunikasi, Takes, Section, ListKomponenScore, BobotKomponenScores, Scores
 from Mahasiswa.models import Student
 from User.decorators import allowed_users
 
 import datetime
+import collections
 
 # Konstanta
 BOBOT_FORM_KOMUNIKASI = 100 # dalam persen
@@ -17,7 +18,7 @@ KMT = {
     "M" : 2,
     "H" : 3
 }
-komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"] #TODO apabila ada perubahan jumlah komponen dapat diganti disini
+#komponen_nilai_list = ["uts1", "uts2", "uas", "kuis", "tutorial"] #TODO apabila ada perubahan jumlah komponen dapat diganti disini
 INDEKS_LULUS = ["A", "AB", "B", "BC", "C", "D"]
 
 ##########################
@@ -33,22 +34,37 @@ def TestView(request):
     score = calculateLOSuplemen("13120002", 2020, 2)
     return render(request, 'Mahasiswa/test.html', {'score' : score})
 
+def createScoreDict(komponen_nilai_list, score_list):
+    score_dict = {}
+    for i in range (len(komponen_nilai_list)):
+        score_dict[komponen_nilai_list[i]] = score_list[i]
+    return score_dict
+
 def scaleScore(_nim, _course_id, _year, _semester):
+    mhs_takes_section = Takes.objects.filter(student__nim=_nim, section__course__course_id=_course_id, section__semester=_semester, section__year=_year)[0].section
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=mhs_takes_section)[0].komponen
     std = Student.objects.filter(nim=_nim)
     course = Course.objects.filter(course_id=_course_id)
 
-    std_score = list(Score.objects.filter(takes__student=std[0], 
-            takes__section__course = course[0], 
-            takes__section__year = _year, 
-            takes__section__semester = _semester).values())[0]
+    # std_score = list(Score.objects.filter(takes__student=std[0], 
+    #         takes__section__course = course[0], 
+    #         takes__section__year = _year, 
+    #         takes__section__semester = _semester).values())[0]
+    
+    score_list = Scores.objects.filter(takes__section = mhs_takes_section)[0].scores
+    _std_score = createScoreDict(_komponen_nilai_list, score_list)
 
     score_dict = {}
-    for i in range(len(komponen_nilai_list)):
-        score_dict[komponen_nilai_list[i]] = std_score[komponen_nilai_list[i]] / 100 * 4
+    for i in range(len(_komponen_nilai_list)):
+        score_dict[_komponen_nilai_list[i]] = _std_score.get(_komponen_nilai_list[i]) / 100 * 4
 
     return score_dict
 
-def createLOAndBobotDict(_course_id):
+def createLOAndBobotDict(_nim, _course_id, _year, _semester):
+    
+    mhs_takes_section = Takes.objects.filter(student__nim=_nim, section__course__course_id=_course_id, section__semester=_semester, section__year=_year)[0].section
+    _komponen_nilai_list = ListKomponenScore.objects.filter(section=mhs_takes_section)[0].komponen
+    
     dict = {}
 
     #get LO list from a course
@@ -56,20 +72,25 @@ def createLOAndBobotDict(_course_id):
     n = len(lo_list)
 
     #get bobot komponen score from a course
-    course = Course.objects.filter(course_id=_course_id)
-    bobot_list = list(BobotKomponenScore.objects.filter(course=course[0]).values())[0]
+    # course = Course.objects.filter(course_id=_course_id)
+    # bobot_list = list(BobotKomponenScore.objects.filter(course=course[0]).values())[0]
+    
+    bobot_komponen_dict = {}
+    _bobot_list = BobotKomponenScores.objects.filter(section=mhs_takes_section)[0].bobot
+    for i in range(len(_komponen_nilai_list)):
+        bobot_komponen_dict[_komponen_nilai_list[i]] = _bobot_list[i]
 
     for i in range(n):
         komponen_dict = {}
-        for j in range(len(komponen_nilai_list)):
-            komponen_dict[komponen_nilai_list[j]] = bobot_list.get(komponen_nilai_list[j])[i]
+        for j in range(len(_komponen_nilai_list)):
+            komponen_dict[_komponen_nilai_list[j]] = bobot_komponen_dict.get(_komponen_nilai_list[j])[i]
         dict[lo_list[i]] = komponen_dict
     
     return dict
 
 def mapScoreAndBobot(_nim, _course_id, _year, _semester):
     score = scaleScore(_nim, _course_id, _year, _semester)
-    lo_bobot_dict = createLOAndBobotDict(_course_id)
+    lo_bobot_dict = createLOAndBobotDict(_nim, _course_id, _year, _semester)
 
     score_keys = list(score.keys())
     lo_bobot_keys = list(lo_bobot_dict.keys())
@@ -86,7 +107,7 @@ def mapScoreAndBobot(_nim, _course_id, _year, _semester):
 
 def calculateLO(_nim, _course_id,  _year, _semester):
     map_score_dict = mapScoreAndBobot(_nim, _course_id, _year, _semester)
-    lo_bobot_dict = createLOAndBobotDict(_course_id)
+    lo_bobot_dict = createLOAndBobotDict(_nim, _course_id, _year, _semester)
     
     lo_keys = list(map_score_dict.keys())
     komponen_keys = list(list(map_score_dict.values())[0].keys())
@@ -181,9 +202,10 @@ def calculateLOSuplemen(_nim, _year, _semester):
     for item in section:
         if (len(Takes.objects.filter(student=std[0], section=item)) != 0):
             takes = Takes.objects.filter(student=std[0], section=item)[0]
-            if (takes.grade in INDEKS_LULUS):
-                _course_id = takes.section.course.course_id
-                takes_list.append(calculateLO(_nim, _course_id, _year, _semester))
+            if (len(BobotKomponenScores.objects.filter(section=takes.section)) != 0 ):
+                if (takes.grade in INDEKS_LULUS):
+                    _course_id = takes.section.course.course_id
+                    takes_list.append(calculateLO(_nim, _course_id, _year, _semester))
 
     lo_suplemen_dict = {}
     for i in range(len(lo_list)):
@@ -207,15 +229,28 @@ def calculateLOSuplemen(_nim, _year, _semester):
 def LOSuplemenSemesterView(request, nim):
     student = Student.objects.get(nim = request.user.first_name)
 
-    list_tahun = []
+    #list_tahun = []
     list_takes = list(Takes.objects.filter(student = student).values())
+    year_sem_dict = {}
     for item in list_takes:
-        list_tahun.append(Section.objects.filter(id=item.get('section_id'))[0].year)
+        #list_tahun.append(Section.objects.filter(id=item.get('section_id'))[0].year)
+        sem = Section.objects.filter(id=item.get('section_id'))[0].semester
+        year = Section.objects.filter(id=item.get('section_id'))[0].year
+        val = year_sem_dict.get(year)
 
+        if (val == None):
+            year_sem_dict[year] = []
+        year_sem_dict[year].append(sem)
+        year_sem_dict[year] = list(set(year_sem_dict.get(year)))
+    
+    #SORT year sem dict by year
+    sort_by_year = collections.OrderedDict(sorted(year_sem_dict.items()))
+    year_sem_dict = dict(sort_by_year)
+    
     list_lo_suplemen = []
-    for year in list(set(list_tahun)):
-        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 1))
-        list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, year, 2))
+    for key, value in year_sem_dict.items():
+        for sem in value:
+            list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, key, sem))
 
     context = {'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
