@@ -39,7 +39,7 @@
             </div>
             {% endfor %} -->
             <div class="table-responsive">
-                <table border="1" style="text-align: center;" class="table table-hover mb-5"><!-- tambahin table-bordered kalau mau bergaris -->
+                <table border="1" style="text-align: center;" class="table table-hover mb-4"><!-- tambahin table-bordered kalau mau bergaris -->
                     <thead>
                         <tr> <!-- tambahin class="table-active" kalau mau jadi abu-abu -->
                             <th> NIM </th> 
@@ -68,6 +68,19 @@
                     </tbody>
                 </table>
             </div>
+            <div class="d-flex flex-row">
+                <div>
+                    <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
+                        <button class="btn btn-primary mb-5 me-4" type='submit'> Set Persentase dan Batas Indeks </button>
+                    </form>
+                </div>
+                <div>
+                    <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
+                        <button  class="btn btn-primary mb-5" type='submit'> Download (.xslx)</button>
+                    </form>
+                </div>
+            </div>
+
             <h3 class="mt-0 mb-4">Summary Indeks Mahasiswa</h3>
             <div class="table-responsive">
                 <table border="1" style="text-align: center;" class="table table-hover w-50 mx-auto table-bordered mb-5">
@@ -87,26 +100,18 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <div class="container">
+            
             <h3 class="mt-0 mb-0">Upload Nilai Mahasiswa</h3>
             <form action="{% url 'dosen:ExcelUpload' nip year semester course_id section_id %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 Select File to upload:
-                <input class = "button button2 mt-4 mb-2 me-2" type="file" name="excelUpload" id="excelUpload">
+                <input class = "button button2 mt-4 mb-4 me-2" type="file" name="excelUpload" id="excelUpload">
                 <br>
-                <input class = "button button2 mt-0 mb-4" type="submit" value="Upload Penilaian Kelas">
+                <input class = "btn btn-primary mt-0 mb-5" type="submit" value="Upload Penilaian Kelas">
             </form>
-            <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
-              <button class="button button2 mt-0 mb-2" type='submit'> Download Excel Template</button>
-            </form>
-            <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
-                <button class="button button2 mt-0 mb-5" type='submit'> Set Persentase dan Batas Indeks </button>
-            </form>
-            <br>
 
         </div>
+
         <!-- {% if messages %}
         <ul class="messages">
             {% for message in messages %}
