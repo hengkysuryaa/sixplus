@@ -501,7 +501,7 @@ def LOAssessmentView(request, nip, year, semester):
 
     ListLOAssessmentPage(request, nip)
 
-    return render(request, 'Dosen/lo_assessment.html', {'lo_assessment':lo_assessment, 'sem':semester, 'tahun1':year, 'tahun2':str(int(year)+1), 'list_matkul':list_course})
+    return render(request, 'Dosen/lo_assessment.html', {'nip':request.user.first_name, 'lo_assessment':lo_assessment, 'sem':semester, 'tahun1':year, 'tahun2':str(int(year)+1), 'list_matkul':list_course})
 
 def ListLOAssessmentPage(request, nip):
     
