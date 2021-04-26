@@ -65,3 +65,7 @@ def import_sheet_as_pandas(file_name, sheet_name, index_col = None, skiprows = 0
 	# index_col is the col used as index (default to integers)
 	cols_to_exclude = ['unnamed']
 	return pd.read_excel(file_name, sheet_name=sheet_name, index_col = index_col, na_filter = False, usecols = column_check, skiprows = skiprows)
+
+# dc = import_sheet_as_pandas("Lembar Penilaian MS1100 K1 Semester 1 2020-2021.xlsx", "MS1100 K1 Semester 1 2020-2021", skiprows = 1)
+# print(dc)
+# print(len(dc.columns))

@@ -7,6 +7,7 @@ from Mahasiswa.models import Student
 from User.decorators import allowed_users
 
 import datetime
+import collections
 
 # Konstanta
 BOBOT_FORM_KOMUNIKASI = 100 # dalam persen
@@ -241,7 +242,11 @@ def LOSuplemenSemesterView(request, nim):
             year_sem_dict[year] = []
         year_sem_dict[year].append(sem)
         year_sem_dict[year] = list(set(year_sem_dict.get(year)))
-
+    
+    #SORT year sem dict by year
+    sort_by_year = collections.OrderedDict(sorted(year_sem_dict.items()))
+    year_sem_dict = dict(sort_by_year)
+    
     list_lo_suplemen = []
     for key, value in year_sem_dict.items():
         for sem in value:

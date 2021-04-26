@@ -93,6 +93,18 @@ def SectionPage2(request, nip):
         course_id = section_info[2][0:6]
         section_id = section_info[-1]
 
+        section = Section.objects.filter(year = year, semester = semester, course__course_id = course_id, sec_id = section_id)[0]
+        bobot = BobotKomponenScores.objects.filter(section = section)
+        persentase = BobotIndeks.objects.filter(section = section)
+        if(len(bobot) == 0 or len(persentase) == 0):
+            warning_message = "Perhatian! Anda belum mengisi: <br>"
+            if(len(persentase) == 0):
+                warning_message += "- Persentase Komponen Nilai dan Batas Indeks <br>"
+            if(len(bobot) == 0):
+                warning_message += "- Persentase Komponen Nilai per LO <br>"
+            warning_message += "Mohon mengisi data tersebut pada halaman yang sesuai."
+            messages.warning(request, warning_message)
+
     return redirect('dosen:SectionPage', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
 
 ######################
@@ -201,6 +213,11 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
     student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
 
     score_list = Scores.getStudentTakesScores(Scores, course_id = course_id, year = year, semester = semester, section_id = section_id)
+    
+    check_score_komponen_list = ListKomponenScore.objects.filter(section = section)
+    if(len(check_score_komponen_list) == 0):
+        ListKomponenScore.setListKomponenScores(ListKomponenScore, section, [], default = True)
+
     score_komponen_list = ListKomponenScore.objects.filter(section = section)[0].komponen
     score_komponen_list_upper = []
     for komponen in score_komponen_list:
@@ -222,25 +239,9 @@ def penilaianPage(request, nip, year, semester, course_id, section_id):
 
 @allowed_users(['dosen'])
 def showPenilaianPage(request, nip):
-    # print(request.POST.get('section'))
-    # username = User.objects.filter(username = request.user.username)
-    # lecturer = Lecturer.objects.get(user = username[0])
-    # lecturerForTeaches = Lecturer.objects.filter(user = username[0])
     lecturer = Lecturer.objects.get(nip = request.user.first_name)
     lecturerForTeaches = Lecturer.objects.filter(nip = request.user.first_name)
     teaches = Teaches.objects.filter(dosen = lecturerForTeaches[0])
-    
-
-    # # course = Course.objects.filter(course_id = course_id)[0]
-    # section = Section.objects.filter(course_id = course, sec_id = section_id, semester = semester, year = year)[0]
-    
-    # student_list = Takes.objects.filter(section = section).values_list('student', flat = True)
-
-    # score_list = Score.objects.filter(nim__in = student_list, course = course)
-
-    # header = str(course_id) + " " + course.title +  " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1)
-
-    #context = {'dosen' : lecturer}, 'section': sections, 'scores': scores}
     context = {'dosen' : lecturer , 'nip' : nip, 'teaches' : teaches}
     return render(request, 'Dosen/penilaian_teaches.html', context)
 
@@ -305,27 +306,32 @@ def importListMhs(request, nip, year, semester, course_id, section_id):
             section = get_object_or_404(Section, year = year, semester = semester, course_id__course_id  = course_id, sec_id = section_id)
             dc = import_sheet_as_pandas(excel_file, str(course_id) + " K" + str(section_id) + " Semester " + str(semester) + " " + str(year) + "-" + str(int(year)+1), skiprows = 1)
             columns = list(dc.columns)
-            print(columns)
-            isNeedChangeBobot = ListKomponenScore.setListKomponenScores(ListKomponenScore, section = section, columns = columns[2:])
-            for row in dc.itertuples():
-                row = list(row)
-                row.pop(0)
-                nim = str(row.pop(0))
-                name = row.pop(0)
-                print(row)
-                if(checkScores(row)):
-                    takes = Takes.objects.filter(student__nim = nim, section = section)
-                    if(len(takes) == 1):
-                        Scores.setStudentScore(Scores, takes = takes[0], row = row)
-                        print(row)
-            if(isNeedChangeBobot):
-                bobotindeks = BobotIndeks.objects.filter(section = section)
-                if (len(bobotindeks) != 0):
-                    bobotindeks[0].delete()
-                update_takes = list(Takes.objects.filter(section=section))
-                for i in range(len(update_takes)):
-                    Takes.objects.filter(student=update_takes[i].student, section=section).update(grade='-')
-                return redirect('dosen:FormKomponen', nip = nip, year = year, semester = semester, course_id = course_id, section_id = section_id)
+            if(len(columns) > 2):     
+                isNeedChangeBobot = ListKomponenScore.setListKomponenScores(ListKomponenScore, section = section, columns = columns[2:])
+                for row in dc.itertuples():
+                    row = list(row)
+                    row.pop(0)
+                    nim = str(row.pop(0))
+                    name = row.pop(0)
+                    print(row)
+                    if(checkScores(row)):
+                        takes = Takes.objects.filter(student__nim = nim, section = section)
+                        if(len(takes) == 1):
+                            Scores.setStudentScore(Scores, takes = takes[0], row = row)
+                if(isNeedChangeBobot):
+                    bobotindeks = BobotIndeks.objects.filter(section = section)
+                    if (len(bobotindeks) != 0):
+                        bobotindeks[0].delete()
+                    update_takes = list(Takes.objects.filter(section=section))
+                    for i in range(len(update_takes)):
+                        Takes.objects.filter(student=update_takes[i].student, section=section).update(grade='-')
+                    warning_message = "Perhatian! Anda belum mengisi: <br>"
+                    warning_message += "- Persentase Komponen Nilai dan Batas Indeks <br>"
+                    warning_message += "- Persentase Komponen Nilai per LO <br>"
+                    warning_message += "Mohon mengisi data tersebut pada halaman yang sesuai."
+                    messages.warning(request, warning_message)
+            else:
+                messages.error(request, 'EXCEL FORMAT IS WRONG<br>Make sure the first two columns are NIM and Nama<br>And there are 1 or more score columns')
         else:
             messages.error(request, 'FILENAME IS WRONG, PLEASE CHECK THE NAME ONCE AGAIN')
     else:
@@ -395,28 +401,30 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
 
     for i in range(len(takes)):
         #score = list(Score.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section).values())
-        _score_list = Scores.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section)[0].scores
-        _score = createScoreDict(_komponen_nilai_list, _score_list)
-        if (len(_score) == 0):
-            break
+        check = Scores.objects.filter(takes__student = takes[i].student, takes__section = takes[i].section)
+        if(len(check) != 0):
+            _score_list = check[0].scores
+            _score = createScoreDict(_komponen_nilai_list, _score_list)
+            if (len(_score) == 0):
+                break
 
-        sum = 0
-        print(_komponen_nilai_list)
-        print(bobotindeks)
-        for j in range(len(_komponen_nilai_list)):
-            sum = sum + (_score.get(_komponen_nilai_list[j]) * bobotindeks[j]) / 100
-        
-        indeks = '-'
-        # Mapping sum ke indeks
-        for k in range(len(indeks_list)):
-            if (sum >= float(batas_indeks_list[k]) and sum <= float(100)):
-                indeks = indeks_list[k]
-                break
-            elif (sum >= float(batas_indeks_list[k]) and sum < float(batas_indeks_list[k-1])):
-                indeks = indeks_list[k]
-                break
-        
-        Takes.objects.filter(student=takes[i].student, section=section[0]).update(grade=indeks)
+            sum = 0
+            print(_komponen_nilai_list)
+            print(bobotindeks)
+            for j in range(len(_komponen_nilai_list)):
+                sum = sum + (_score.get(_komponen_nilai_list[j]) * bobotindeks[j]) / 100
+            
+            indeks = '-'
+            # Mapping sum ke indeks
+            for k in range(len(indeks_list)):
+                if (sum >= float(batas_indeks_list[k]) and sum <= float(100)):
+                    indeks = indeks_list[k]
+                    break
+                elif (sum >= float(batas_indeks_list[k]) and sum < float(batas_indeks_list[k-1])):
+                    indeks = indeks_list[k]
+                    break
+            
+            Takes.objects.filter(student=takes[i].student, section=section[0]).update(grade=indeks)
 
 def calculateCourseOutcomeLO(_course_id, _year, _semester):
     takes_list = list(Takes.objects.filter(section__year = _year, section__semester = _semester, section__course__course_id = _course_id))
@@ -424,10 +432,13 @@ def calculateCourseOutcomeLO(_course_id, _year, _semester):
     for i in range (len(takes_list)):
         # Cek apakah nilai nya ada
         #score = Score.objects.filter(takes=takes_list[i])
-        _score = Scores.objects.filter(takes=takes_list[i])
-        if (len(_score) > 0):
-            lo_course = calculateLO(takes_list[i].student.nim, _course_id, _year, _semester)
-            lo_sup_std_list.append(lo_course)
+        #Kalau bobot LO belum diisi dosen, tidak perlu dihitung
+        bobot_lo = BobotKomponenScores.objects.filter(section=takes_list[i].section)
+        if (len(bobot_lo) != 0):
+            _score = Scores.objects.filter(takes=takes_list[i])
+            if (len(_score) > 0):
+                lo_course = calculateLO(takes_list[i].student.nim, _course_id, _year, _semester)
+                lo_sup_std_list.append(lo_course)
     
     course_outcome_dict = {}
 

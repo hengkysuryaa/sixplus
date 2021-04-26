@@ -83,10 +83,15 @@ class ListKomponenScore(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     komponen = ArrayField(models.CharField(max_length=100))
 
+    DEFAULT_KOMPONEN = ['uts1', 'uts2', 'uas', 'kuis', 'tutorial']
+
     def __str__(self):
         return f"{self.section} - {self.komponen}"
 
-    def setListKomponenScores(self, section, columns):
+    def setListKomponenScores(self, section, columns, default = False):
+        if(default):
+            columns = self.DEFAULT_KOMPONEN
+
         check = ListKomponenScore.objects.filter(section = section)
         different = False
         if(len(check) != 0):
@@ -101,10 +106,21 @@ class ListKomponenScore(models.Model):
                         check[0].delete()
                         new_komponen = ListKomponenScore.objects.create(section = section, komponen = columns)
                         break
-            if(different):
-                bobot = BobotKomponenScores.objects.filter(section = section)
-                if(len(bobot) != 0):
-                    bobot[0].delete()
+        else:
+            new_komponen = ListKomponenScore.objects.create(section = section, komponen = columns)
+            different = True
+
+        if(different):
+            bobot = BobotKomponenScores.objects.filter(section = section)
+            if(len(bobot) != 0):
+                bobot[0].delete()
+
+
+            from Dosen.models import BobotIndeks
+            persentase = BobotIndeks.objects.filter(section = section)
+            if(len(persentase) != 0):
+                persentase[0].delete()
+
         return different
 
 class Scores(models.Model):
