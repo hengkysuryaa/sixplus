@@ -72,6 +72,11 @@
                     </form>
                 </div>
                 <div>
+                    <form action="{% url 'dosen:FormKomponen' nip year semester course_id section_id %}" method='GET'>
+                        <button class="btn btn-primary mb-5 me-4" type='submit'> Set Persentase Komponen Nilai per LO </button>
+                    </form>
+                </div>
+                <div>
                     <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
                         <button  class="btn btn-primary mb-5" type='submit'> Download (.xslx)</button>
                     </form>
