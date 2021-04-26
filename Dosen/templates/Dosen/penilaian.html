@@ -4,89 +4,20 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <style>
-            .button {
-              border: none;
-              color: white;
-              padding: 16px 32px;
-              text-align: center;
-              text-decoration: none;
-              display: inline-block;
-              font-size: 16px;
-              margin: 4px 2px;
-              transition-duration: 0.4s;
-              cursor: pointer;
-            }
-            
-            .button1 {
-              background-color: white; 
-              color: black; 
-              border: 2px solid #4CAF50;
-            }
-            
-            .button1:hover {
-              background-color: #4CAF50;
-              color: white;
-            }
-            
-            .button2 {
-              background-color: white; 
-              color: black; 
-              border: 2px solid #008CBA;
-            }
-            
-            .button2:hover {
-              background-color: #008CBA;
-              color: white;
-            }
-            
-            </style>
-            {% include 'Dosen/message.html' %}
+        {% include 'Dosen/navbar_dosen.html' %}
+        {% include 'Dosen/message.html' %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <ul class="nav navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">SIXPlus</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Aplikasi</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Kurikulum</a>
-                        <a class="dropdown-item" href="#">Status Mahasiswa</a>
-                        <a class="dropdown-item" href="#">Keuangan & Beasiswa</a>
-                        <a class="dropdown-item" href="#">Kelas</a>
-                        <a class="dropdown-item" href="#">Rencana Studi & Perwalian</a>
-                        <a class="dropdown-item" href="#">Penjurusan TPB</a>
-                        <a class="dropdown-item" href="#">Evaluasi Perkuliahan & Portofolio</a>
-                        <a class="dropdown-item" href="#">Wisuda</a>
-                        <a class="dropdown-item" href="#">Control Panel</a>
-                    </div>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">ID</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">EN</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>User</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-user"></span>Profil</a>
-                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
         <div class="container">
-            <h1 class="mt-4 mb-4">Penilaian {{header}} </h1>
+            <h1 class="mt-4 mb-5">Penilaian {{header}} </h1>
         </div>
         
         <div class="container">
-            <h3 class="mt-0 mb-2">Nama : {{dosen.name}} </h3>
-            <h3 class="mt-0 mb-4">NIP  : {{dosen.nip}}</h3>
+            <!-- <h3 class="mt-0 mb-2">Nama : {{dosen.name}} </h3>
+            <h3 class="mt-0 mb-4">NIP  : {{dosen.nip}}</h3> -->
+            
+            <h3 class="mt-0 mb-4">Tabel Nilai Mahasiswa</h3>
+
             <!-- <div class="row">
                 <div class="col-md-8">
                     <form action="">
@@ -107,17 +38,15 @@
                 
             </div>
             {% endfor %} -->
-            <div class="container">
-            <table border="1" width='100%' style="text-align: center;" class="table table-hover">
-                <thead>
+            <div class="table-responsive">
+                <table border="1" style="text-align: center;" class="table table-hover mb-4"><!-- tambahin table-bordered kalau mau bergaris -->
+                    <thead>
                     <tr>
                         <th> NIM </th> 
                         <th> Nama </th>
-                        <th> UTS1 </th>
-                        <th> UTS2 </th>
-                        <th> UAS </th>
-                        <th> Kuis </th>
-                        <th> Tutorial </th>
+                        {% for komponen in scores_komponen %}
+                            <th> {{komponen}} </th>
+                        {% endfor %}
                         <th> Indeks </th>
                     </tr>
                 </thead>
@@ -126,53 +55,65 @@
                         <tr>
                             <td> {{score.takes.student.nim}} </td>
                             <td> {{score.takes.student.name}} </td>
-                            <td> {{score.uts1}} </td>
-                            <td> {{score.uts2}} </td>
-                            <td> {{score.uas}} </td>
-                            <td> {{score.kuis}} </td>
-                            <td> {{score.tutorial}} </td>
+                            {% for inv_score in score.scores %}
+                                <td> {{inv_score}} </td>
+                            {% endfor %}
                             <td> {{score.takes.grade}} </td>
+
                         <tr>
                     {% endfor %}
                 </tbody>
-            </table>
-        </div>
+                </table>
+            </div>
+            <div class="d-flex flex-row">
+                <div>
+                    <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
+                        <button class="btn btn-primary mb-5 me-4" type='submit'> Set Persentase dan Batas Indeks </button>
+                    </form>
+                </div>
+                <div>
+                    <form action="{% url 'dosen:FormKomponen' nip year semester course_id section_id %}" method='GET'>
+                        <button class="btn btn-primary mb-5 me-4" type='submit'> Set Persentase Komponen Nilai per LO </button>
+                    </form>
+                </div>
+                <div>
+                    <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
+                        <button  class="btn btn-primary mb-5" type='submit'> Download (.xslx)</button>
+                    </form>
+                </div>
+            </div>
 
-
+            <h3 class="mt-0 mb-4">Summary Indeks Mahasiswa</h3>
+            <div class="table-responsive">
+                <table border="1" style="text-align: center;" class="table table-hover w-50 mx-auto table-bordered mb-5">
+                    <thead>
+                        <tr class="table-active">
+                            <th> Indeks </th> 
+                            <th> Jumlah </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in indeks_dict.items %}
+                            <tr>
+                                <td> {{key}} </td>
+                                <td> {{value}} </td>
+                            <tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             
-            
-
+            <h3 class="mt-0 mb-0">Upload Nilai Mahasiswa</h3>
             <form action="{% url 'dosen:ExcelUpload' nip year semester course_id section_id %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 Select File to upload:
-                <input class = "button button2 mt-4 mb-2 me-2" type="file" name="excelUpload" id="excelUpload">
-                <input class = "button button2 mt-0 mb-4" type="submit" value="Upload Penilaian Kelas">
+                <input class = "button button2 mt-4 mb-4 me-2" type="file" name="excelUpload" id="excelUpload">
+                <br>
+                <input class = "btn btn-primary mt-0 mb-5" type="submit" value="Upload Nilai">
             </form>
-            <form action="{% url 'dosen:ExcelDownload' nip year semester course_id section_id %}" method='GET'>
-              <button class="button button2 mt-0 mb-2" type='submit'> Download Excel Template</button>
-            </form>
-            <form action="{% url 'dosen:BobotIndeks' nip year semester course_id section_id %}" method='GET'>
-                <button class="button button2 mt-0 mb-5" type='submit'> Set Persentase dan Batas Indeks </button>
-            </form>
-        </div> <br>
-        <div class="container">
-            <table border="1" width='100%' style="text-align: center;" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th> Indeks </th> 
-                        <th> Jumlah </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for key, value in indeks_dict.items %}
-                        <tr>
-                            <td> {{key}} </td>
-                            <td> {{value}} </td>
-                        <tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
         </div>
+
         <!-- {% if messages %}
         <ul class="messages">
             {% for message in messages %}

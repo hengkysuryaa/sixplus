@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from LO.models import *
+from django.contrib.postgres.fields import ArrayField
+from LO.models import Section
 
 # Create your models here.
 class Lecturer(models.Model):

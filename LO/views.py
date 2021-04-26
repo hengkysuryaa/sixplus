@@ -46,7 +46,7 @@ def NextKerjasamaView(request, nim, year, semester, course_id, section_id):
     identitas = request.user
     kel = request.POST['kelompok']
     penilaian = PenilaianKerjasamaForm()
-    return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})
+    return render(request, 'LO/next_form_kerjasama.html', {'nim' : nim, 'identitas':identitas, 'kel':kel, 'penilaian':penilaian,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})
 
 @allowed_users(['mahasiswa'])
 def KerjasamaView(request, nim, year, semester, course_id, section_id):
@@ -62,7 +62,7 @@ def KerjasamaView(request, nim, year, semester, course_id, section_id):
     identitas = request.user
     penilaian = PenilaianKerjasamaForm()
 
-    return render(request, 'LO/form_kerjasama.html', {'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id, 'identitas': identitas})
+    return render(request, 'LO/form_kerjasama.html', {'nim' : nim, 'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id, 'identitas': identitas})
 
 @allowed_users(['mahasiswa'])
 def SubmitKerjasamaView(request, nim, year, semester, course_id, section_id):
@@ -82,7 +82,7 @@ def SubmitKerjasamaView(request, nim, year, semester, course_id, section_id):
     res = ResponseKerjasama(takes = takes[0], Kontribusi=int(request.POST['Kontribusi']), PemecahanMasalah=int(request.POST['PemecahanMasalah']), Sikap=int(request.POST['Sikap']), FokusTerhadapTugas=int(request.POST['FokusTerhadapTugas']), BekerjaDenganOrangLain=int(request.POST['BekerjaDenganOrangLain']))
     res.save()
 
-    return render(request, 'LO/form_kerjasama_submit.html', {'identitas':identitas, 'kel':kel,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})    
+    return render(request, 'LO/form_kerjasama_submit.html', {'nim' : nim, 'identitas':identitas, 'kel':kel,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})    
 
 @allowed_users(['mahasiswa'])
 def KomunikasiView(request, nim, year, semester, course_id, section_id):
@@ -130,7 +130,7 @@ def NextKomunikasiView(request, nim, year, semester, course_id, section_id):
 
     kel = request.POST['kelompok']
     penilaian = PenilaianKomunikasiForm()
-    return render(request, 'LO/next_form_komunikasi.html', {'nim':request.user.first_name, 'kel':kel, 'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})
+    return render(request, 'LO/next_form_komunikasi.html', {'nim' : nim,  'kel':kel, 'penilaian':penilaian, 'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})
 
 @allowed_users(['mahasiswa'])
 def NextKuesionerView(request, nim, course_id):
@@ -139,7 +139,7 @@ def NextKuesionerView(request, nim, course_id):
     identitas = request.user
     kel = request.POST['kelompok']
     penilaian = PenilaianKerjasamaForm()
-    return render(request, 'LO/next_form_kerjasama.html', {'identitas':identitas, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
+    return render(request, 'LO/next_form_kerjasama.html', {'nim' : nim, 'identitas':identitas, 'kel':kel, 'penilaian':penilaian, 'course_id':course_id})
 
 @allowed_users(['mahasiswa'])
 def KuesionerView(request, nim, course_id, year, semester):
@@ -153,7 +153,7 @@ def KuesionerView(request, nim, course_id, year, semester):
 
     penilaian = PenilaianKuesionerForm()
 
-    return render(request, 'LO/form_kuesioner.html', {'penilaian':penilaian, 'course_id': course_id, 'year' : year, 'semester' : semester, 'identitas': identitas})
+    return render(request, 'LO/form_kuesioner.html', {'nim' : nim, 'penilaian':penilaian, 'course_id': course_id, 'year' : year, 'semester' : semester, 'identitas': identitas})
 
 @allowed_users(['mahasiswa'])
 def SubmitKuesionerView(request, nim, course_id, year, semester):
@@ -186,7 +186,7 @@ def SubmitKuesionerView(request, nim, course_id, year, semester):
     print(takes)
     takes[0].save()
 
-    return render(request, 'LO/form_kuesioner_submit.html', {'identitas':identitas, 'course_id': course_id, 'year' : year, 'semester' : semester})    
+    return render(request, 'LO/form_kuesioner_submit.html', {'nim' : nim, 'identitas':identitas, 'course_id': course_id, 'year' : year, 'semester' : semester})    
 
 class ListKuesionerView(generic.ListView):
     template_name = 'LO/list_kuesioner.html'

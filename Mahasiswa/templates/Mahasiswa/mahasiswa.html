@@ -3,59 +3,42 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
         <title> Home </title>
+        {% include 'Mahasiswa/navbar_mahasiswa.html' %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <ul class="nav navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">SIXPlus</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Aplikasi</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="">Kelas</a>
-                        <a class="dropdown-item" href="">LO Suplemen</a>
-                        <a class="dropdown-item" href="">Form Komunikasi</a>
-                        <a class="dropdown-item" href="">Form Kerjasama</a>
-                        <!--
-                        <a class="dropdown-item" href="#">Keuangan & Beasiswa</a>
-                        <a class="dropdown-item" href="#">Kelas</a>
-                        <a class="dropdown-item" href="#">Rencana Studi & Perwalian</a>
-                        <a class="dropdown-item" href="#">Penjurusan TPB</a>
-                        <a class="dropdown-item" href="#">Evaluasi Perkuliahan & Portofolio</a>
-                        <a class="dropdown-item" href="#">Wisuda</a>
-                        <a class="dropdown-item" href="#">Control Panel</a> -->
-                    </div>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">ID</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">EN</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>User</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-user"></span>Profil</a>
-                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
         <div class="container">
           <h1 class="mt-4 mb-4">Home</h1>
-          <h3 class="mt-0 mb-5"><small>Selamat datang, {{nim}} - {{mahasiswa.name}}</small></h3>
+          <h3 class="mt-0 mb-4"><small>Selamat datang, {{nim}} - {{mahasiswa.name}}</small></h3>
         </div>
-        <div class="container">
-            <div class="d-grid gap-3 col-6 mx-auto">
-                <a class="btn btn-primary" type="button" href="" target="_blank">Kelas</a>
-                <a class="btn btn-primary" type="button" href="{% url 'mhs:ViewLOSuplemen' nim %}" target="_blank">LO Suplemen</a>
-                <a class="btn btn-primary" type="button" href="{% url 'mhs:ListFormKomunikasi' nim %}" target="_blank">Form Komunikasi</a>
-                <a class="btn btn-primary" type="button" href="{% url 'mhs:ListFormKerjasama' nim %}" target="_blank">Form Kerjasama</a>
-                <a class="btn btn-primary" type="button" href="{% url 'mhs:ListKuesioner' nim %}" target="_blank">Form Kuesioner</a>
+
+        <div class="container d-flex justify-content-center">
+            <div class="row mx-auto btn-group justify-content-center" role="group">
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'mhs:ViewLOSuplemen' nim %}">
+                        <h1><i class="bi bi-file-bar-graph" href="{% url 'mhs:ViewLOSuplemen' nim %}"></i></h1>
+                        Penilaian LO<br>Suplemen
+                    </a>
+                </div>
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'mhs:ListFormKomunikasi' nim %}">
+                        <h1><i class="bi bi-person-check-fill" href="{% url 'mhs:ListFormKomunikasi' nim %}"></i></h1>
+                        Peer<br>Assessment<br>Komunikasi       
+                    </a>
+                </div>
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'mhs:ListFormKerjasama' nim %}">
+                        <h1><i class="bi bi-people-fill" href="{% url 'mhs:ListFormKerjasama' nim %}"></i></h1>
+                        Peer<br>Assessment<br>Kerjasama
+                    </a>
+                </div>
+                <div class="col-3 mt-5">
+                    <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'mhs:ListKuesioner' nim %}">
+                        <h1><i class="bi bi-ui-checks" href="{% url 'mhs:ListKuesioner' nim %}"></i></h1>
+                        Kuesioner<br>Evaluasi<br>Perkuliahan
+                    </a>
+                </div>
             </div>
         </div>
     </body>

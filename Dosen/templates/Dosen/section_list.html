@@ -4,99 +4,26 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <style>
-            .button {
-              border: none;
-              color: white;
-              padding: 16px 32px;
-              text-align: center;
-              text-decoration: none;
-              display: inline-block;
-              font-size: 16px;
-              margin: 4px 2px;
-              transition-duration: 0.4s;
-              cursor: pointer;
-            }
-            
-            .button1 {
-              background-color: white; 
-              color: black; 
-              border: 2px solid #4CAF50;
-            }
-            
-            .button1:hover {
-              background-color: #4CAF50;
-              color: white;
-            }
-            
-            .button2 {
-              background-color: white; 
-              color: black; 
-              border: 2px solid #008CBA;
-            }
-            
-            .button2:hover {
-              background-color: #008CBA;
-              color: white;
-            }
-            
-            </style>
+        {% include 'Dosen/navbar_dosen.html' %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-            <ul class="nav navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">SIXPlus</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Aplikasi</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Kurikulum</a>
-                        <a class="dropdown-item" href="#">Status Mahasiswa</a>
-                        <a class="dropdown-item" href="#">Keuangan & Beasiswa</a>
-                        <a class="dropdown-item" href="#">Kelas</a>
-                        <a class="dropdown-item" href="#">Rencana Studi & Perwalian</a>
-                        <a class="dropdown-item" href="#">Penjurusan TPB</a>
-                        <a class="dropdown-item" href="#">Evaluasi Perkuliahan & Portofolio</a>
-                        <a class="dropdown-item" href="#">Wisuda</a>
-                        <a class="dropdown-item" href="#">Control Panel</a>
-                    </div>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">ID</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">EN</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>User</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-user"></span>Profil</a>
-                        <a class="dropdown-item" href="#"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
-                    </div>
-                </li>
-            </ul>
-        </nav>
         <div class="container">
             <h1 class="mt-4 mb-4">Daftar Kelas </h1>
         </div>
-        
         <div class="container">
             <h3 class="mt-0 mb-2"><small>Nama : {{dosen.name}} </small></h3>
-            <h3 class="mt-0 mb-4"><small>NIP  : {{dosen.nip}} </small></h3>
+            <h3 class="mt-0 mb-5"><small>NIP  : {{dosen.nip}} </small></h3>
             <div class="row">
-                <div class="col-md-8">
+                <div class="container">
                     <form action="{% url 'dosen:GetSection' nip year semester %}" method = "POST">
                         {% csrf_token %}
-                        <label for="section" class="mt-0 mb-5 me-1">Choose a section</label>
-                        <select id="section" name="section">
+                        <label for="section" class="mt-1 mb-1"><h4><small>Choose a section</small></h4></label>
+                        <select id="section" name="section" class="form-select w-auto">
                             {% for kelas in section_list %}
                             <option value="{{kelas.course.course_id}}, {{kelas.sec_id}}">{{kelas}}</option>
                             {% endfor %}
                         </select>
-                        <input type="submit" class="ms-2">
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </form>
                 </div>
             </div> 
