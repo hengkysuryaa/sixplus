@@ -13,13 +13,8 @@ before_script:
 
 stages:
  - test
- - deploy
 
 
 test:
  script:
   - python3 manage.py test
-
-deploy:
- script:
-  - gcloud app deploy -q
