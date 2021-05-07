@@ -250,10 +250,43 @@ def LOSuplemenSemesterView(request, nim):
     list_lo_suplemen = []
     for key, value in year_sem_dict.items():
         for sem in value:
-            list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, key, sem))
+            temp_dict = calculateLOSuplemen(request.user.first_name, key, sem)
+            temp_dict['year'] = key
+            temp_dict['sem'] = sem
+            list_lo_suplemen.append(temp_dict)
 
-    context = {'nim':request.user.first_name, 'student' : student, 'list' : list_lo_suplemen}
+    ipk_suplemen_dict = {}
+    for i in range(len(lo_list)):
+        sum = 0
+        n_divisor = 0
+        for j in range(len(list_lo_suplemen)):
+            if (list_lo_suplemen[j].get(lo_list[i]) != '-'):
+                sum = sum + float(list_lo_suplemen[j].get(lo_list[i]))
+                n_divisor = n_divisor + 1
+        if (n_divisor != 0):
+            ipk_suplemen_dict[lo_list[i]] = round(sum/n_divisor, 2)
+        else:
+            ipk_suplemen_dict[lo_list[i]] = '-'
+
+    context = {'ipk':ipk_suplemen_dict,'nim':request.user.first_name, 'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
+
+@allowed_users(['mahasiswa'])
+def LOSuplemenCourseView(request, nim, year, semester):
+    takes_list = []
+    std = Student.objects.filter(nim=nim)
+    section = Section.objects.order_by('course__course_id').filter(year=year, semester=semester)
+    
+    for item in section:
+        if (len(Takes.objects.filter(student=std[0], section=item)) != 0):
+            takes = Takes.objects.filter(student=std[0], section=item)[0]
+            if (len(BobotKomponenScores.objects.filter(section=takes.section)) != 0 ):
+                if (takes.grade in INDEKS_LULUS):
+                    _course_id = takes.section.course.course_id
+                    takes_list.append(calculateLO(nim, _course_id, year, semester))
+
+    ip_suplemen = calculateLOSuplemen(nim, year, semester)
+    return render(request, 'Mahasiswa/lo_suplemen_course.html', {'ip_suplemen':ip_suplemen,'takes_list':takes_list, 'nim':request.user.first_name, 'sem':semester, 'tahun1':int(year), 'tahun2':int(year)+1})
 
 ###########################
 ### LIST FORM KERJASAMA ###
