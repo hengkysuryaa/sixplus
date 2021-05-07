@@ -275,7 +275,7 @@ def LOSuplemenSemesterView(request, nim):
 def LOSuplemenCourseView(request, nim, year, semester):
     takes_list = []
     std = Student.objects.filter(nim=nim)
-    section = Section.objects.filter(year=year, semester=semester)
+    section = Section.objects.order_by('course__course_id').filter(year=year, semester=semester)
     
     for item in section:
         if (len(Takes.objects.filter(student=std[0], section=item)) != 0):
