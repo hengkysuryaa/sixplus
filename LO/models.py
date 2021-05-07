@@ -61,6 +61,7 @@ class Section(models.Model):
 class Takes(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    final_score = models.CharField(default='-', max_length=10) 
     grade = models.CharField(default='-', max_length=2)
     isKuesionerFilled = models.BooleanField(default = False)
 

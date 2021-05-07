@@ -47,6 +47,7 @@
                         {% for komponen in scores_komponen %}
                             <th> {{komponen}} </th>
                         {% endfor %}
+                        <th> Nilai Akhir </th>
                         <th> Indeks </th>
                     </tr>
                 </thead>
@@ -58,6 +59,7 @@
                             {% for inv_score in score.scores %}
                                 <td> {{inv_score}} </td>
                             {% endfor %}
+                            <td> {{score.takes.final_score}} </td>
                             <td> {{score.takes.grade}} </td>
 
                         <tr>

@@ -424,7 +424,7 @@ def calculateNilaiAkhir(year, semester, course_id, section_id):
                     indeks = indeks_list[k]
                     break
             
-            Takes.objects.filter(student=takes[i].student, section=section[0]).update(grade=indeks)
+            Takes.objects.filter(student=takes[i].student, section=section[0]).update(grade=indeks, final_score=sum)
 
 def calculateCourseOutcomeLO(_course_id, _year, _semester):
     takes_list = list(Takes.objects.filter(section__year = _year, section__semester = _semester, section__course__course_id = _course_id))
