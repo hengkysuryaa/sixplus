@@ -53,7 +53,7 @@
                     <tbody>
                         {% for item in list %}
                             <tr>
-                                <td> {{forloop.counter}} </td>
+                                <td> <a href="{% url 'mhs:LOSuplemenCourseView' request.user.first_name item.year item.sem %}">{{forloop.counter}}</a></td>
                                 <td> {{item.lo_a}} </td>
                                 <td> {{item.lo_b}} </td>
                                 <td> {{item.lo_c}} </td>

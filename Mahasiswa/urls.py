@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 from LO.views import *
-from .views import TestView, LOSuplemenSemesterView, ListKerjasamaView, ListKomunikasiView
+from .views import TestView, LOSuplemenSemesterView, ListKerjasamaView, ListKomunikasiView, LOSuplemenCourseView
 from User.views import logoutUser
 from User.decorators import allowed_users
 
@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^logout/$', logoutUser, name='logout'),
     url(r'^Suplemen/$', TestView, name='Test'),
     url(r'^LOSuplemen/$', LOSuplemenSemesterView, name='ViewLOSuplemen'),
+    url(r'^LOSuplemen/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/$', LOSuplemenCourseView, name='LOSuplemenCourseView'),
     re_path(r'^FormKerjasama/$', ListKerjasamaView.as_view(), name='ListFormKerjasama'),
     re_path(r'^FormKerjasama/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/(?P<course_id>[A-Z0-9]+)/(?P<section_id>[0-9]+)/$', KerjasamaView, name='FormKerjasama'),
     re_path(r'^FormKerjasama/(?P<year>[0-9]+)/(?P<semester>[0-9]+)/(?P<course_id>[A-Z0-9]+)/(?P<section_id>[0-9]+)/more/$', NextKerjasamaView, name='NextFormKerjasama'),
