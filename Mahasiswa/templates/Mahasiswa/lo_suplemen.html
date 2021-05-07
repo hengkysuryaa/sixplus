@@ -63,6 +63,12 @@
                                 <td> {{item.lo_g}} </td>
                             <tr>
                         {% endfor %}
+                        <tr>
+                            <td> <b> LO Suplemen Kumulatif </b> </td>
+                            {% for key,value in ipk.items%}
+                                <td> <b> {{value}} </b> </td>
+                            {% endfor %}
+                        </tr>
                     </tbody>
                 </table>
             </div>

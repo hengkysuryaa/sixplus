@@ -252,7 +252,20 @@ def LOSuplemenSemesterView(request, nim):
         for sem in value:
             list_lo_suplemen.append(calculateLOSuplemen(request.user.first_name, key, sem))
 
-    context = {'nim':request.user.first_name, 'student' : student, 'list' : list_lo_suplemen}
+    ipk_suplemen_dict = {}
+    for i in range(len(lo_list)):
+        sum = 0
+        n_divisor = 0
+        for j in range(len(list_lo_suplemen)):
+            if (list_lo_suplemen[j].get(lo_list[i]) != '-'):
+                sum = sum + float(list_lo_suplemen[j].get(lo_list[i]))
+                n_divisor = n_divisor + 1
+        if (n_divisor != 0):
+            ipk_suplemen_dict[lo_list[i]] = round(sum/n_divisor, 2)
+        else:
+            ipk_suplemen_dict[lo_list[i]] = '-'
+
+    context = {'ipk':ipk_suplemen_dict,'nim':request.user.first_name, 'student' : student, 'list' : list_lo_suplemen}
     return render(request, 'Mahasiswa/lo_suplemen.html', context)
 
 ###########################
