@@ -76,10 +76,12 @@ def SubmitKerjasamaView(request, nim, year, semester, course_id, section_id):
     identitas = request.user
     kel = request.POST['kelompok']
     
-    student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
-    course = get_object_or_404(Course, course_id=course_id)
-    #takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
-    res = ResponseKerjasama(takes = takes[0], Kontribusi=int(request.POST['Kontribusi']), PemecahanMasalah=int(request.POST['PemecahanMasalah']), Sikap=int(request.POST['Sikap']), FokusTerhadapTugas=int(request.POST['FokusTerhadapTugas']), BekerjaDenganOrangLain=int(request.POST['BekerjaDenganOrangLain']))
+    #student = get_object_or_404(Student, nim=request.POST['NIMPeer'])
+    #course = get_object_or_404(Course, course_id=course_id)
+    takes_peer = Takes.objects.filter(student__nim = request.POST['NIMPeer'], section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if (len(takes_peer) == 0):
+        return HttpResponseNotFound("<h2> Mahasiswa yang Anda nilai tidak terdaftar pada kelas ini!</h2> Silakan back ke laman sebelumnya")
+    res = ResponseKerjasama(takes = takes_peer[0], Kontribusi=int(request.POST['Kontribusi']), PemecahanMasalah=int(request.POST['PemecahanMasalah']), Sikap=int(request.POST['Sikap']), FokusTerhadapTugas=int(request.POST['FokusTerhadapTugas']), BekerjaDenganOrangLain=int(request.POST['BekerjaDenganOrangLain']))
     res.save()
 
     return render(request, 'LO/form_kerjasama_submit.html', {'nim' : nim, 'identitas':identitas, 'kel':kel,  'year' : year, 'semester' : semester, 'course_id': course_id, 'section_id' : section_id})    
@@ -112,7 +114,12 @@ def SubmitKomunikasiView(request, nim, year, semester, course_id, section_id):
     kelompok = request.POST['KelompokPeer']
     course = get_object_or_404(Course, course_id=course_id)
     #takes = Takes.objects.filter(student = student, section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)[0]
-    res = ResponseKomunikasi(takes = takes[0], kelompok = kelompok,  
+     
+    takes_peer = Takes.objects.filter(student__nim = request.POST['NIMPeer'], section__course__course_id = course_id, section__semester = semester, section__year = year, section__sec_id = section_id)
+    if (len(takes_peer) == 0):
+        return HttpResponseNotFound("<h2> Mahasiswa yang Anda nilai tidak terdaftar pada kelas ini!</h2> Silakan back ke laman sebelumnya")
+    
+    res = ResponseKomunikasi(takes = takes_peer[0], kelompok = kelompok,  
         Penyampaian1=int(request.POST['Penyampaian1']), Penyampaian2=int(request.POST['Penyampaian2']), Penyampaian3=int(request.POST['Penyampaian3']), Penyampaian4=int(request.POST['Penyampaian4']), 
         Konten=int(request.POST['Konten']), Bahasa=int(request.POST['Bahasa']), Penguasaan=int(request.POST['Penguasaan']), 
         Menjawab=int(request.POST['Menjawab']), Media=int(request.POST['Media']), Waktu=int(request.POST['Waktu'])     
